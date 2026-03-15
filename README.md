@@ -48,6 +48,7 @@ Public seismic data from USGS global earthquake feeds.
 ## Status
 
 Experimental public prototype.
+Public release label, CGIE Public Prototype v1
 
 ## License
 
