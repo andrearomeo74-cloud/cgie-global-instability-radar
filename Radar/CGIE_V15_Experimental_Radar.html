@@ -5,10 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>CGIE Radar, Public Prototype v1.0</title>
 
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
   <style>
     html, body {
@@ -30,7 +27,7 @@
       position: fixed;
       inset: 0;
       width: 100vw;
-      height: 100dvh;
+      height: 100vh;
       background: #1f1f1f;
       z-index: 1;
     }
@@ -42,15 +39,14 @@
       color: white;
       border-radius: 16px;
       box-shadow: 0 10px 24px rgba(0,0,0,0.35);
-      backdrop-filter: blur(4px);
+      padding: 14px;
     }
 
     .title-panel {
       top: 16px;
-      left: 78px;
+      left: 72px;
       max-width: 360px;
-      padding: 14px 18px;
-      font-size: 15px;
+      font-size: 14px;
       line-height: 1.35;
       font-weight: 700;
     }
@@ -62,45 +58,41 @@
     }
 
     .overview-panel {
-      top: 94px;
-      left: 18px;
-      width: 275px;
-      max-height: 58vh;
+      top: 92px;
+      left: 14px;
+      width: 250px;
+      max-height: 40vh;
       overflow-y: auto;
-      padding: 15px;
-      font-size: 12px;
+      font-size: 11px;
       line-height: 1.55;
     }
 
     .risk-panel {
-      top: 94px;
-      right: 18px;
-      width: 220px;
-      padding: 14px;
-      font-size: 12px;
+      top: 92px;
+      right: 14px;
+      width: 180px;
+      font-size: 11px;
       line-height: 1.6;
     }
 
     .legend-panel {
-      bottom: 18px;
-      left: 18px;
-      width: 165px;
-      padding: 14px;
-      font-size: 12px;
+      bottom: 14px;
+      left: 14px;
+      width: 145px;
+      font-size: 11px;
       line-height: 1.65;
     }
 
     .read-panel {
-      bottom: 18px;
-      right: 18px;
-      width: 255px;
-      padding: 14px;
-      font-size: 12px;
-      line-height: 1.6;
+      bottom: 14px;
+      right: 14px;
+      width: 185px;
+      font-size: 11px;
+      line-height: 1.55;
     }
 
     .panel-title {
-      font-size: 14px;
+      font-size: 12px;
       font-weight: 700;
       margin-bottom: 10px;
       color: #ffffff;
@@ -111,7 +103,7 @@
     }
 
     .hot-item {
-      padding: 8px 0;
+      padding: 7px 0;
       border-bottom: 1px solid rgba(255,255,255,0.10);
     }
 
@@ -122,11 +114,6 @@
     .dot {
       font-weight: 700;
       margin-right: 6px;
-    }
-
-    .leaflet-control-zoom {
-      margin-top: 14px !important;
-      margin-left: 8px !important;
     }
 
     .leaflet-popup-content-wrapper {
@@ -141,94 +128,8 @@
 
     .leaflet-popup-content {
       font-size: 12px;
-      line-height: 1.55;
+      line-height: 1.5;
       margin: 12px 14px;
-    }
-
-    @media (max-width: 900px) {
-      .title-panel {
-        left: 72px;
-        right: 14px;
-        max-width: none;
-        font-size: 14px;
-      }
-
-      .overview-panel {
-        top: 92px;
-        left: 14px;
-        width: 255px;
-        max-height: 42vh;
-        font-size: 11px;
-      }
-
-      .risk-panel {
-        top: 92px;
-        right: 14px;
-        width: 190px;
-        font-size: 11px;
-      }
-
-      .legend-panel {
-        bottom: 14px;
-        left: 14px;
-        width: 150px;
-        font-size: 11px;
-      }
-
-      .read-panel {
-        bottom: 14px;
-        right: 14px;
-        width: 205px;
-        font-size: 11px;
-      }
-    }
-
-    @media (max-width: 560px) {
-      .title-panel {
-        top: 14px;
-        left: 56px;
-        right: 10px;
-        max-width: none;
-        padding: 10px 14px;
-        font-size: 13px;
-      }
-
-      .overview-panel {
-        top: 84px;
-        left: 10px;
-        width: 230px;
-        max-height: 28vh;
-        padding: 12px;
-        font-size: 10px;
-      }
-
-      .risk-panel {
-        top: 84px;
-        right: 10px;
-        width: 145px;
-        padding: 12px;
-        font-size: 10px;
-      }
-
-      .legend-panel {
-        bottom: 10px;
-        left: 10px;
-        width: 138px;
-        padding: 12px;
-        font-size: 10px;
-      }
-
-      .read-panel {
-        bottom: 10px;
-        right: 10px;
-        width: 165px;
-        padding: 12px;
-        font-size: 10px;
-      }
-
-      .panel-title {
-        font-size: 12px;
-      }
     }
   </style>
 </head>
@@ -260,7 +161,7 @@
       0.3 – 0.5, Perturbation<br>
       0.5 – 0.7, Instability<br>
       0.7 – 0.9, Critical cluster<br>
-      &gt; 0.9, Transition risk
+      > 0.9, Transition risk
     </div>
   </div>
 
@@ -281,83 +182,78 @@
       Yellow, local perturbation detected.<br>
       Orange, growing instability.<br>
       Red, clustered seismic activity.<br>
-      Purple, possible system transition.<br><br>
-      The radar measures deviation from the global seismic equilibrium state.
+      Purple, possible system transition.
     </div>
   </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <script>
-    const map = L.map('map', {
-      zoomControl: true,
-      attributionControl: true
-    }).setView([20, 0], 2);
+    var map = L.map('map', { zoomControl: true }).setView([20, 0], 2);
 
     L.tileLayer(
       'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
       {
-        attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+        attribution: '&copy; OpenStreetMap &copy; CARTO',
         subdomains: 'abcd',
         maxZoom: 19
       }
     ).addTo(map);
 
-    const colors = {
-      "Stable": "#00c853",
-      "Perturbation": "#ffd600",
-      "Instability": "#ff9100",
-      "Critical Cluster": "#ff3d00",
-      "Transition Risk": "#d500f9"
-    };
+    var radarData = [
+      {lat: 38.0, lon: -124.0, phase: 'Transition Risk', risk: 0.715, events: 1396, maxMag: 4.15},
+      {lat: 6.0, lon: 116.0, phase: 'Transition Risk', risk: 0.809, events: 1, maxMag: 7.1},
+      {lat: 2.0, lon: 96.0, phase: 'Transition Risk', risk: 0.692, events: 1, maxMag: 6.2},
+      {lat: -64.0, lon: 168.0, phase: 'Transition Risk', risk: 0.685, events: 1, maxMag: 5.6},
+      {lat: -14.0, lon: 172.0, phase: 'Transition Risk', risk: 0.684, events: 1, maxMag: 5.4},
+      {lat: -62.0, lon: -62.0, phase: 'Transition Risk', risk: 0.683, events: 1, maxMag: 5.3},
+      {lat: 0.0, lon: -18.0, phase: 'Transition Risk', risk: 0.683, events: 1, maxMag: 5.3},
+      {lat: -54.0, lon: 6.0, phase: 'Transition Risk', risk: 0.683, events: 1, maxMag: 5.3},
 
-    const radarData = [
-      {lat: 38.0, lon: -124.0, phase: "Transition Risk", risk: 0.715, events: 1396, maxMag: 4.15},
-      {lat: 6.0, lon: 116.0, phase: "Transition Risk", risk: 0.809, events: 1, maxMag: 7.1},
-      {lat: 2.0, lon: 96.0, phase: "Transition Risk", risk: 0.692, events: 1, maxMag: 6.2},
-      {lat: -64.0, lon: 168.0, phase: "Transition Risk", risk: 0.685, events: 1, maxMag: 5.6},
-      {lat: -14.0, lon: 172.0, phase: "Transition Risk", risk: 0.684, events: 1, maxMag: 5.4},
-      {lat: -62.0, lon: -62.0, phase: "Transition Risk", risk: 0.683, events: 1, maxMag: 5.3},
-      {lat: 0.0, lon: -18.0, phase: "Transition Risk", risk: 0.683, events: 1, maxMag: 5.3},
-      {lat: -54.0, lon: 6.0, phase: "Transition Risk", risk: 0.683, events: 1, maxMag: 5.3},
+      {lat: 36.0, lon: 26.0, phase: 'Perturbation', risk: 0.41, events: 18, maxMag: 4.2},
+      {lat: 38.0, lon: 22.0, phase: 'Instability', risk: 0.58, events: 22, maxMag: 4.5},
+      {lat: 34.0, lon: 28.0, phase: 'Stable', risk: 0.27, events: 9, maxMag: 3.9},
+      {lat: 32.0, lon: 34.0, phase: 'Stable', risk: 0.25, events: 7, maxMag: 3.6},
+      {lat: 30.0, lon: 36.0, phase: 'Perturbation', risk: 0.43, events: 12, maxMag: 4.1},
+      {lat: 40.0, lon: 18.0, phase: 'Stable', risk: 0.22, events: 5, maxMag: 3.4},
+      {lat: 28.0, lon: 40.0, phase: 'Stable', risk: 0.26, events: 6, maxMag: 3.5},
+      {lat: 26.0, lon: 42.0, phase: 'Perturbation', risk: 0.39, events: 11, maxMag: 4.0},
 
-      {lat: 36.0, lon: 26.0, phase: "Perturbation", risk: 0.41, events: 18, maxMag: 4.2},
-      {lat: 38.0, lon: 22.0, phase: "Instability", risk: 0.58, events: 22, maxMag: 4.5},
-      {lat: 34.0, lon: 28.0, phase: "Stable", risk: 0.27, events: 9, maxMag: 3.9},
-      {lat: 32.0, lon: 34.0, phase: "Stable", risk: 0.25, events: 7, maxMag: 3.6},
-      {lat: 30.0, lon: 36.0, phase: "Perturbation", risk: 0.43, events: 12, maxMag: 4.1},
-      {lat: 40.0, lon: 18.0, phase: "Stable", risk: 0.22, events: 5, maxMag: 3.4},
-      {lat: 28.0, lon: 40.0, phase: "Stable", risk: 0.26, events: 6, maxMag: 3.5},
-      {lat: 26.0, lon: 42.0, phase: "Perturbation", risk: 0.39, events: 11, maxMag: 4.0},
+      {lat: -20.0, lon: -72.0, phase: 'Transition Risk', risk: 0.77, events: 2, maxMag: 6.0},
+      {lat: -32.0, lon: -70.0, phase: 'Critical Cluster', risk: 0.69, events: 8, maxMag: 5.1},
+      {lat: -10.0, lon: -78.0, phase: 'Instability', risk: 0.56, events: 15, maxMag: 4.8},
 
-      {lat: -20.0, lon: -72.0, phase: "Transition Risk", risk: 0.77, events: 2, maxMag: 6.0},
-      {lat: -32.0, lon: -70.0, phase: "Critical Cluster", risk: 0.69, events: 8, maxMag: 5.1},
-      {lat: -10.0, lon: -78.0, phase: "Instability", risk: 0.56, events: 15, maxMag: 4.8},
+      {lat: 36.0, lon: 140.0, phase: 'Transition Risk', risk: 0.82, events: 24, maxMag: 5.7},
+      {lat: 30.0, lon: 130.0, phase: 'Critical Cluster', risk: 0.68, events: 17, maxMag: 5.0},
+      {lat: 42.0, lon: 146.0, phase: 'Instability', risk: 0.53, events: 12, maxMag: 4.6},
 
-      {lat: 36.0, lon: 140.0, phase: "Transition Risk", risk: 0.82, events: 24, maxMag: 5.7},
-      {lat: 30.0, lon: 130.0, phase: "Critical Cluster", risk: 0.68, events: 17, maxMag: 5.0},
-      {lat: 42.0, lon: 146.0, phase: "Instability", risk: 0.53, events: 12, maxMag: 4.6},
-
-      {lat: -6.0, lon: 130.0, phase: "Transition Risk", risk: 0.73, events: 13, maxMag: 5.5},
-      {lat: -2.0, lon: 138.0, phase: "Critical Cluster", risk: 0.64, events: 19, maxMag: 5.0},
-      {lat: 4.0, lon: 126.0, phase: "Instability", risk: 0.55, events: 14, maxMag: 4.7}
+      {lat: -6.0, lon: 130.0, phase: 'Transition Risk', risk: 0.73, events: 13, maxMag: 5.5},
+      {lat: -2.0, lon: 138.0, phase: 'Critical Cluster', risk: 0.64, events: 19, maxMag: 5.0},
+      {lat: 4.0, lon: 126.0, phase: 'Instability', risk: 0.55, events: 14, maxMag: 4.7}
     ];
 
-    function popupHtml(d) {
-      return `
-        <b>Latitude</b>, ${d.lat}<br>
-        <b>Longitude</b>, ${d.lon}<br>
-        <b>Phase</b>, ${d.phase}<br>
-        <b>Risk</b>, ${d.risk.toFixed(3)}<br>
-        <b>Events</b>, ${d.events}<br>
-        <b>Max Magnitude</b>, ${d.maxMag.toFixed(2)}
-      `;
+    var phaseColors = {
+      'Stable': '#00c853',
+      'Perturbation': '#ffd600',
+      'Instability': '#ff9100',
+      'Critical Cluster': '#ff3d00',
+      'Transition Risk': '#d500f9'
+    };
+
+    function getPopupText(d) {
+      return '<b>Latitude</b>, ' + d.lat + '<br>' +
+             '<b>Longitude</b>, ' + d.lon + '<br>' +
+             '<b>Phase</b>, ' + d.phase + '<br>' +
+             '<b>Risk</b>, ' + d.risk.toFixed(3) + '<br>' +
+             '<b>Events</b>, ' + d.events + '<br>' +
+             '<b>Max Magnitude</b>, ' + d.maxMag.toFixed(2);
     }
 
-    radarData.forEach(d => {
-      const color = colors[d.phase] || "#90a4ae";
-      const glowRadius = 8 + d.risk * 14;
-      const coreRadius = 4 + d.risk * 8;
+    for (var i = 0; i < radarData.length; i++) {
+      var d = radarData[i];
+      var color = phaseColors[d.phase] || '#90a4ae';
+      var glowRadius = 8 + d.risk * 14;
+      var coreRadius = 4 + d.risk * 8;
 
       L.circleMarker([d.lat, d.lon], {
         radius: glowRadius,
@@ -372,45 +268,42 @@
         weight: 1,
         fillColor: color,
         fillOpacity: 0.88
-      }).bindPopup(popupHtml(d)).addTo(map);
-    });
+      }).bindPopup(getPopupText(d)).addTo(map);
+    }
 
     function forceResize() {
-      const el = document.getElementById('map');
-      el.style.height = window.innerHeight + 'px';
+      document.getElementById('map').style.height = window.innerHeight + 'px';
       map.invalidateSize();
     }
 
-    window.addEventListener('load', () => {
-      setTimeout(forceResize, 200);
-      setTimeout(forceResize, 700);
-    });
-
-    window.addEventListener('resize', () => {
-      setTimeout(forceResize, 120);
-    });
-
-    window.addEventListener('orientationchange', () => {
+    window.onload = function() {
       setTimeout(forceResize, 250);
-    });
+      setTimeout(forceResize, 800);
 
-    document.getElementById("cells-count").textContent = radarData.length.toString();
+      document.getElementById('cells-count').textContent = radarData.length;
 
-    const sorted = [...radarData].sort((a, b) => b.risk - a.risk).slice(0, 8);
-    const top = document.getElementById("top-cells");
+      var sorted = radarData.slice().sort(function(a, b) {
+        return b.risk - a.risk;
+      }).slice(0, 8);
 
-    sorted.forEach(d => {
-      const el = document.createElement("div");
-      el.className = "hot-item";
-      el.innerHTML = `
-        <b>${d.lat}, ${d.lon}</b><br>
-        Risk, ${d.risk.toFixed(3)}<br>
-        Phase, ${d.phase}<br>
-        Events, ${d.events}<br>
-        MaxMag, ${d.maxMag.toFixed(2)}
-      `;
-      top.appendChild(el);
-    });
+      var top = document.getElementById('top-cells');
+
+      for (var j = 0; j < sorted.length; j++) {
+        var item = document.createElement('div');
+        item.className = 'hot-item';
+        item.innerHTML =
+          '<b>' + sorted[j].lat + ', ' + sorted[j].lon + '</b><br>' +
+          'Risk, ' + sorted[j].risk.toFixed(3) + '<br>' +
+          'Phase, ' + sorted[j].phase + '<br>' +
+          'Events, ' + sorted[j].events + '<br>' +
+          'MaxMag, ' + sorted[j].maxMag.toFixed(2);
+        top.appendChild(item);
+      }
+    };
+
+    window.onresize = function() {
+      setTimeout(forceResize, 120);
+    };
   </script>
 </body>
 </html>
