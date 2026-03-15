@@ -2,30 +2,37 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>CGIE Radar, Public Prototype v1.0</title>
 
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-    crossorigin=""
   />
 
   <style>
     html, body {
       margin: 0;
       padding: 0;
+      width: 100%;
       height: 100%;
-      background: #071426;
+      background: #1f1f1f;
       font-family: Arial, sans-serif;
-      color: white;
+      overflow: hidden;
+    }
+
+    body {
+      position: fixed;
+      inset: 0;
     }
 
     #map {
-      width: 100%;
-      height: 100vh;
-      background: #071426;
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100dvh;
+      background: #1f1f1f;
+      z-index: 1;
     }
 
     .panel {
@@ -40,33 +47,33 @@
 
     .title-panel {
       top: 16px;
-      left: 84px;
-      padding: 14px 18px;
+      left: 78px;
       max-width: 360px;
+      padding: 14px 18px;
       font-size: 15px;
       line-height: 1.35;
       font-weight: 700;
     }
 
     .title-panel .sub {
+      margin-top: 4px;
       font-weight: 500;
       color: #d7e4ff;
-      margin-top: 4px;
     }
 
     .overview-panel {
-      top: 96px;
-      left: 84px;
-      width: 280px;
-      max-height: 62vh;
+      top: 94px;
+      left: 18px;
+      width: 275px;
+      max-height: 58vh;
       overflow-y: auto;
-      padding: 16px;
+      padding: 15px;
       font-size: 12px;
       line-height: 1.55;
     }
 
     .risk-panel {
-      top: 96px;
+      top: 94px;
       right: 18px;
       width: 220px;
       padding: 14px;
@@ -75,7 +82,7 @@
     }
 
     .legend-panel {
-      bottom: 22px;
+      bottom: 18px;
       left: 18px;
       width: 165px;
       padding: 14px;
@@ -84,9 +91,9 @@
     }
 
     .read-panel {
-      bottom: 22px;
+      bottom: 18px;
       right: 18px;
-      width: 250px;
+      width: 255px;
       padding: 14px;
       font-size: 12px;
       line-height: 1.6;
@@ -117,6 +124,11 @@
       margin-right: 6px;
     }
 
+    .leaflet-control-zoom {
+      margin-top: 14px !important;
+      margin-left: 8px !important;
+    }
+
     .leaflet-popup-content-wrapper {
       background: rgba(10, 20, 40, 0.96);
       color: white;
@@ -135,26 +147,24 @@
 
     @media (max-width: 900px) {
       .title-panel {
-        left: 74px;
+        left: 72px;
         right: 14px;
         max-width: none;
         font-size: 14px;
       }
 
       .overview-panel {
-        top: 96px;
+        top: 92px;
         left: 14px;
-        right: 14px;
-        width: auto;
-        max-height: 170px;
+        width: 255px;
+        max-height: 42vh;
         font-size: 11px;
       }
 
       .risk-panel {
-        top: auto;
-        bottom: 190px;
+        top: 92px;
         right: 14px;
-        width: 180px;
+        width: 190px;
         font-size: 11px;
       }
 
@@ -168,7 +178,7 @@
       .read-panel {
         bottom: 14px;
         right: 14px;
-        width: 180px;
+        width: 205px;
         font-size: 11px;
       }
     }
@@ -176,34 +186,48 @@
     @media (max-width: 560px) {
       .title-panel {
         top: 14px;
-        left: 70px;
+        left: 56px;
         right: 10px;
-        padding: 12px 14px;
+        max-width: none;
+        padding: 10px 14px;
         font-size: 13px;
       }
 
       .overview-panel {
-        top: 86px;
+        top: 84px;
         left: 10px;
-        right: 10px;
-        width: auto;
-        max-height: 150px;
+        width: 230px;
+        max-height: 28vh;
         padding: 12px;
+        font-size: 10px;
       }
 
       .risk-panel {
-        display: none;
-      }
-
-      .read-panel {
-        display: none;
+        top: 84px;
+        right: 10px;
+        width: 145px;
+        padding: 12px;
+        font-size: 10px;
       }
 
       .legend-panel {
         bottom: 10px;
         left: 10px;
-        width: 145px;
+        width: 138px;
         padding: 12px;
+        font-size: 10px;
+      }
+
+      .read-panel {
+        bottom: 10px;
+        right: 10px;
+        width: 165px;
+        padding: 12px;
+        font-size: 10px;
+      }
+
+      .panel-title {
+        font-size: 12px;
       }
     }
   </style>
@@ -262,11 +286,7 @@
     </div>
   </div>
 
-  <script
-    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-    crossorigin=""
-  ></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <script>
     const map = L.map('map', {
@@ -336,8 +356,8 @@
 
     radarData.forEach(d => {
       const color = colors[d.phase] || "#90a4ae";
-      const glowRadius = 10 + d.risk * 18;
-      const coreRadius = 4 + d.risk * 10;
+      const glowRadius = 8 + d.risk * 14;
+      const coreRadius = 4 + d.risk * 8;
 
       L.circleMarker([d.lat, d.lon], {
         radius: glowRadius,
@@ -353,6 +373,25 @@
         fillColor: color,
         fillOpacity: 0.88
       }).bindPopup(popupHtml(d)).addTo(map);
+    });
+
+    function forceResize() {
+      const el = document.getElementById('map');
+      el.style.height = window.innerHeight + 'px';
+      map.invalidateSize();
+    }
+
+    window.addEventListener('load', () => {
+      setTimeout(forceResize, 200);
+      setTimeout(forceResize, 700);
+    });
+
+    window.addEventListener('resize', () => {
+      setTimeout(forceResize, 120);
+    });
+
+    window.addEventListener('orientationchange', () => {
+      setTimeout(forceResize, 250);
     });
 
     document.getElementById("cells-count").textContent = radarData.length.toString();
