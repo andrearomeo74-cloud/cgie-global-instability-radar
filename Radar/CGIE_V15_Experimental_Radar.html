@@ -334,6 +334,43 @@
     }
 
     function startAnimationLoop() {
+  clearAnimationLoop();
+
+  var tick = 0;
+
+  animationTimer = setInterval(function() {
+    tick += 0.28;
+
+    for (var i = 0; i < animatedMarkers.length; i++) {
+      var m = animatedMarkers[i];
+
+      var speed = 1.0;
+      if (m.trend === 'Rising') speed = 2.0;
+      else if (m.trend === 'Falling') speed = 0.8;
+
+      var pulse = (Math.sin(tick * speed) + 1) / 2;
+
+      var glowBoost = 1.5 + m.risk * 4.5;
+      var coreBoost = 0.5 + m.risk * 1.8;
+
+      var newGlow = m.baseGlow + pulse * glowBoost;
+      var newCore = m.baseCore + pulse * coreBoost;
+
+      m.glow.setRadius(newGlow);
+      m.core.setRadius(newCore);
+
+      var glowOpacity = 0.06 + pulse * 0.22;
+      m.glow.setStyle({ fillOpacity: glowOpacity });
+
+      if (m.anomalyRing) {
+        var ringBoost = 1.8 + m.risk * 5.0;
+        var newRing = m.baseRing + pulse * ringBoost;
+        m.anomalyRing.setRadius(newRing);
+        m.anomalyRing.setStyle({ opacity: 0.35 + pulse * 0.65 });
+      }
+    }
+  }, 70);
+    }
       clearAnimationLoop();
 
       var tick = 0;
