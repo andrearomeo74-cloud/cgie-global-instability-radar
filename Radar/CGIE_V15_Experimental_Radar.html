@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>CGIE Live Seismic Radar, Public Prototype v1.1</title>
+  <title>CGIE Live Seismic Radar, Public Stable Profile v1.0</title>
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
@@ -46,7 +46,7 @@
     .title-panel {
       top: 16px;
       left: 72px;
-      max-width: 380px;
+      max-width: 390px;
       font-size: 14px;
       line-height: 1.35;
       font-weight: 700;
@@ -61,7 +61,7 @@
     .overview-panel {
       top: 92px;
       left: 14px;
-      width: 265px;
+      width: 270px;
       max-height: 43vh;
       overflow-y: auto;
       font-size: 11px;
@@ -71,7 +71,7 @@
     .risk-panel {
       top: 92px;
       right: 14px;
-      width: 200px;
+      width: 205px;
       font-size: 11px;
       line-height: 1.6;
     }
@@ -87,7 +87,7 @@
     .read-panel {
       bottom: 14px;
       right: 14px;
-      width: 210px;
+      width: 220px;
       font-size: 11px;
       line-height: 1.55;
     }
@@ -206,9 +206,11 @@
       Feed status, <span id="feed-status" class="status-warn">Loading...</span><br>
       Events loaded, <span id="events-count">0</span><br>
       Cells analyzed, <span id="cells-count">0</span><br>
-      Model, CGIE Live Seismic Radar v1.1<br>
+      Cells shown, <span id="cells-shown">0</span><br>
+      Model, CGIE Public Stable Profile v1.0<br>
       Data source, USGS Global Seismic Feed<br>
       Grid resolution, 2° × 2°<br>
+      Display threshold, risk ≥ 0.30<br>
       Last refresh, <span id="last-refresh">-</span><br>
       Auto refresh, every 15 minutes
     </div>
@@ -280,6 +282,11 @@
       'Critical Cluster': '#ff3d00',
       'Transition Risk': '#d500f9'
     };
+
+    var GRID_SIZE = 2;
+    var DISPLAY_THRESHOLD = 0.30;
+    var MAX_VISIBLE_CELLS = 250;
+    var TOP_PANEL_COUNT = 8;
 
     function safeMax(arr) {
       var m = 0;
@@ -377,7 +384,6 @@
 
       var now = new Date().getTime();
       var dayMs = 24 * 60 * 60 * 1000;
-      var gridSize = 2;
       var cellsMap = {};
 
       for (var i = 0; i < features.length; i++) {
@@ -389,8 +395,8 @@
         var mag = f.properties && f.properties.mag != null ? f.properties.mag : 0;
         var t = f.properties && f.properties.time ? f.properties.time : now;
 
-        var latCell = Math.floor(lat / gridSize) * gridSize;
-        var lonCell = Math.floor(lon / gridSize) * gridSize;
+        var latCell = Math.floor(lat / GRID_SIZE) * GRID_SIZE;
+        var lonCell = Math.floor(lon / GRID_SIZE) * GRID_SIZE;
         var key = latCell + ',' + lonCell;
 
         if (!cellsMap[key]) {
@@ -466,30 +472,21 @@
       var A = normalizeArray(accels);
       var C = normalizeArray(clusters);
 
-      var states = [];
+      var scores = [];
       for (var s = 0; s < cells.length; s++) {
-        states.push([E[s], A[s], M[s], C[s], K[s]]);
+        var score =
+          0.28 * E[s] +
+          0.22 * A[s] +
+          0.20 * M[s] +
+          0.18 * C[s] +
+          0.12 * K[s];
+        scores.push(score);
       }
 
-      var meanState = [0, 0, 0, 0, 0];
-      for (var m = 0; m < states.length; m++) {
-        for (var n = 0; n < 5; n++) {
-          meanState[n] += states[m][n];
-        }
-      }
-      for (var n2 = 0; n2 < 5; n2++) {
-        meanState[n2] = states.length > 0 ? meanState[n2] / states.length : 0;
-      }
-
-      var distances = [];
-      for (var d = 0; d < states.length; d++) {
-        distances.push(euclideanDistance(states[d], meanState));
-      }
-
-      var maxDist = safeMax(distances);
+      var maxScore = safeMax(scores);
 
       for (var z = 0; z < cells.length; z++) {
-        cells[z].risk = maxDist > 0 ? distances[z] / maxDist : 0;
+        cells[z].risk = maxScore > 0 ? scores[z] / maxScore : 0;
         cells[z].phase = phaseFromRisk(cells[z].risk);
       }
 
@@ -500,7 +497,7 @@
       var top = document.getElementById('top-cells');
       top.innerHTML = '';
 
-      for (var t2 = 0; t2 < Math.min(8, cells.length); t2++) {
+      for (var t2 = 0; t2 < Math.min(TOP_PANEL_COUNT, cells.length); t2++) {
         var item = document.createElement('div');
         item.className = 'hot-item';
         item.innerHTML =
@@ -513,25 +510,39 @@
         top.appendChild(item);
       }
 
-      for (var p = 0; p < cells.length; p++) {
-        var color = phaseColors[cells[p].phase] || '#90a4ae';
-        var glowRadius = 6 + cells[p].risk * 12;
-        var coreRadius = 3 + cells[p].risk * 7;
+      var visibleCells = [];
+      for (var v = 0; v < cells.length; v++) {
+        if (cells[v].risk >= DISPLAY_THRESHOLD) {
+          visibleCells.push(cells[v]);
+        }
+      }
 
-        L.circleMarker([cells[p].latCell, cells[p].lonCell], {
+      if (visibleCells.length > MAX_VISIBLE_CELLS) {
+        visibleCells = visibleCells.slice(0, MAX_VISIBLE_CELLS);
+      }
+
+      document.getElementById('cells-shown').textContent = visibleCells.length;
+
+      for (var p = 0; p < visibleCells.length; p++) {
+        var cell = visibleCells[p];
+        var color = phaseColors[cell.phase] || '#90a4ae';
+        var glowRadius = 4 + cell.risk * 10;
+        var coreRadius = 2 + cell.risk * 6;
+
+        L.circleMarker([cell.latCell, cell.lonCell], {
           radius: glowRadius,
           stroke: false,
           fillColor: color,
           fillOpacity: 0.10
         }).addTo(markerLayer);
 
-        L.circleMarker([cells[p].latCell, cells[p].lonCell], {
+        L.circleMarker([cell.latCell, cell.lonCell], {
           radius: coreRadius,
           color: color,
           weight: 1,
           fillColor: color,
           fillOpacity: 0.88
-        }).bindPopup(popupHtml(cells[p])).addTo(markerLayer);
+        }).bindPopup(popupHtml(cell)).addTo(markerLayer);
       }
 
       forceResize();
