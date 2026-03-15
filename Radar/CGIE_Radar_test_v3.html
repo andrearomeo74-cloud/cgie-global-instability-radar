@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>CGIE Radar Test v3</title>
+
+<link
+rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+
+<style>
+
+html, body{
+margin:0;
+padding:0;
+width:100%;
+height:100%;
+background:#071426;
+font-family:Arial, sans-serif;
+overflow:hidden;
+}
+
+#map{
+position:absolute;
+top:0;
+bottom:0;
+width:100%;
+}
+
+.title-box{
+
+position:absolute;
+top:16px;
+left:70px;
+
+background:rgba(7,25,58,0.92);
+color:white;
+
+padding:12px 18px;
+
+border-radius:14px;
+
+box-shadow:0 10px 24px rgba(0,0,0,0.35);
+
+z-index:9999;
+
+font-size:14px;
+line-height:1.4;
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="map"></div>
+
+<div class="title-box">
+<b>Congruity Global Instability Engine</b><br>
+CGIE Radar Test v3
+</div>
+
+<script
+src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
+
+<script>
+
+const map = L.map('map',{
+zoomControl:true
+}).setView([20,0],2)
+
+L.tileLayer(
+'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+{
+attribution:'© OpenStreetMap © CARTO',
+subdomains:'abcd',
+maxZoom:19
+}).addTo(map)
+
+const points=[
+
+{lat:38,lon:22,color:'#ffd600',label:'Perturbation'},
+{lat:36,lon:26,color:'#ff9100',label:'Instability'},
+{lat:30,lon:130,color:'#ff3d00',label:'Critical Cluster'},
+{lat:36,lon:140,color:'#d500f9',label:'Transition Risk'},
+{lat:-20,lon:-72,color:'#d500f9',label:'Transition Risk'},
+{lat:4,lon:126,color:'#00c853',label:'Stable'}
+
+]
+
+points.forEach(p=>{
+
+L.circleMarker([p.lat,p.lon],{
+
+radius:10,
+color:p.color,
+fillColor:p.color,
+fillOpacity:0.9,
+weight:1
+
+})
+.bindPopup(
+`<b>${p.label}</b><br>
+Lat: ${p.lat}<br>
+Lon: ${p.lon}`
+)
+.addTo(map)
+
+})
+
+setTimeout(()=>{
+map.invalidateSize()
+},300)
+
+</script>
+
+</body>
+</html>
