@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>CGIE Live Seismic Radar</title>
+  <title>CGIE Live Seismic Radar, Interactive Controls</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <style>
     html, body {
@@ -28,19 +28,20 @@
     .panel {
       position: fixed;
       z-index: 9999;
-      background: rgba(7,25,58,0.90);
+      background: rgba(7,25,58,0.92);
       color: white;
       border-radius: 14px;
       box-shadow: 0 10px 24px rgba(0,0,0,0.35);
       padding: 12px;
       font-size: 11px;
       line-height: 1.55;
+      backdrop-filter: blur(4px);
     }
 
     .title-panel {
       top: 16px;
       left: 72px;
-      max-width: 360px;
+      max-width: 380px;
       font-size: 14px;
       font-weight: 700;
       line-height: 1.35;
@@ -55,23 +56,31 @@
     .overview-panel {
       top: 92px;
       left: 14px;
-      width: 265px;
-      max-height: 42vh;
+      width: 270px;
+      max-height: 28vh;
+      overflow-y: auto;
+    }
+
+    .controls-panel {
+      top: calc(92px + 28vh + 14px);
+      left: 14px;
+      width: 270px;
+      max-height: 30vh;
       overflow-y: auto;
     }
 
     .anomaly-panel {
-      top: calc(92px + 42vh + 14px);
+      top: calc(92px + 28vh + 14px + 30vh + 14px);
       left: 14px;
-      width: 265px;
-      max-height: 16vh;
+      width: 270px;
+      max-height: 14vh;
       overflow-y: auto;
     }
 
     .risk-panel {
       top: 92px;
       right: 14px;
-      width: 205px;
+      width: 210px;
     }
 
     .legend-panel {
@@ -125,6 +134,46 @@
       font-weight: 700;
     }
 
+    .control-block {
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .control-block:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .control-label {
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .control-value {
+      color: #9fd3ff;
+      font-weight: 700;
+    }
+
+    input[type="range"], select {
+      width: 100%;
+      margin-top: 4px;
+    }
+
+    .small-btn {
+      background: #1d4ed8;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 7px 10px;
+      font-size: 11px;
+      cursor: pointer;
+      margin-top: 6px;
+      width: 100%;
+    }
+
     .leaflet-popup-content-wrapper {
       background: rgba(10,20,40,0.96);
       color: white;
@@ -148,15 +197,23 @@
         top: 84px;
         left: 10px;
         width: 235px;
+        max-height: 22vh;
+        font-size: 10px;
+      }
+
+      .controls-panel {
+        top: calc(84px + 22vh + 10px);
+        left: 10px;
+        width: 235px;
         max-height: 24vh;
         font-size: 10px;
       }
 
       .anomaly-panel {
-        top: calc(84px + 24vh + 10px);
+        top: calc(84px + 22vh + 10px + 24vh + 10px);
         left: 10px;
         width: 235px;
-        max-height: 14vh;
+        max-height: 12vh;
         font-size: 10px;
       }
 
@@ -199,17 +256,56 @@
       Cells analyzed, <span id="cells-count">0</span><br>
       Cells shown, <span id="cells-shown">0</span><br>
       Anomalies shown, <span id="anomalies-count">0</span><br>
-      Model, CGIE Public Dual Mode Profile<br>
       Data source, USGS Global Seismic Feed<br>
       Grid resolution, <span id="grid-label">2° × 2°</span><br>
       Display threshold, risk ≥ <span id="threshold-label">0.45</span><br>
-      Radar mode, <span id="mode-label">scientific</span><br>
+      Risk boost, <span id="boost-label">1.00</span><br>
       Last refresh, <span id="last-refresh">-</span><br>
       Auto refresh, every 15 minutes
     </div>
     <br>
     <div class="panel-title">Top Instability Cells</div>
     <div id="top-cells"></div>
+  </div>
+
+  <div class="panel controls-panel">
+    <div class="panel-title">Live Controls</div>
+
+    <div class="control-block">
+      <div class="control-label">Grid size, <span class="control-value" id="grid-size-value">2</span>°</div>
+      <select id="grid-size-select">
+        <option value="1">1°</option>
+        <option value="2" selected>2°</option>
+        <option value="3">3°</option>
+      </select>
+    </div>
+
+    <div class="control-block">
+      <div class="control-label">Risk threshold, <span class="control-value" id="threshold-value">0.45</span></div>
+      <input type="range" id="threshold-slider" min="0.20" max="0.60" step="0.01" value="0.45">
+    </div>
+
+    <div class="control-block">
+      <div class="control-label">Risk boost, <span class="control-value" id="risk-boost-value">1.00</span></div>
+      <input type="range" id="risk-boost-slider" min="0.50" max="2.00" step="0.05" value="1.00">
+    </div>
+
+    <div class="control-block">
+      <div class="control-label">Energy weight, <span class="control-value" id="energy-value">0.28</span></div>
+      <input type="range" id="energy-slider" min="0.05" max="0.60" step="0.01" value="0.28">
+    </div>
+
+    <div class="control-block">
+      <div class="control-label">Acceleration weight, <span class="control-value" id="accel-value">0.22</span></div>
+      <input type="range" id="accel-slider" min="0.05" max="0.60" step="0.01" value="0.22">
+    </div>
+
+    <div class="control-block">
+      <div class="control-label">Memory weight, <span class="control-value" id="memory-value">0.20</span></div>
+      <input type="range" id="memory-slider" min="0.05" max="0.60" step="0.01" value="0.20">
+    </div>
+
+    <button class="small-btn" id="reset-btn">Reset recommended values</button>
   </div>
 
   <div class="panel anomaly-panel">
@@ -225,10 +321,6 @@
       0.5 – 0.7, Instability<br>
       0.7 – 0.9, Critical cluster<br>
       &gt; 0.9, Transition risk<br><br>
-      Trend flag<br>
-      Rising, recent activity increasing<br>
-      Stable, no major change<br>
-      Falling, recent activity decreasing<br><br>
       Anomaly detector<br>
       Rising + recent activity + high risk
     </div>
@@ -253,32 +345,12 @@
       Orange, growing instability.<br>
       Red, clustered seismic activity.<br>
       Purple, possible system transition.<br>
-      White ring, anomaly candidate.<br><br>
-      The radar combines energy, recent acceleration, temporal memory, local clustering and maximum magnitude.
+      White ring, anomaly candidate.
     </div>
   </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
-    var RADAR_MODE = 'dynamic';  // 'dynamic' or 'scientific'
-
-    var GRID_SIZE = 2;
-    var DISPLAY_THRESHOLD = 0.45;
-    var MAX_VISIBLE_CELLS = 250;
-    var TOP_PANEL_COUNT = 8;
-
-    if (RADAR_MODE === 'dynamic') {
-      GRID_SIZE = 2;
-      DISPLAY_THRESHOLD = 0.30;
-      MAX_VISIBLE_CELLS = 500;
-    }
-
-    if (RADAR_MODE === 'scientific') {
-      GRID_SIZE = 2;
-      DISPLAY_THRESHOLD = 0.45;
-      MAX_VISIBLE_CELLS = 250;
-    }
-
     var phaseColors = {
       'Stable': '#00c853',
       'Perturbation': '#ffd600',
@@ -286,6 +358,16 @@
       'Critical Cluster': '#ff3d00',
       'Transition Risk': '#d500f9'
     };
+
+    var GRID_SIZE = 2;
+    var DISPLAY_THRESHOLD = 0.45;
+    var MAX_VISIBLE_CELLS = 500;
+    var TOP_PANEL_COUNT = 8;
+    var RISK_BOOST = 1.00;
+
+    var WEIGHT_E = 0.28;
+    var WEIGHT_A = 0.22;
+    var WEIGHT_M = 0.20;
 
     var map = L.map('map', {
       zoomControl: true,
@@ -304,6 +386,7 @@
     var markerLayer = L.layerGroup().addTo(map);
     var animatedMarkers = [];
     var animationTimer = null;
+    var latestData = null;
 
     function clearAnimationLoop() {
       if (animationTimer) {
@@ -323,7 +406,6 @@
 
         for (var i = 0; i < animatedMarkers.length; i++) {
           var m = animatedMarkers[i];
-
           var speed = 1.2;
           if (m.trend === 'Rising') speed = 2.4;
           else if (m.trend === 'Falling') speed = 0.9;
@@ -333,19 +415,13 @@
           var glowBoost = 2.8 + m.risk * 6.5;
           var coreBoost = 0.9 + m.risk * 2.8;
 
-          var newGlow = m.baseGlow + pulse * glowBoost;
-          var newCore = m.baseCore + pulse * coreBoost;
-
-          m.glow.setRadius(newGlow);
-          m.core.setRadius(newCore);
-
-          var glowOpacity = 0.05 + pulse * 0.30;
-          m.glow.setStyle({ fillOpacity: glowOpacity });
+          m.glow.setRadius(m.baseGlow + pulse * glowBoost);
+          m.core.setRadius(m.baseCore + pulse * coreBoost);
+          m.glow.setStyle({ fillOpacity: 0.05 + pulse * 0.30 });
 
           if (m.anomalyRing) {
             var ringBoost = 2.5 + m.risk * 7.0;
-            var newRing = m.baseRing + pulse * ringBoost;
-            m.anomalyRing.setRadius(newRing);
+            m.anomalyRing.setRadius(m.baseRing + pulse * ringBoost);
             m.anomalyRing.setStyle({
               opacity: 0.30 + pulse * 0.70,
               weight: 1.2 + pulse * 1.2
@@ -357,9 +433,7 @@
 
     function safeMax(arr) {
       var m = 0;
-      for (var i = 0; i < arr.length; i++) {
-        if (arr[i] > m) m = arr[i];
-      }
+      for (var i = 0; i < arr.length; i++) if (arr[i] > m) m = arr[i];
       return m;
     }
 
@@ -407,9 +481,22 @@
     }
 
     function forceResize() {
-      var el = document.getElementById('map');
-      el.style.height = window.innerHeight + 'px';
+      document.getElementById('map').style.height = window.innerHeight + 'px';
       map.invalidateSize();
+    }
+
+    function updateLabels() {
+      document.getElementById('grid-label').textContent = GRID_SIZE + '° × ' + GRID_SIZE + '°';
+      document.getElementById('threshold-label').textContent = DISPLAY_THRESHOLD.toFixed(2);
+      document.getElementById('boost-label').textContent = RISK_BOOST.toFixed(2);
+
+      document.getElementById('grid-size-value').textContent = GRID_SIZE;
+      document.getElementById('threshold-value').textContent = DISPLAY_THRESHOLD.toFixed(2);
+      document.getElementById('risk-boost-value').textContent = RISK_BOOST.toFixed(2);
+
+      document.getElementById('energy-value').textContent = WEIGHT_E.toFixed(2);
+      document.getElementById('accel-value').textContent = WEIGHT_A.toFixed(2);
+      document.getElementById('memory-value').textContent = WEIGHT_M.toFixed(2);
     }
 
     function renderRadar(geojson) {
@@ -417,9 +504,7 @@
 
       var features = geojson.features || [];
       document.getElementById('events-count').textContent = features.length;
-      document.getElementById('threshold-label').textContent = DISPLAY_THRESHOLD.toFixed(2);
-      document.getElementById('mode-label').textContent = RADAR_MODE;
-      document.getElementById('grid-label').textContent = GRID_SIZE.toFixed(0) + '° × ' + GRID_SIZE.toFixed(0) + '°';
+      updateLabels();
 
       var now = Date.now();
       var dayMs = 24 * 60 * 60 * 1000;
@@ -511,14 +596,20 @@
       var A = normalizeArray(accels);
       var C = normalizeArray(clusters);
 
+      var remainingWeight = Math.max(0, 1 - (WEIGHT_E + WEIGHT_A + WEIGHT_M));
+      var WEIGHT_C = remainingWeight * 0.60;
+      var WEIGHT_K = remainingWeight * 0.40;
+
       var scores = [];
       for (var s = 0; s < cells.length; s++) {
         var score =
-          0.28 * E[s] +
-          0.22 * A[s] +
-          0.20 * M[s] +
-          0.18 * C[s] +
-          0.12 * K[s];
+          WEIGHT_E * E[s] +
+          WEIGHT_A * A[s] +
+          WEIGHT_M * M[s] +
+          WEIGHT_C * C[s] +
+          WEIGHT_K * K[s];
+
+        score = score * RISK_BOOST;
         scores.push(score);
       }
 
@@ -568,7 +659,7 @@
 
       var anomalyPanel = document.getElementById('top-anomalies');
       if (anomalies.length === 0) {
-        anomalyPanel.innerHTML = 'No anomalies detected at current threshold.';
+        anomalyPanel.innerHTML = 'No anomalies detected at current settings.';
       } else {
         anomalyPanel.innerHTML = '';
         for (var ap = 0; ap < Math.min(6, anomalies.length); ap++) {
@@ -590,100 +681,7 @@
         var cell = visibleCells[p];
         var color = phaseColors[cell.phase] || '#90a4ae';
 
-        var glowRadius = (RADAR_MODE === 'dynamic')
-          ? (6 + cell.risk * 14)
-          : (5 + cell.risk * 12);
+        var glowRadius = 6 + cell.risk * 14;
+        var coreRadius = 3 + cell.risk * 8;
 
-        var coreRadius = (RADAR_MODE === 'dynamic')
-          ? (3 + cell.risk * 8)
-          : (3 + cell.risk * 7);
-
-        var glow = L.circleMarker([cell.latCell, cell.lonCell], {
-          radius: glowRadius,
-          stroke: false,
-          fillColor: color,
-          fillOpacity: 0.10
-        }).addTo(markerLayer);
-
-        var core = L.circleMarker([cell.latCell, cell.lonCell], {
-          radius: coreRadius,
-          color: color,
-          weight: 1,
-          fillColor: color,
-          fillOpacity: 0.88
-        }).bindPopup(popupHtml(cell)).addTo(markerLayer);
-
-        var ring = null;
-        var baseRing = 0;
-
-        if (cell.isAnomaly) {
-          baseRing = coreRadius + 4.0;
-          ring = L.circleMarker([cell.latCell, cell.lonCell], {
-            radius: baseRing,
-            color: '#ffffff',
-            weight: 1.3,
-            fillOpacity: 0,
-            opacity: 0.95
-          }).bindPopup(popupHtml(cell)).addTo(markerLayer);
-        }
-
-        animatedMarkers.push({
-          glow: glow,
-          core: core,
-          anomalyRing: ring,
-          baseGlow: glowRadius,
-          baseCore: coreRadius,
-          baseRing: baseRing,
-          risk: cell.risk,
-          trend: cell.trend
-        });
-      }
-
-      startAnimationLoop();
-      forceResize();
-    }
-
-    function loadUSGSData() {
-      document.getElementById('feed-status').textContent = 'Loading...';
-      document.getElementById('feed-status').className = 'status-warn';
-
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson', true);
-
-      xhr.onreadystatechange = function() {
-        if (xhr.readyState !== 4) return;
-
-        if (xhr.status !== 200) {
-          document.getElementById('feed-status').textContent = 'Feed error';
-          document.getElementById('feed-status').className = 'status-warn';
-          return;
-        }
-
-        try {
-          var data = JSON.parse(xhr.responseText);
-          renderRadar(data);
-          document.getElementById('feed-status').textContent = 'Online';
-          document.getElementById('feed-status').className = 'status-ok';
-          document.getElementById('last-refresh').textContent = new Date().toLocaleString();
-        } catch (e) {
-          document.getElementById('feed-status').textContent = 'Parse error';
-          document.getElementById('feed-status').className = 'status-warn';
-        }
-      };
-
-      xhr.send();
-    }
-
-    window.onload = function() {
-      setTimeout(forceResize, 250);
-      setTimeout(forceResize, 800);
-      loadUSGSData();
-      setInterval(loadUSGSData, 15 * 60 * 1000);
-    };
-
-    window.onresize = function() {
-      setTimeout(forceResize, 120);
-    };
-  </script>
-</body>
-</html>
+        var glow = L.cir
