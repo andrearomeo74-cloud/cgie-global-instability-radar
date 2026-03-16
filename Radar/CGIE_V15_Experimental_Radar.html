@@ -387,6 +387,14 @@
 
     var markerLayer = L.layerGroup().addTo(map);
 
+    function forceResize() {
+      var el = document.getElementById('map');
+      if (el) {
+        el.style.height = window.innerHeight + 'px';
+      }
+      map.invalidateSize();
+    }
+
     function safeMax(arr) {
       var m = 0;
       for (var i = 0; i < arr.length; i++) {
@@ -436,12 +444,6 @@
              '<b>Recent events</b>, ' + d.recentEvents + '<br>' +
              '<b>Max Magnitude</b>, ' + d.maxMag.toFixed(2) + '<br>' +
              '<b>Anomaly</b>, ' + (d.isAnomaly ? 'Yes' : 'No');
-    }
-
-    function forceResize() {
-      var el = document.getElementById('map');
-      el.style.height = window.innerHeight + 'px';
-      map.invalidateSize();
     }
 
     function updateLabels() {
@@ -682,4 +684,4 @@
       xhr.onreadystatechange = function() {
         if (xhr.readyState !== 4) return;
 
-        if (xhr.status !== 200)
+     
