@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>CGIE Live Seismic Radar, Interactive Controls</title>
+  <title>CGIE Live Seismic Radar, Interactive Lab</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <style>
     html, body {
@@ -369,6 +369,8 @@
     var WEIGHT_A = 0.22;
     var WEIGHT_M = 0.20;
 
+    var latestData = null;
+
     var map = L.map('map', {
       zoomControl: true,
       attributionControl: true
@@ -384,56 +386,12 @@
     ).addTo(map);
 
     var markerLayer = L.layerGroup().addTo(map);
-    var animatedMarkers = [];
-    var animationTimer = null;
-    var latestData = null;
-
-    function clearAnimationLoop() {
-      if (animationTimer) {
-        clearInterval(animationTimer);
-        animationTimer = null;
-      }
-      animatedMarkers = [];
-    }
-
-    function startAnimationLoop() {
-      clearAnimationLoop();
-
-      var tick = 0;
-
-      animationTimer = setInterval(function() {
-        tick += 0.34;
-
-        for (var i = 0; i < animatedMarkers.length; i++) {
-          var m = animatedMarkers[i];
-          var speed = 1.2;
-          if (m.trend === 'Rising') speed = 2.4;
-          else if (m.trend === 'Falling') speed = 0.9;
-
-          var pulse = (Math.sin(tick * speed) + 1) / 2;
-
-          var glowBoost = 2.8 + m.risk * 6.5;
-          var coreBoost = 0.9 + m.risk * 2.8;
-
-          m.glow.setRadius(m.baseGlow + pulse * glowBoost);
-          m.core.setRadius(m.baseCore + pulse * coreBoost);
-          m.glow.setStyle({ fillOpacity: 0.05 + pulse * 0.30 });
-
-          if (m.anomalyRing) {
-            var ringBoost = 2.5 + m.risk * 7.0;
-            m.anomalyRing.setRadius(m.baseRing + pulse * ringBoost);
-            m.anomalyRing.setStyle({
-              opacity: 0.30 + pulse * 0.70,
-              weight: 1.2 + pulse * 1.2
-            });
-          }
-        }
-      }, 60);
-    }
 
     function safeMax(arr) {
       var m = 0;
-      for (var i = 0; i < arr.length; i++) if (arr[i] > m) m = arr[i];
+      for (var i = 0; i < arr.length; i++) {
+        if (arr[i] > m) m = arr[i];
+      }
       return m;
     }
 
@@ -481,7 +439,8 @@
     }
 
     function forceResize() {
-      document.getElementById('map').style.height = window.innerHeight + 'px';
+      var el = document.getElementById('map');
+      el.style.height = window.innerHeight + 'px';
       map.invalidateSize();
     }
 
@@ -493,7 +452,6 @@
       document.getElementById('grid-size-value').textContent = GRID_SIZE;
       document.getElementById('threshold-value').textContent = DISPLAY_THRESHOLD.toFixed(2);
       document.getElementById('risk-boost-value').textContent = RISK_BOOST.toFixed(2);
-
       document.getElementById('energy-value').textContent = WEIGHT_E.toFixed(2);
       document.getElementById('accel-value').textContent = WEIGHT_A.toFixed(2);
       document.getElementById('memory-value').textContent = WEIGHT_M.toFixed(2);
@@ -675,13 +633,53 @@
         }
       }
 
-      clearAnimationLoop();
-
       for (var p = 0; p < visibleCells.length; p++) {
         var cell = visibleCells[p];
         var color = phaseColors[cell.phase] || '#90a4ae';
+        var glowRadius = 5 + cell.risk * 12;
+        var coreRadius = 3 + cell.risk * 7;
 
-        var glowRadius = 6 + cell.risk * 14;
-        var coreRadius = 3 + cell.risk * 8;
+        L.circleMarker([cell.latCell, cell.lonCell], {
+          radius: glowRadius,
+          stroke: false,
+          fillColor: color,
+          fillOpacity: 0.10
+        }).addTo(markerLayer);
 
-        var glow = L.cir
+        L.circleMarker([cell.latCell, cell.lonCell], {
+          radius: coreRadius,
+          color: color,
+          weight: 1,
+          fillColor: color,
+          fillOpacity: 0.88
+        }).bindPopup(popupHtml(cell)).addTo(markerLayer);
+
+        if (cell.isAnomaly) {
+          L.circleMarker([cell.latCell, cell.lonCell], {
+            radius: coreRadius + 3,
+            color: '#ffffff',
+            weight: 1.2,
+            fillOpacity: 0,
+            opacity: 0.95
+          }).bindPopup(popupHtml(cell)).addTo(markerLayer);
+        }
+      }
+
+      forceResize();
+    }
+
+    function rerenderIfReady() {
+      if (latestData) renderRadar(latestData);
+    }
+
+    function loadUSGSData() {
+      document.getElementById('feed-status').textContent = 'Loading...';
+      document.getElementById('feed-status').className = 'status-warn';
+
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson', true);
+
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState !== 4) return;
+
+        if (xhr.status !== 200)
