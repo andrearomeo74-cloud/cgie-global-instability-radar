@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>CGIE Live Seismic Radar, Interactive Lab</title>
+  <title>CGIE Live Seismic Radar</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <style>
     html, body {
@@ -15,7 +15,6 @@
       font-family: Arial, sans-serif;
       overflow: hidden;
     }
-
     #map {
       position: fixed;
       inset: 0;
@@ -24,162 +23,72 @@
       z-index: 1;
       background: #1f1f1f;
     }
-
     .panel {
       position: fixed;
       z-index: 9999;
-      background: rgba(7,25,58,0.92);
+      background: rgba(7,25,58,0.90);
       color: white;
       border-radius: 14px;
       box-shadow: 0 10px 24px rgba(0,0,0,0.35);
       padding: 12px;
       font-size: 11px;
       line-height: 1.55;
-      backdrop-filter: blur(4px);
     }
-
     .title-panel {
       top: 16px;
       left: 72px;
-      max-width: 380px;
+      max-width: 360px;
       font-size: 14px;
       font-weight: 700;
       line-height: 1.35;
     }
-
     .title-panel .sub {
       margin-top: 4px;
       color: #d7e4ff;
       font-weight: 500;
     }
-
     .overview-panel {
       top: 92px;
       left: 14px;
-      width: 270px;
-      max-height: 28vh;
+      width: 265px;
+      max-height: 42vh;
       overflow-y: auto;
     }
-
-    .controls-panel {
-      top: calc(92px + 28vh + 14px);
-      left: 14px;
-      width: 270px;
-      max-height: 30vh;
-      overflow-y: auto;
-    }
-
-    .anomaly-panel {
-      top: calc(92px + 28vh + 14px + 30vh + 14px);
-      left: 14px;
-      width: 270px;
-      max-height: 14vh;
-      overflow-y: auto;
-    }
-
     .risk-panel {
       top: 92px;
       right: 14px;
-      width: 210px;
+      width: 205px;
     }
-
     .legend-panel {
       bottom: 14px;
       left: 14px;
       width: 150px;
     }
-
     .read-panel {
       bottom: 14px;
       right: 14px;
       width: 220px;
     }
-
     .panel-title {
       font-size: 12px;
       font-weight: 700;
       margin-bottom: 8px;
     }
-
-    .muted {
-      color: #d4e0f6;
-    }
-
+    .muted { color: #d4e0f6; }
     .hot-item {
       padding: 7px 0;
       border-bottom: 1px solid rgba(255,255,255,0.10);
     }
-
-    .hot-item:last-child {
-      border-bottom: none;
-    }
-
-    .dot {
-      margin-right: 6px;
-      font-weight: 700;
-    }
-
-    .status-ok {
-      color: #7CFC9C;
-      font-weight: 700;
-    }
-
-    .status-warn {
-      color: #ffd600;
-      font-weight: 700;
-    }
-
-    .anomaly-flag {
-      color: #ffffff;
-      font-weight: 700;
-    }
-
-    .control-block {
-      margin-bottom: 12px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .control-block:last-child {
-      border-bottom: none;
-      margin-bottom: 0;
-      padding-bottom: 0;
-    }
-
-    .control-label {
-      font-size: 11px;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-
-    .control-value {
-      color: #9fd3ff;
-      font-weight: 700;
-    }
-
-    input[type="range"], select {
-      width: 100%;
-      margin-top: 4px;
-    }
-
-    .small-btn {
-      background: #1d4ed8;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      padding: 7px 10px;
-      font-size: 11px;
-      cursor: pointer;
-      margin-top: 6px;
-      width: 100%;
-    }
+    .hot-item:last-child { border-bottom: none; }
+    .dot { margin-right: 6px; font-weight: 700; }
+    .status-ok { color: #7CFC9C; font-weight: 700; }
+    .status-warn { color: #ffd600; font-weight: 700; }
 
     .leaflet-popup-content-wrapper {
       background: rgba(10,20,40,0.96);
       color: white;
       border-radius: 12px;
     }
-
     .leaflet-popup-tip {
       background: rgba(10,20,40,0.96);
     }
@@ -192,45 +101,25 @@
         max-width: none;
         font-size: 13px;
       }
-
       .overview-panel {
         top: 84px;
         left: 10px;
         width: 235px;
-        max-height: 22vh;
+        max-height: 26vh;
         font-size: 10px;
       }
-
-      .controls-panel {
-        top: calc(84px + 22vh + 10px);
-        left: 10px;
-        width: 235px;
-        max-height: 24vh;
-        font-size: 10px;
-      }
-
-      .anomaly-panel {
-        top: calc(84px + 22vh + 10px + 24vh + 10px);
-        left: 10px;
-        width: 235px;
-        max-height: 12vh;
-        font-size: 10px;
-      }
-
       .risk-panel {
         top: 84px;
         right: 10px;
         width: 150px;
         font-size: 10px;
       }
-
       .legend-panel {
         bottom: 10px;
         left: 10px;
         width: 140px;
         font-size: 10px;
       }
-
       .read-panel {
         bottom: 10px;
         right: 10px;
@@ -255,62 +144,16 @@
       Events loaded, <span id="events-count">0</span><br>
       Cells analyzed, <span id="cells-count">0</span><br>
       Cells shown, <span id="cells-shown">0</span><br>
-      Anomalies shown, <span id="anomalies-count">0</span><br>
+      Model, CGIE Public Stable Profile<br>
       Data source, USGS Global Seismic Feed<br>
-      Grid resolution, <span id="grid-label">2° × 2°</span><br>
-      Display threshold, risk ≥ <span id="threshold-label">0.45</span><br>
-      Risk boost, <span id="boost-label">1.00</span><br>
+      Grid resolution, 2° × 2°<br>
+      Display threshold, risk ≥ 0.45<br>
       Last refresh, <span id="last-refresh">-</span><br>
       Auto refresh, every 15 minutes
     </div>
     <br>
     <div class="panel-title">Top Instability Cells</div>
     <div id="top-cells"></div>
-  </div>
-
-  <div class="panel controls-panel">
-    <div class="panel-title">Live Controls</div>
-
-    <div class="control-block">
-      <div class="control-label">Grid size, <span class="control-value" id="grid-size-value">2</span>°</div>
-      <select id="grid-size-select">
-        <option value="1">1°</option>
-        <option value="2" selected>2°</option>
-        <option value="3">3°</option>
-      </select>
-    </div>
-
-    <div class="control-block">
-      <div class="control-label">Risk threshold, <span class="control-value" id="threshold-value">0.45</span></div>
-      <input type="range" id="threshold-slider" min="0.20" max="0.60" step="0.01" value="0.45">
-    </div>
-
-    <div class="control-block">
-      <div class="control-label">Risk boost, <span class="control-value" id="risk-boost-value">1.00</span></div>
-      <input type="range" id="risk-boost-slider" min="0.50" max="2.00" step="0.05" value="1.00">
-    </div>
-
-    <div class="control-block">
-      <div class="control-label">Energy weight, <span class="control-value" id="energy-value">0.28</span></div>
-      <input type="range" id="energy-slider" min="0.05" max="0.60" step="0.01" value="0.28">
-    </div>
-
-    <div class="control-block">
-      <div class="control-label">Acceleration weight, <span class="control-value" id="accel-value">0.22</span></div>
-      <input type="range" id="accel-slider" min="0.05" max="0.60" step="0.01" value="0.22">
-    </div>
-
-    <div class="control-block">
-      <div class="control-label">Memory weight, <span class="control-value" id="memory-value">0.20</span></div>
-      <input type="range" id="memory-slider" min="0.05" max="0.60" step="0.01" value="0.20">
-    </div>
-
-    <button class="small-btn" id="reset-btn">Reset recommended values</button>
-  </div>
-
-  <div class="panel anomaly-panel">
-    <div class="panel-title">Top Anomaly Cells</div>
-    <div id="top-anomalies" class="muted">No anomalies detected yet.</div>
   </div>
 
   <div class="panel risk-panel">
@@ -320,9 +163,7 @@
       0.3 – 0.5, Perturbation<br>
       0.5 – 0.7, Instability<br>
       0.7 – 0.9, Critical cluster<br>
-      &gt; 0.9, Transition risk<br><br>
-      Anomaly detector<br>
-      Rising + recent activity + high risk
+      &gt; 0.9, Transition risk
     </div>
   </div>
 
@@ -333,7 +174,6 @@
     <div><span class="dot" style="color:#ff9100;">●</span>Instability</div>
     <div><span class="dot" style="color:#ff3d00;">●</span>Critical Cluster</div>
     <div><span class="dot" style="color:#d500f9;">●</span>Transition Risk</div>
-    <div><span class="dot" style="color:#ffffff;">◎</span>Anomaly</div>
   </div>
 
   <div class="panel read-panel">
@@ -344,13 +184,17 @@
       Yellow, local perturbation detected.<br>
       Orange, growing instability.<br>
       Red, clustered seismic activity.<br>
-      Purple, possible system transition.<br>
-      White ring, anomaly candidate.
+      Purple, possible system transition.
     </div>
   </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
+    var GRID_SIZE = 2;
+    var DISPLAY_THRESHOLD = 0.45;
+    var MAX_VISIBLE_CELLS = 250;
+    var TOP_PANEL_COUNT = 8;
+
     var phaseColors = {
       'Stable': '#00c853',
       'Perturbation': '#ffd600',
@@ -358,18 +202,6 @@
       'Critical Cluster': '#ff3d00',
       'Transition Risk': '#d500f9'
     };
-
-    var GRID_SIZE = 2;
-    var DISPLAY_THRESHOLD = 0.45;
-    var MAX_VISIBLE_CELLS = 500;
-    var TOP_PANEL_COUNT = 8;
-    var RISK_BOOST = 1.00;
-
-    var WEIGHT_E = 0.28;
-    var WEIGHT_A = 0.22;
-    var WEIGHT_M = 0.20;
-
-    var latestData = null;
 
     var map = L.map('map', {
       zoomControl: true,
@@ -386,14 +218,6 @@
     ).addTo(map);
 
     var markerLayer = L.layerGroup().addTo(map);
-
-    function forceResize() {
-      var el = document.getElementById('map');
-      if (el) {
-        el.style.height = window.innerHeight + 'px';
-      }
-      map.invalidateSize();
-    }
 
     function safeMax(arr) {
       var m = 0;
@@ -426,14 +250,6 @@
       return 'Stable';
     }
 
-    function isAnomaly(cell) {
-      if (cell.trend !== 'Rising') return false;
-      if (cell.recentEvents < 3) return false;
-      if (cell.risk < 0.55) return false;
-      if (cell.accelRaw < 1.40) return false;
-      return true;
-    }
-
     function popupHtml(d) {
       return '<b>Latitude</b>, ' + d.latCell + '<br>' +
              '<b>Longitude</b>, ' + d.lonCell + '<br>' +
@@ -442,21 +258,13 @@
              '<b>Trend</b>, ' + d.trend + '<br>' +
              '<b>Events</b>, ' + d.events + '<br>' +
              '<b>Recent events</b>, ' + d.recentEvents + '<br>' +
-             '<b>Max Magnitude</b>, ' + d.maxMag.toFixed(2) + '<br>' +
-             '<b>Anomaly</b>, ' + (d.isAnomaly ? 'Yes' : 'No');
+             '<b>Max Magnitude</b>, ' + d.maxMag.toFixed(2);
     }
 
-    function updateLabels() {
-      document.getElementById('grid-label').textContent = GRID_SIZE + '° × ' + GRID_SIZE + '°';
-      document.getElementById('threshold-label').textContent = DISPLAY_THRESHOLD.toFixed(2);
-      document.getElementById('boost-label').textContent = RISK_BOOST.toFixed(2);
-
-      document.getElementById('grid-size-value').textContent = GRID_SIZE;
-      document.getElementById('threshold-value').textContent = DISPLAY_THRESHOLD.toFixed(2);
-      document.getElementById('risk-boost-value').textContent = RISK_BOOST.toFixed(2);
-      document.getElementById('energy-value').textContent = WEIGHT_E.toFixed(2);
-      document.getElementById('accel-value').textContent = WEIGHT_A.toFixed(2);
-      document.getElementById('memory-value').textContent = WEIGHT_M.toFixed(2);
+    function forceResize() {
+      var el = document.getElementById('map');
+      el.style.height = window.innerHeight + 'px';
+      map.invalidateSize();
     }
 
     function renderRadar(geojson) {
@@ -464,7 +272,6 @@
 
       var features = geojson.features || [];
       document.getElementById('events-count').textContent = features.length;
-      updateLabels();
 
       var now = Date.now();
       var dayMs = 24 * 60 * 60 * 1000;
@@ -544,7 +351,7 @@
           if (a === b) continue;
           var dLat = Math.abs(cells[a].latCell - cells[b].latCell);
           var dLon = Math.abs(cells[a].lonCell - cells[b].lonCell);
-          if (dLat <= (GRID_SIZE * 2) && dLon <= (GRID_SIZE * 2)) neigh += 1;
+          if (dLat <= 4 && dLon <= 4) neigh += 1;
         }
         cells[a].clusterRaw = neigh;
         clusters.push(neigh);
@@ -556,20 +363,14 @@
       var A = normalizeArray(accels);
       var C = normalizeArray(clusters);
 
-      var remainingWeight = Math.max(0, 1 - (WEIGHT_E + WEIGHT_A + WEIGHT_M));
-      var WEIGHT_C = remainingWeight * 0.60;
-      var WEIGHT_K = remainingWeight * 0.40;
-
       var scores = [];
       for (var s = 0; s < cells.length; s++) {
         var score =
-          WEIGHT_E * E[s] +
-          WEIGHT_A * A[s] +
-          WEIGHT_M * M[s] +
-          WEIGHT_C * C[s] +
-          WEIGHT_K * K[s];
-
-        score = score * RISK_BOOST;
+          0.28 * E[s] +
+          0.22 * A[s] +
+          0.20 * M[s] +
+          0.18 * C[s] +
+          0.12 * K[s];
         scores.push(score);
       }
 
@@ -578,7 +379,6 @@
       for (var z = 0; z < cells.length; z++) {
         cells[z].risk = maxScore > 0 ? scores[z] / maxScore : 0;
         cells[z].phase = phaseFromRisk(cells[z].risk);
-        cells[z].isAnomaly = isAnomaly(cells[z]);
       }
 
       cells.sort(function(x, y) { return y.risk - x.risk; });
@@ -610,31 +410,6 @@
 
       document.getElementById('cells-shown').textContent = visibleCells.length;
 
-      var anomalies = [];
-      for (var an = 0; an < visibleCells.length; an++) {
-        if (visibleCells[an].isAnomaly) anomalies.push(visibleCells[an]);
-      }
-
-      document.getElementById('anomalies-count').textContent = anomalies.length;
-
-      var anomalyPanel = document.getElementById('top-anomalies');
-      if (anomalies.length === 0) {
-        anomalyPanel.innerHTML = 'No anomalies detected at current settings.';
-      } else {
-        anomalyPanel.innerHTML = '';
-        for (var ap = 0; ap < Math.min(6, anomalies.length); ap++) {
-          var ai = document.createElement('div');
-          ai.className = 'hot-item';
-          ai.innerHTML =
-            '<span class="anomaly-flag">◎</span> <b>' + anomalies[ap].latCell + ', ' + anomalies[ap].lonCell + '</b><br>' +
-            'Risk, ' + anomalies[ap].risk.toFixed(3) + '<br>' +
-            'Trend, ' + anomalies[ap].trend + '<br>' +
-            'Accel, ' + anomalies[ap].accelRaw.toFixed(2) + '<br>' +
-            'Recent, ' + anomalies[ap].recentEvents;
-          anomalyPanel.appendChild(ai);
-        }
-      }
-
       for (var p = 0; p < visibleCells.length; p++) {
         var cell = visibleCells[p];
         var color = phaseColors[cell.phase] || '#90a4ae';
@@ -655,23 +430,9 @@
           fillColor: color,
           fillOpacity: 0.88
         }).bindPopup(popupHtml(cell)).addTo(markerLayer);
-
-        if (cell.isAnomaly) {
-          L.circleMarker([cell.latCell, cell.lonCell], {
-            radius: coreRadius + 3,
-            color: '#ffffff',
-            weight: 1.2,
-            fillOpacity: 0,
-            opacity: 0.95
-          }).bindPopup(popupHtml(cell)).addTo(markerLayer);
-        }
       }
 
       forceResize();
-    }
-
-    function rerenderIfReady() {
-      if (latestData) renderRadar(latestData);
     }
 
     function loadUSGSData() {
@@ -684,4 +445,37 @@
       xhr.onreadystatechange = function() {
         if (xhr.readyState !== 4) return;
 
-     
+        if (xhr.status !== 200) {
+          document.getElementById('feed-status').textContent = 'Feed error';
+          document.getElementById('feed-status').className = 'status-warn';
+          return;
+        }
+
+        try {
+          var data = JSON.parse(xhr.responseText);
+          renderRadar(data);
+          document.getElementById('feed-status').textContent = 'Online';
+          document.getElementById('feed-status').className = 'status-ok';
+          document.getElementById('last-refresh').textContent = new Date().toLocaleString();
+        } catch (e) {
+          document.getElementById('feed-status').textContent = 'Parse error';
+          document.getElementById('feed-status').className = 'status-warn';
+        }
+      };
+
+      xhr.send();
+    }
+
+    window.onload = function() {
+      setTimeout(forceResize, 250);
+      setTimeout(forceResize, 800);
+      loadUSGSData();
+      setInterval(loadUSGSData, 15 * 60 * 1000);
+    };
+
+    window.onresize = function() {
+      setTimeout(forceResize, 120);
+    };
+  </script>
+</body>
+</html>
