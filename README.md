@@ -92,6 +92,24 @@ Current release focus:
 , `index.html`, public landing page  
 , `README.md`, public project description
 
+## Baseline pipeline
+
+The repository now includes a reproducible baseline pipeline in the `baseline/` folder.
+
+### Current baseline modules
+
+, `baseline/v48_alert_engine.py`, baseline alert engine for daily seismic instability processing  
+, `baseline/v49_final_report.py`, human readable reporting layer built on top of V48 outputs  
+
+### Pipeline flow
+
+`events.csv`  
+→ `v48_alert_engine.py`  
+→ `v48_alerts.csv` and `v48_daily.csv`  
+→ `v49_final_report.py`
+
+This completes the first end to end prototype layer of the public system.
+
 ## License
 
 MIT
