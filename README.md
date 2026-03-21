@@ -44,6 +44,79 @@ The approach is based on the idea that large-scale systems exhibit detectable st
 
 ---
 
+## Validation results
+
+This repository includes an initial validation of the baseline Congruity Global Instability Engine using historical seismic data.
+
+The objective is not deterministic prediction, but the evaluation of:
+
+- signal quality  
+- false positive control  
+- temporal anticipation (lead time)  
+- system stability vs reactivity tradeoff  
+
+---
+
+### Progressive model evolution
+
+The system was iteratively developed across multiple versions:
+
+- V41 → multi-layer signal validation  
+- V42–V45 → filtering and decision logic  
+- V46–V47 → episode and coherence modeling  
+- V48 → final alert engine (production baseline)  
+
+---
+
+### Final baseline performance (V48)
+
+- Total alerts: 18  
+- True positives (TP): 6  
+- False positives (FP): 3  
+- Precision: **0.667**  
+
+- Average lead time: **~2.8 days**  
+- Max lead time: **5 days**
+
+---
+
+### Key observations
+
+- Strong reduction of false positives compared to earlier versions  
+- Alerts are sparse but high-quality  
+- System prioritizes precision over frequency  
+- Temporal coherence filtering significantly improves signal reliability  
+
+---
+
+### System behavior
+
+The engine operates in three main regimes:
+
+- Quiet → stable background state  
+- Pressure / Early → emerging instability signals  
+- Confirmed / Strong → high-confidence activation phase  
+
+Transitions are driven by:
+
+- probability increase  
+- temporal coherence  
+- quality score dynamics  
+
+---
+
+### Interpretation
+
+The results suggest that:
+
+- global seismic activity contains detectable structural deviations  
+- instability signals can emerge before major events  
+- coherence-based filtering is essential to avoid noise-driven alerts  
+
+This supports the use of the Congruity framework as a systemic instability detection layer, not as a deterministic prediction tool.
+
+---
+
 ## What the radar does
 
 The radar aggregates public seismic events into spatial cells and computes a simplified instability state based on:
