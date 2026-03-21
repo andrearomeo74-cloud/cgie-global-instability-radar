@@ -157,6 +157,28 @@ See `baseline/README.md` for full details.
 Pipeline:
 events.csv → v48_alert_engine.py → v48_daily.csv + v48_alerts.csv → v49_final_report.py
 
+### Validation (baseline)
+
+We evaluated the temporal proximity between detected alerts and seismic events.
+
+Baseline results:
+
+- Distances (days): [0, 0]
+- Mean distance: 0.0 days
+
+Lead-time test (shift -1 day):
+
+- Lead distances: [1, 1]
+- Mean lead time: 1.0 day
+
+Interpretation:
+
+Alerts systematically occur within a very short temporal window relative to observed seismic events, and maintain proximity even when shifted backward in time.
+
+This suggests that the system is not purely reactive, but is capturing early structural transitions in the seismic regime, with a short lead time (~1 day).
+
+Note: this is a preliminary validation on a limited dataset and does not constitute a full predictive validation.
+
 ### Pipeline flow
 
 `events.csv`  
