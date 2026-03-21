@@ -141,6 +141,8 @@ def run_alert_engine(daily):
             return "confirmed"
         elif row["prob"] > 0.45:
             return "early"
+        elif row["prob"] > 0.35:
+            return "pressure"
         return "quiet"
 
     for _, row in daily.iterrows():
@@ -151,11 +153,17 @@ def run_alert_engine(daily):
         alert = False
         reason = None
 
+        # blocco di sicurezza, niente alert in quiet / prob troppo bassa
+        if prob <= 0.35:
+            prev_quality = quality
+            prev_state = state
+            continue
+
         if quality >= threshold and row["strong_coherence"]:
             alert = True
             reason = "quality_coherent"
 
-        elif quality > prev_quality + 0.12:
+        elif quality > prev_quality + 0.12 and prob > 0.40:
             alert = True
             reason = "quality_jump"
 
@@ -180,7 +188,6 @@ def run_alert_engine(daily):
         prev_state = state
 
     return pd.DataFrame(alerts)
-
 
 # ================================
 # PIPELINE
