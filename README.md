@@ -57,6 +57,16 @@ The objective is not deterministic prediction, but the evaluation of:
 
 ---
 
+### Visual results
+
+#### Baseline performance
+
+![V48 Performance](Images/v48_performance.png)
+
+#### Lead time distribution
+
+![Lead Distribution](Images/v48_lead_distribution.png)
+
 ### Progressive model evolution
 
 The system was iteratively developed across multiple versions:
