@@ -1,105 +1,78 @@
-# Congruity Global Instability Engine, Planetary Seismic Instability Radar
+# Congruity Global Instability Engine  
+### Planetary Seismic Instability Radar
 
 Live site: https://andrearomeo74-cloud.github.io/cgie-global-instability-radar/
 
-Experimental public radar for detecting spatial clusters and systemic deviations in global seismic activity using public seismic data.
+The Congruity Global Instability Engine (CGIE) is a research prototype for detecting and interpreting systemic instability patterns in global seismic activity.
+
+The project combines spatial aggregation, probabilistic signal construction, and temporal coherence filtering to identify emerging instability regimes across the planetary seismic network.
+
+---
+
+## What this repository contains
+
+This repository includes two complementary layers:
+
+### 1. Public radar layer
+A visual and exploratory interface showing global seismic instability patterns based on public earthquake data.
+
+### 2. Baseline pipeline (reproducible)
+A minimal, reproducible implementation of the core signal processing logic:
+
+, daily aggregation of seismic activity  
+, probabilistic instability signal  
+, coherence-based filtering  
+, alert generation  
+, system-level interpretation  
+
+The baseline pipeline is available in the `baseline/` folder and can be executed end-to-end.
+
+---
 
 ## Overview
 
-This project presents a public prototype of the Congruity Global Instability Engine, focused on planetary scale seismic instability mapping.
+This project is designed as an exploratory observatory for complex system instability.
 
-The radar aggregates public earthquake data into spatial cells and computes a simplified instability state based on:
+It does not attempt deterministic prediction of specific earthquake events, but instead focuses on:
 
-, seismic energy  
-, event density  
-, systemic deviation from equilibrium  
-, spatial clustering  
-, dynamic instability phase
+, detection of elevated instability regimes  
+, identification of spatial clustering patterns  
+, temporal evolution of system pressure  
+, interpretation of systemic transitions  
 
-The public layer is designed as an exploratory observatory and visualization surface.
+The approach is based on the idea that large-scale systems exhibit detectable structural deviations before major events.
 
-Its purpose is not deterministic earthquake prediction on exact dates, but anticipation and visualization of elevated instability windows, spatial anomalies, and evolving seismic regimes.
+---
 
 ## What the radar does
 
-The radar provides a simplified global view of seismic instability through:
+The radar aggregates public seismic events into spatial cells and computes a simplified instability state based on:
 
-, spatial aggregation of public seismic events  
-, instability scoring by cell  
-, dynamic classification of cells into instability phases  
-, visual radar style representation of the current state  
-, public observatory interface for exploratory monitoring
+, seismic energy  
+, event density  
+, deviation from equilibrium  
+, spatial clustering  
+, dynamic phase evolution  
+
+The output is a global radar map showing cells classified into instability phases.
+
+---
 
 ## What this project is not
 
-This project is not a deterministic earthquake prediction system.
+This project is not a deterministic earthquake prediction system.  
+It is not an official warning system.  
 
-It is not an official warning system.
+It is a research framework for detecting and interpreting systemic instability patterns in complex geophysical systems.
 
-It is not a full disclosure of the internal Congruity framework.
-
-It is a public prototype of the radar and observatory layer, built to show how public seismic data can be transformed into interpretable instability patterns.
-
-## Public prototype scope
-
-This repository contains the public prototype layer of the CGIE radar.
-
-It includes:
-
-, public radar dashboard  
-, experimental HTML observatory pages  
-, public method overview  
-, static visual preview
-
-It does not expose the full internal logic, weighting structure, or the private research layers of the broader Congruity framework.
-
-## Method summary
-
-At public level, the radar combines:
-
-, seismic density  
-, seismic energy  
-, spatial concentration  
-, deviation from local equilibrium  
-, temporal phase interpretation
-
-These elements are aggregated into a simplified instability representation.
-
-The deeper internal framework includes additional decision logic, validation layers, and private research modules not included in this repository.
-
-## Data source
-
-Public seismic data from USGS global earthquake feeds.
-
-## Status
-
-Experimental public prototype.
-
-This repository represents the public radar layer of the broader Congruity seismic instability framework.
-
-Current release focus:
-
-, public observatory interface  
-, radar visualization  
-, spatial instability interpretation  
-, public prototype documentation
-
-## Repository contents
-
-, `Radar/`, experimental radar HTML files  
-, `Images/`, preview and public visual assets  
-, `docs/`, public method overview documentation  
-, `index.html`, public landing page  
-, `README.md`, public project description
+---
 
 ## Baseline pipeline
 
-The repository now includes a reproducible baseline pipeline in the `baseline/` folder.
+See `baseline/README.md` for full details.
 
-### Current baseline modules
-
-, `baseline/v48_alert_engine.py`, baseline alert engine for daily seismic instability processing  
-, `baseline/v49_final_report.py`, human readable reporting layer built on top of V48 outputs  
+Pipeline:
+events.csv → v48_alert_engine.py → v48_daily.csv + v48_alerts.csv → v49_final_report.py
 
 ### Pipeline flow
 
