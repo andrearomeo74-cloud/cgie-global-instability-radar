@@ -55,7 +55,13 @@ else:
         os.remove(ALERT_TXT)
 
     ALERT_JSON.write_text(
-        json.dumps({"alert": False}, indent=2),
+        json.dumps(
+            {
+                "alert": False,
+                "current": current,
+            },
+            indent=2
+        ),
         encoding="utf-8",
     )
 
