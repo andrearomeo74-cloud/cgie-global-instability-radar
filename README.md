@@ -99,6 +99,7 @@ Alert triggers are based on:
   "avg_prob": 0.166,
   "max_prob": 0.62
 }
+```
 
 ---
 
@@ -115,17 +116,17 @@ Evaluation focuses on **system behavior over time**, not single-event prediction
 
 Key aspects:
 
-- **Temporal alignment**
-  Measures how close detected instability signals are to real seismic events
+- **Temporal alignment**  
+  Measures how close detected instability signals are to real seismic events  
 
-- **Lead time analysis**
-  Evaluates how early the system detects structural changes before events
+- **Lead time analysis**  
+  Evaluates how early the system detects structural changes before events  
 
-- **False positive control**
-  Ensures alerts remain sparse and meaningful rather than noisy
+- **False positive control**  
+  Ensures alerts remain sparse and meaningful rather than noisy  
 
-- **Signal coherence**
-  Validates that detected patterns are structurally consistent, not random fluctuations
+- **Signal coherence**  
+  Validates that detected patterns are structurally consistent, not random fluctuations  
 
 ⚠️ CGIE is **not a deterministic prediction system**  
 It is a **systemic instability detection framework**
@@ -134,14 +135,14 @@ It is a **systemic instability detection framework**
 
 ## 🧩 Repository structure
 
-baseline/    → core signal engine  
-scripts/     → pipeline utilities  
-outputs/     → generated states and alerts  
-docs/        → documentation  
+baseline/   → core signal engine  
+scripts/    → pipeline utilities  
+outputs/    → generated states and alerts  
+docs/       → documentation  
 
-index.html   → radar visualization  
-alert.html   → alert UI  
-map.html     → full public dashboard  
+index.html  → radar visualization  
+alert.html  → alert UI  
+map.html    → full public dashboard  
 
 ---
 
@@ -159,7 +160,7 @@ The system runs via GitHub Actions:
 ## 📡 What makes CGIE different
 
 - not event prediction → **system state interpretation**  
-- focuses on **transitions, not outcomes**  
+- focuses on **transitions**, not outcomes  
 - integrates **temporal + probabilistic coherence**  
 - designed as a **real-time observatory layer**  
 
