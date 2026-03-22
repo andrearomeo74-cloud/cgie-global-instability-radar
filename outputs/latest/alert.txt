@@ -1,4 +1,0 @@
-CGIE ALERT
-
-Meaningful change detected:
-trend: stable -> increasing
