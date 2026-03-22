@@ -1,5 +1,4 @@
 import json
-import math
 import requests
 from collections import defaultdict
 from pathlib import Path
@@ -12,9 +11,6 @@ USGS_URL = (
 )
 
 
-# -----------------------------
-# Fetch data
-# -----------------------------
 def fetch_usgs():
     print("Fetching USGS data...")
     r = requests.get(USGS_URL, timeout=30)
@@ -22,34 +18,43 @@ def fetch_usgs():
     return r.json()
 
 
-# -----------------------------
-# Grid function (2° x 2°)
-# -----------------------------
 def grid_key(lat, lon):
     lat_cell = int(lat // 2 * 2)
     lon_cell = int(lon // 2 * 2)
     return lat_cell, lon_cell
 
 
-# -----------------------------
-# Phase assignment
-# -----------------------------
-def assign_phase(score):
-    if score < 0.5:
-        return "stable"
-    elif score < 1.0:
-        return "low"
-    elif score < 2.0:
-        return "moderate"
-    elif score < 4.0:
-        return "high"
-    else:
+def percentile(sorted_values, p):
+    if not sorted_values:
+        return 0.0
+    if len(sorted_values) == 1:
+        return sorted_values[0]
+
+    k = (len(sorted_values) - 1) * (p / 100.0)
+    f = int(k)
+    c = min(f + 1, len(sorted_values) - 1)
+
+    if f == c:
+        return sorted_values[f]
+
+    d0 = sorted_values[f] * (c - k)
+    d1 = sorted_values[c] * (k - f)
+    return d0 + d1
+
+
+def assign_phase(score, p30, p50, p70, p90):
+    if score >= p90:
         return "critical"
+    elif score >= p70:
+        return "high"
+    elif score >= p50:
+        return "moderate"
+    elif score >= p30:
+        return "low"
+    else:
+        return "stable"
 
 
-# -----------------------------
-# Build cells
-# -----------------------------
 def build_cells(data):
     cells = defaultdict(lambda: {"count": 0, "mag_sum": 0.0, "events": []})
 
@@ -84,9 +89,6 @@ def build_cells(data):
             }
         )
 
-    # -----------------------------
-    # Compute baseline (normalization)
-    # -----------------------------
     raw_scores = []
     for cell_data in cells.values():
         avg_mag = cell_data["mag_sum"] / cell_data["count"]
@@ -95,47 +97,45 @@ def build_cells(data):
 
     baseline = sum(raw_scores) / len(raw_scores) if raw_scores else 1.0
 
-    # -----------------------------
-    # Build results
-    # -----------------------------
-    results = []
-
+    temp_results = []
     for (lat_cell, lon_cell), cell_data in cells.items():
         avg_mag = cell_data["mag_sum"] / cell_data["count"]
-
         toy_score = (
             (cell_data["count"] * avg_mag) / baseline if baseline > 0 else 0.0
         )
 
-        phase = assign_phase(toy_score)
-
-        results.append(
+        temp_results.append(
             {
                 "lat_cell": lat_cell,
                 "lon_cell": lon_cell,
                 "count": cell_data["count"],
                 "avg_mag": round(avg_mag, 3),
                 "toy_score": round(toy_score, 3),
-                "phase": phase,
             }
         )
 
-    # ordina per score
-    results.sort(key=lambda x: x["toy_score"], reverse=True)
+    scores = sorted([r["toy_score"] for r in temp_results])
 
+    p30 = percentile(scores, 30)
+    p50 = percentile(scores, 50)
+    p70 = percentile(scores, 70)
+    p90 = percentile(scores, 90)
+
+    results = []
+    for row in temp_results:
+        phase = assign_phase(row["toy_score"], p30, p50, p70, p90)
+        row["phase"] = phase
+        results.append(row)
+
+    results.sort(key=lambda x: x["toy_score"], reverse=True)
     return results
 
 
-# -----------------------------
-# Main
-# -----------------------------
 def main():
     data = fetch_usgs()
     cells = build_cells(data)
 
     OUTPUT_JSON.parent.mkdir(parents=True, exist_ok=True)
-
-    # salva solo top 100 celle
     OUTPUT_JSON.write_text(json.dumps(cells[:100], indent=2), encoding="utf-8")
 
     print(f"Saved {min(len(cells), 100)} toy model cells to {OUTPUT_JSON}")
