@@ -96,7 +96,7 @@
   </div>
 
   <script>
-    fetch("outputs/latest/alert.json")
+    fetch("./outputs/latest/alert.json?cache=" + new Date().getTime())
       .then(response => response.json())
       .then(data => {
         const statusEl = document.getElementById("status");
