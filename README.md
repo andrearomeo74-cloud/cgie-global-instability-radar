@@ -24,6 +24,13 @@ Instead of predicting specific events, CGIE focuses on:
 
 ---
 
+## Transparency note
+
+CGIE includes a simplified open model for transparency and educational purposes,
+while the full Congruity based engine remains proprietary.
+
+---
+
 ## 🔬 Scientific positioning
 
 CGIE is designed as a **non-deterministic early instability detection system**.
