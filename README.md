@@ -19,11 +19,11 @@ A visual and exploratory interface showing global seismic instability patterns b
 ### 2. Baseline pipeline (reproducible)
 A minimal, reproducible implementation of the core signal processing logic:
 
-, daily aggregation of seismic activity  
-, probabilistic instability signal  
-, coherence-based filtering  
-, alert generation  
-, system-level interpretation  
+- daily aggregation of seismic activity  
+- probabilistic instability signal  
+- coherence-based filtering  
+- alert generation  
+- system-level interpretation  
 
 The baseline pipeline is available in the `baseline/` folder and can be executed end-to-end.
 
@@ -35,10 +35,10 @@ This project is designed as an exploratory observatory for complex system instab
 
 It does not attempt deterministic prediction of specific earthquake events, but instead focuses on:
 
-, detection of elevated instability regimes  
-, identification of spatial clustering patterns  
-, temporal evolution of system pressure  
-, interpretation of systemic transitions  
+- detection of elevated instability regimes  
+- identification of spatial clustering patterns  
+- temporal evolution of system pressure  
+- interpretation of systemic transitions  
 
 The approach is based on the idea that large-scale systems exhibit detectable structural deviations before major events.
 
@@ -66,6 +66,8 @@ The objective is not deterministic prediction, but the evaluation of:
 #### Lead time distribution
 
 ![Lead Distribution](Images/v48_lead_distribution.png)
+
+---
 
 ### Progressive model evolution
 
@@ -131,11 +133,11 @@ This supports the use of the Congruity framework as a systemic instability detec
 
 The radar aggregates public seismic events into spatial cells and computes a simplified instability state based on:
 
-, seismic energy  
-, event density  
-, deviation from equilibrium  
-, spatial clustering  
-, dynamic phase evolution  
+- seismic energy  
+- event density  
+- deviation from equilibrium  
+- spatial clustering  
+- dynamic phase evolution  
 
 The output is a global radar map showing cells classified into instability phases.
 
@@ -155,38 +157,55 @@ It is a research framework for detecting and interpreting systemic instability p
 See `baseline/README.md` for full details.
 
 Pipeline:
-events.csv → v48_alert_engine.py → v48_daily.csv + v48_alerts.csv → v49_final_report.py
-
-### Validation (baseline)
-
-We evaluated the temporal proximity between detected alerts and seismic events.
-
-Baseline results:
-
-- Distances (days): [0, 0]
-- Mean distance: 0.0 days
-
-Lead-time test (shift -1 day):
-
-- Lead distances: [1, 1]
-- Mean lead time: 1.0 day
-
-Interpretation:
-
-Alerts systematically occur within a very short temporal window relative to observed seismic events, and maintain proximity even when shifted backward in time.
-
-This suggests that the system is not purely reactive, but is capturing early structural transitions in the seismic regime, with a short lead time (~1 day).
-
-Note: this is a preliminary validation on a limited dataset and does not constitute a full predictive validation.
-
-### Pipeline flow
 
 `events.csv`  
 → `v48_alert_engine.py`  
 → `v48_alerts.csv` and `v48_daily.csv`  
 → `v49_final_report.py`
 
-This completes the first end to end prototype layer of the public system.
+---
+
+## Validation (baseline)
+
+We evaluated the temporal proximity between detected alerts and seismic events.
+
+Baseline:
+
+- Distances (days): [0, 0]  
+- Mean distance: 0.0 days  
+
+Lead-time test (shift -1 day):
+
+- Lead distances: [1, 1]  
+- Mean lead time: 1.0 day  
+
+---
+
+### Interpretation
+
+Alerts occur within a very short temporal window relative to observed seismic events.
+
+When shifted backward in time, alerts remain close to events (~1 day), suggesting that the system is not purely reactive but captures early structural transitions in the seismic regime.
+
+This indicates the presence of a short anticipatory signal.
+
+---
+
+### Visual results
+
+#### Events vs Alerts timeline
+
+This figure shows the temporal alignment between detected alerts and seismic events.
+
+![Events vs Alerts](Images/v48_timeline_fixed.png)
+
+---
+
+### Notes
+
+This is a preliminary validation on a limited dataset and does not represent a full predictive evaluation.
+
+---
 
 ## License
 
