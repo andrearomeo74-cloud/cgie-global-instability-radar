@@ -48,6 +48,11 @@ jobs:
         run: |
           python scripts/generate_status.py
 
+      - name: Save current as previous
+        run: |
+          mkdir -p outputs/previous
+          cp outputs/latest/status.json outputs/previous/status.json || true
+
       - name: Compare status (only if previous exists)
         run: |
           if [ -f outputs/previous/status.json ]; then
