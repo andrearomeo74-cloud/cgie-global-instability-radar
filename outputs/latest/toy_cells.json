@@ -269,7 +269,7 @@
     "count": 114,
     "avg_mag": 1.116,
     "toy_score": 3.861,
-    "phase": "high"
+    "phase": "critical"
   },
   {
     "lat_cell": 46,
@@ -277,7 +277,7 @@
     "count": 115,
     "avg_mag": 1.044,
     "toy_score": 3.643,
-    "phase": "high"
+    "phase": "critical"
   },
   {
     "lat_cell": 52,
@@ -285,7 +285,7 @@
     "count": 45,
     "avg_mag": 2.604,
     "toy_score": 3.556,
-    "phase": "high"
+    "phase": "critical"
   },
   {
     "lat_cell": 54,
@@ -293,7 +293,7 @@
     "count": 58,
     "avg_mag": 2.012,
     "toy_score": 3.54,
-    "phase": "high"
+    "phase": "critical"
   },
   {
     "lat_cell": 60,
@@ -301,7 +301,7 @@
     "count": 325,
     "avg_mag": 0.354,
     "toy_score": 3.487,
-    "phase": "high"
+    "phase": "critical"
   },
   {
     "lat_cell": 56,
@@ -309,7 +309,7 @@
     "count": 54,
     "avg_mag": 2.114,
     "toy_score": 3.464,
-    "phase": "high"
+    "phase": "critical"
   },
   {
     "lat_cell": 36,
@@ -317,7 +317,7 @@
     "count": 106,
     "avg_mag": 1.076,
     "toy_score": 3.459,
-    "phase": "high"
+    "phase": "critical"
   },
   {
     "lat_cell": 18,
@@ -325,7 +325,7 @@
     "count": 31,
     "avg_mag": 3.093,
     "toy_score": 2.909,
-    "phase": "high"
+    "phase": "critical"
   },
   {
     "lat_cell": 58,
@@ -333,7 +333,7 @@
     "count": 179,
     "avg_mag": 0.517,
     "toy_score": 2.809,
-    "phase": "high"
+    "phase": "critical"
   },
   {
     "lat_cell": 36,
@@ -341,7 +341,7 @@
     "count": 70,
     "avg_mag": 1.301,
     "toy_score": 2.762,
-    "phase": "high"
+    "phase": "critical"
   },
   {
     "lat_cell": 64,
@@ -349,7 +349,7 @@
     "count": 56,
     "avg_mag": 1.62,
     "toy_score": 2.752,
-    "phase": "high"
+    "phase": "critical"
   },
   {
     "lat_cell": 40,
@@ -357,7 +357,7 @@
     "count": 38,
     "avg_mag": 2.379,
     "toy_score": 2.743,
-    "phase": "high"
+    "phase": "critical"
   },
   {
     "lat_cell": 52,
@@ -365,7 +365,7 @@
     "count": 103,
     "avg_mag": 0.8,
     "toy_score": 2.499,
-    "phase": "high"
+    "phase": "critical"
   },
   {
     "lat_cell": 50,
@@ -373,7 +373,7 @@
     "count": 39,
     "avg_mag": 2.056,
     "toy_score": 2.433,
-    "phase": "high"
+    "phase": "critical"
   },
   {
     "lat_cell": -8,
@@ -381,7 +381,7 @@
     "count": 17,
     "avg_mag": 4.388,
     "toy_score": 2.263,
-    "phase": "high"
+    "phase": "critical"
   },
   {
     "lat_cell": 58,
@@ -389,7 +389,7 @@
     "count": 34,
     "avg_mag": 2.115,
     "toy_score": 2.181,
-    "phase": "high"
+    "phase": "critical"
   },
   {
     "lat_cell": 64,
@@ -397,7 +397,7 @@
     "count": 45,
     "avg_mag": 1.436,
     "toy_score": 1.96,
-    "phase": "moderate"
+    "phase": "critical"
   },
   {
     "lat_cell": -34,
@@ -405,7 +405,7 @@
     "count": 13,
     "avg_mag": 4.9,
     "toy_score": 1.933,
-    "phase": "moderate"
+    "phase": "critical"
   },
   {
     "lat_cell": 36,
@@ -413,7 +413,7 @@
     "count": 37,
     "avg_mag": 1.686,
     "toy_score": 1.893,
-    "phase": "moderate"
+    "phase": "critical"
   },
   {
     "lat_cell": 38,
@@ -421,7 +421,7 @@
     "count": 38,
     "avg_mag": 1.629,
     "toy_score": 1.878,
-    "phase": "moderate"
+    "phase": "critical"
   },
   {
     "lat_cell": 52,
@@ -429,7 +429,7 @@
     "count": 19,
     "avg_mag": 3.142,
     "toy_score": 1.811,
-    "phase": "moderate"
+    "phase": "critical"
   },
   {
     "lat_cell": 50,
@@ -437,7 +437,7 @@
     "count": 22,
     "avg_mag": 2.712,
     "toy_score": 1.81,
-    "phase": "moderate"
+    "phase": "critical"
   },
   {
     "lat_cell": -16,
@@ -445,7 +445,7 @@
     "count": 10,
     "avg_mag": 5.51,
     "toy_score": 1.672,
-    "phase": "moderate"
+    "phase": "critical"
   },
   {
     "lat_cell": 38,
@@ -453,7 +453,7 @@
     "count": 12,
     "avg_mag": 4.575,
     "toy_score": 1.666,
-    "phase": "moderate"
+    "phase": "critical"
   },
   {
     "lat_cell": 52,
@@ -461,7 +461,7 @@
     "count": 12,
     "avg_mag": 4.517,
     "toy_score": 1.644,
-    "phase": "moderate"
+    "phase": "high"
   },
   {
     "lat_cell": 56,
@@ -469,7 +469,7 @@
     "count": 27,
     "avg_mag": 1.959,
     "toy_score": 1.605,
-    "phase": "moderate"
+    "phase": "high"
   },
   {
     "lat_cell": -12,
@@ -477,7 +477,7 @@
     "count": 11,
     "avg_mag": 4.791,
     "toy_score": 1.599,
-    "phase": "moderate"
+    "phase": "high"
   },
   {
     "lat_cell": 58,
@@ -485,7 +485,7 @@
     "count": 26,
     "avg_mag": 1.962,
     "toy_score": 1.547,
-    "phase": "moderate"
+    "phase": "high"
   },
   {
     "lat_cell": 60,
@@ -493,7 +493,7 @@
     "count": 30,
     "avg_mag": 1.673,
     "toy_score": 1.523,
-    "phase": "moderate"
+    "phase": "high"
   },
   {
     "lat_cell": 44,
@@ -501,7 +501,7 @@
     "count": 50,
     "avg_mag": 0.986,
     "toy_score": 1.496,
-    "phase": "moderate"
+    "phase": "high"
   },
   {
     "lat_cell": -22,
@@ -509,7 +509,7 @@
     "count": 10,
     "avg_mag": 4.68,
     "toy_score": 1.42,
-    "phase": "moderate"
+    "phase": "high"
   },
   {
     "lat_cell": 46,
@@ -517,7 +517,7 @@
     "count": 10,
     "avg_mag": 4.67,
     "toy_score": 1.417,
-    "phase": "moderate"
+    "phase": "high"
   },
   {
     "lat_cell": 46,
@@ -525,7 +525,7 @@
     "count": 60,
     "avg_mag": 0.777,
     "toy_score": 1.415,
-    "phase": "moderate"
+    "phase": "high"
   },
   {
     "lat_cell": 18,
@@ -533,7 +533,7 @@
     "count": 13,
     "avg_mag": 3.535,
     "toy_score": 1.394,
-    "phase": "moderate"
+    "phase": "high"
   },
   {
     "lat_cell": -22,
@@ -541,7 +541,7 @@
     "count": 10,
     "avg_mag": 4.58,
     "toy_score": 1.389,
-    "phase": "moderate"
+    "phase": "high"
   },
   {
     "lat_cell": 62,
@@ -549,7 +549,7 @@
     "count": 25,
     "avg_mag": 1.832,
     "toy_score": 1.389,
-    "phase": "moderate"
+    "phase": "high"
   },
   {
     "lat_cell": 34,
@@ -557,7 +557,7 @@
     "count": 40,
     "avg_mag": 1.108,
     "toy_score": 1.344,
-    "phase": "moderate"
+    "phase": "high"
   },
   {
     "lat_cell": 28,
@@ -565,7 +565,7 @@
     "count": 24,
     "avg_mag": 1.713,
     "toy_score": 1.247,
-    "phase": "moderate"
+    "phase": "high"
   },
   {
     "lat_cell": 40,
@@ -573,7 +573,7 @@
     "count": 9,
     "avg_mag": 4.567,
     "toy_score": 1.247,
-    "phase": "moderate"
+    "phase": "high"
   },
   {
     "lat_cell": 36,
@@ -581,7 +581,7 @@
     "count": 9,
     "avg_mag": 4.5,
     "toy_score": 1.229,
-    "phase": "moderate"
+    "phase": "high"
   },
   {
     "lat_cell": 12,
@@ -589,7 +589,7 @@
     "count": 9,
     "avg_mag": 4.378,
     "toy_score": 1.195,
-    "phase": "moderate"
+    "phase": "high"
   },
   {
     "lat_cell": -18,
@@ -597,7 +597,7 @@
     "count": 9,
     "avg_mag": 4.356,
     "toy_score": 1.189,
-    "phase": "moderate"
+    "phase": "high"
   },
   {
     "lat_cell": 62,
@@ -605,7 +605,7 @@
     "count": 18,
     "avg_mag": 2.15,
     "toy_score": 1.174,
-    "phase": "moderate"
+    "phase": "high"
   },
   {
     "lat_cell": 28,
@@ -613,7 +613,7 @@
     "count": 24,
     "avg_mag": 1.562,
     "toy_score": 1.138,
-    "phase": "moderate"
+    "phase": "high"
   },
   {
     "lat_cell": 68,
@@ -621,7 +621,7 @@
     "count": 11,
     "avg_mag": 3.382,
     "toy_score": 1.129,
-    "phase": "moderate"
+    "phase": "high"
   },
   {
     "lat_cell": -30,
@@ -629,7 +629,7 @@
     "count": 8,
     "avg_mag": 4.562,
     "toy_score": 1.107,
-    "phase": "moderate"
+    "phase": "high"
   },
   {
     "lat_cell": 36,
@@ -637,7 +637,7 @@
     "count": 21,
     "avg_mag": 1.721,
     "toy_score": 1.096,
-    "phase": "moderate"
+    "phase": "high"
   },
   {
     "lat_cell": -24,
@@ -645,7 +645,7 @@
     "count": 8,
     "avg_mag": 4.45,
     "toy_score": 1.08,
-    "phase": "moderate"
+    "phase": "high"
   },
   {
     "lat_cell": -22,
@@ -653,7 +653,7 @@
     "count": 8,
     "avg_mag": 4.413,
     "toy_score": 1.071,
-    "phase": "moderate"
+    "phase": "high"
   },
   {
     "lat_cell": -20,
@@ -661,7 +661,7 @@
     "count": 8,
     "avg_mag": 4.35,
     "toy_score": 1.056,
-    "phase": "moderate"
+    "phase": "high"
   },
   {
     "lat_cell": 38,
@@ -669,7 +669,7 @@
     "count": 18,
     "avg_mag": 1.847,
     "toy_score": 1.008,
-    "phase": "moderate"
+    "phase": "high"
   },
   {
     "lat_cell": 52,
@@ -677,7 +677,7 @@
     "count": 25,
     "avg_mag": 1.303,
     "toy_score": 0.988,
-    "phase": "low"
+    "phase": "high"
   },
   {
     "lat_cell": 64,
@@ -685,7 +685,7 @@
     "count": 16,
     "avg_mag": 1.925,
     "toy_score": 0.934,
-    "phase": "low"
+    "phase": "high"
   },
   {
     "lat_cell": 42,
@@ -693,7 +693,7 @@
     "count": 18,
     "avg_mag": 1.711,
     "toy_score": 0.934,
-    "phase": "low"
+    "phase": "high"
   },
   {
     "lat_cell": 52,
@@ -701,7 +701,7 @@
     "count": 10,
     "avg_mag": 3.07,
     "toy_score": 0.931,
-    "phase": "low"
+    "phase": "high"
   },
   {
     "lat_cell": 32,
@@ -709,7 +709,7 @@
     "count": 9,
     "avg_mag": 3.333,
     "toy_score": 0.91,
-    "phase": "low"
+    "phase": "high"
   },
   {
     "lat_cell": 38,
@@ -717,7 +717,7 @@
     "count": 6,
     "avg_mag": 4.95,
     "toy_score": 0.901,
-    "phase": "low"
+    "phase": "high"
   },
   {
     "lat_cell": -22,
@@ -725,7 +725,7 @@
     "count": 6,
     "avg_mag": 4.883,
     "toy_score": 0.889,
-    "phase": "low"
+    "phase": "high"
   },
   {
     "lat_cell": 54,
@@ -733,7 +733,7 @@
     "count": 18,
     "avg_mag": 1.623,
     "toy_score": 0.886,
-    "phase": "low"
+    "phase": "high"
   },
   {
     "lat_cell": -20,
@@ -741,7 +741,7 @@
     "count": 6,
     "avg_mag": 4.85,
     "toy_score": 0.883,
-    "phase": "low"
+    "phase": "high"
   },
   {
     "lat_cell": -18,
@@ -749,7 +749,7 @@
     "count": 6,
     "avg_mag": 4.767,
     "toy_score": 0.868,
-    "phase": "low"
+    "phase": "high"
   },
   {
     "lat_cell": 48,
@@ -757,7 +757,7 @@
     "count": 22,
     "avg_mag": 1.288,
     "toy_score": 0.86,
-    "phase": "low"
+    "phase": "high"
   },
   {
     "lat_cell": 48,
@@ -765,7 +765,7 @@
     "count": 16,
     "avg_mag": 1.704,
     "toy_score": 0.827,
-    "phase": "low"
+    "phase": "high"
   },
   {
     "lat_cell": -6,
@@ -773,7 +773,7 @@
     "count": 6,
     "avg_mag": 4.533,
     "toy_score": 0.825,
-    "phase": "low"
+    "phase": "high"
   },
   {
     "lat_cell": 54,
@@ -781,7 +781,7 @@
     "count": 11,
     "avg_mag": 2.463,
     "toy_score": 0.822,
-    "phase": "low"
+    "phase": "high"
   },
   {
     "lat_cell": -26,
@@ -789,7 +789,7 @@
     "count": 6,
     "avg_mag": 4.517,
     "toy_score": 0.822,
-    "phase": "low"
+    "phase": "high"
   },
   {
     "lat_cell": 6,
@@ -797,6 +797,6 @@
     "count": 6,
     "avg_mag": 4.383,
     "toy_score": 0.798,
-    "phase": "low"
+    "phase": "high"
   }
 ]
