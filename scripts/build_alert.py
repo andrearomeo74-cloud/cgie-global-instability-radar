@@ -1,20 +1,22 @@
 import json
 import os
+from pathlib import Path
 
-CURRENT = "outputs/latest/status.json"
-PREVIOUS = "outputs/previous/status.json"
-ALERT = "outputs/latest/alert.txt"
+CURRENT = Path("outputs/latest/status.json")
+PREVIOUS = Path("outputs/previous/status.json")
+ALERT_TXT = Path("outputs/latest/alert.txt")
+ALERT_JSON = Path("outputs/latest/alert.json")
 
-if not os.path.exists(CURRENT):
+if not CURRENT.exists():
     print("Current status missing")
     raise SystemExit(1)
 
-with open(CURRENT) as f:
+with open(CURRENT, "r", encoding="utf-8") as f:
     current = json.load(f)
 
 previous = {}
-if os.path.exists(PREVIOUS):
-    with open(PREVIOUS) as f:
+if PREVIOUS.exists():
+    with open(PREVIOUS, "r", encoding="utf-8") as f:
         previous = json.load(f)
 
 changes = []
@@ -32,11 +34,29 @@ if changes:
     lines.append("Meaningful change detected:")
     lines.extend(changes)
 
-    with open(ALERT, "w") as f:
-        f.write("\n".join(lines) + "\n")
+    ALERT_TXT.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+    ALERT_JSON.write_text(
+        json.dumps(
+            {
+                "alert": True,
+                "changes": changes,
+                "current": current,
+            },
+            indent=2
+        ),
+        encoding="utf-8",
+    )
 
     print("ALERT CREATED")
+
 else:
-    if os.path.exists(ALERT):
-        os.remove(ALERT)
+    if ALERT_TXT.exists():
+        os.remove(ALERT_TXT)
+
+    ALERT_JSON.write_text(
+        json.dumps({"alert": False}, indent=2),
+        encoding="utf-8",
+    )
+
     print("No meaningful changes")
