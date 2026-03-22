@@ -69,17 +69,6 @@ The objective is not deterministic prediction, but the evaluation of:
 
 ---
 
-### Progressive model evolution
-
-The system was iteratively developed across multiple versions:
-
-- V41 → multi-layer signal validation  
-- V42–V45 → filtering and decision logic  
-- V46–V47 → episode and coherence modeling  
-- V48 → final alert engine (production baseline)  
-
----
-
 ### Final baseline performance (V48)
 
 - Total alerts: 18  
@@ -92,12 +81,32 @@ The system was iteratively developed across multiple versions:
 
 ---
 
-### Key observations
+### Extended validation (V2–V3)
 
-- Strong reduction of false positives compared to earlier versions  
-- Alerts are sparse but high-quality  
-- System prioritizes precision over frequency  
-- Temporal coherence filtering significantly improves signal reliability  
+Using a walk-forward style evaluation with event windows of 1–5 days:
+
+- Alerts (V3): 6  
+- Precision: **0.67 → 0.83** (depending on horizon)  
+- Recall: **~0.04 → 0.06**  
+
+Lead time behavior:
+- Most detections occur at **0-day distance** (coincident detection)  
+- Occasional anticipatory signals observed (**up to 4 days lead**)  
+
+---
+
+### Interpretation
+
+The system currently behaves as a **high-precision, low-recall instability trigger**:
+
+- Alerts are sparse but highly reliable  
+- False positives are limited  
+- The system prioritizes signal quality over coverage  
+
+Preliminary evidence suggests the presence of **early structural signals**, but these are:
+
+- not consistent across events  
+- not yet sufficient to support stable predictive performance  
 
 ---
 
@@ -117,38 +126,20 @@ Transitions are driven by:
 
 ---
 
-### Interpretation
+### What the results show
 
-The results suggest that:
-
-- global seismic activity contains detectable structural deviations  
-- instability signals can emerge before major events  
-- coherence-based filtering is essential to avoid noise-driven alerts  
-
-This supports the use of the Congruity framework as a systemic instability detection layer, not as a deterministic prediction tool.
+- Global seismic activity contains detectable structural variations  
+- Coherence filtering significantly reduces noise  
+- The system can identify activation phases  
+- Early signals may emerge before some events  
 
 ---
 
-## What the radar does
+### What the results do not show
 
-The radar aggregates public seismic events into spatial cells and computes a simplified instability state based on:
-
-- seismic energy  
-- event density  
-- deviation from equilibrium  
-- spatial clustering  
-- dynamic phase evolution  
-
-The output is a global radar map showing cells classified into instability phases.
-
----
-
-## What this project is not
-
-This project is not a deterministic earthquake prediction system.  
-It is not an official warning system.  
-
-It is a research framework for detecting and interpreting systemic instability patterns in complex geophysical systems.
+- Reliable prediction of all events  
+- High recall coverage  
+- Stable anticipatory performance  
 
 ---
 
@@ -181,19 +172,7 @@ Lead-time test (shift -1 day):
 
 ---
 
-### Interpretation
-
-Alerts occur within a very short temporal window relative to observed seismic events.
-
-When shifted backward in time, alerts remain close to events (~1 day), suggesting that the system is not purely reactive but captures early structural transitions in the seismic regime.
-
-This indicates the presence of a short anticipatory signal.
-
----
-
-### Visual results
-
-#### Events vs Alerts timeline
+### Events vs Alerts timeline
 
 This figure shows the temporal alignment between detected alerts and seismic events.
 
@@ -204,6 +183,15 @@ This figure shows the temporal alignment between detected alerts and seismic eve
 ### Notes
 
 This is a preliminary validation on a limited dataset and does not represent a full predictive evaluation.
+
+---
+
+## What this project is not
+
+This project is not a deterministic earthquake prediction system.  
+It is not an official warning system.  
+
+It is a research framework for detecting and interpreting systemic instability patterns in complex geophysical systems.
 
 ---
 
