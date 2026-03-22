@@ -49,6 +49,9 @@ jobs:
           python scripts/generate_status.py
 
       - name: Compare status
+        run: python scripts/compare_status.py
+
+      - name: Compare status
         run: |
           python scripts/compare_status.py
 
