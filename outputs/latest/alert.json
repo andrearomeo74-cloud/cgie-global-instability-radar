@@ -1,5 +1,8 @@
 {
   "alert": false,
+  "level": "stable",
+  "summary": "System stable",
+  "risk_color": "green",
   "current": {
     "state": "elevated activity",
     "trend": "increasing",

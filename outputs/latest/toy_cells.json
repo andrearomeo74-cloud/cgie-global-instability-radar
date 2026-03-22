@@ -1,0 +1,802 @@
+[
+  {
+    "lat_cell": 38.0,
+    "lon_cell": -124.0,
+    "count": 1466,
+    "avg_mag": 0.882,
+    "toy_score": 39.24,
+    "phase": "high"
+  },
+  {
+    "lat_cell": 52.0,
+    "lon_cell": -170.0,
+    "count": 302,
+    "avg_mag": 2.797,
+    "toy_score": 25.622,
+    "phase": "high"
+  },
+  {
+    "lat_cell": 18.0,
+    "lon_cell": -156.0,
+    "count": 380,
+    "avg_mag": 1.845,
+    "toy_score": 21.267,
+    "phase": "high"
+  },
+  {
+    "lat_cell": 60.0,
+    "lon_cell": -140.0,
+    "count": 338,
+    "avg_mag": 2.009,
+    "toy_score": 20.606,
+    "phase": "high"
+  },
+  {
+    "lat_cell": 32.0,
+    "lon_cell": -118.0,
+    "count": 703,
+    "avg_mag": 0.859,
+    "toy_score": 18.326,
+    "phase": "high"
+  },
+  {
+    "lat_cell": 30.0,
+    "lon_cell": -106.0,
+    "count": 303,
+    "avg_mag": 1.866,
+    "toy_score": 17.15,
+    "phase": "high"
+  },
+  {
+    "lat_cell": 60.0,
+    "lon_cell": -152.0,
+    "count": 260,
+    "avg_mag": 1.971,
+    "toy_score": 15.543,
+    "phase": "high"
+  },
+  {
+    "lat_cell": 38.0,
+    "lon_cell": -118.0,
+    "count": 222,
+    "avg_mag": 1.958,
+    "toy_score": 13.184,
+    "phase": "high"
+  },
+  {
+    "lat_cell": 36.0,
+    "lon_cell": -122.0,
+    "count": 259,
+    "avg_mag": 1.379,
+    "toy_score": 10.835,
+    "phase": "high"
+  },
+  {
+    "lat_cell": 34.0,
+    "lon_cell": -118.0,
+    "count": 320,
+    "avg_mag": 1.073,
+    "toy_score": 10.415,
+    "phase": "high"
+  },
+  {
+    "lat_cell": 58.0,
+    "lon_cell": -154.0,
+    "count": 185,
+    "avg_mag": 1.854,
+    "toy_score": 10.407,
+    "phase": "high"
+  },
+  {
+    "lat_cell": 60.0,
+    "lon_cell": -142.0,
+    "count": 176,
+    "avg_mag": 1.932,
+    "toy_score": 10.315,
+    "phase": "high"
+  },
+  {
+    "lat_cell": 34.0,
+    "lon_cell": -98.0,
+    "count": 232,
+    "avg_mag": 1.458,
+    "toy_score": 10.261,
+    "phase": "high"
+  },
+  {
+    "lat_cell": 62.0,
+    "lon_cell": -152.0,
+    "count": 161,
+    "avg_mag": 1.999,
+    "toy_score": 9.766,
+    "phase": "high"
+  },
+  {
+    "lat_cell": 62.0,
+    "lon_cell": -150.0,
+    "count": 159,
+    "avg_mag": 1.879,
+    "toy_score": 9.062,
+    "phase": "high"
+  },
+  {
+    "lat_cell": 32.0,
+    "lon_cell": -102.0,
+    "count": 249,
+    "avg_mag": 1.178,
+    "toy_score": 8.898,
+    "phase": "high"
+  },
+  {
+    "lat_cell": 52.0,
+    "lon_cell": 176.0,
+    "count": 67,
+    "avg_mag": 4.025,
+    "toy_score": 8.182,
+    "phase": "high"
+  },
+  {
+    "lat_cell": 60.0,
+    "lon_cell": -148.0,
+    "count": 130,
+    "avg_mag": 1.845,
+    "toy_score": 7.275,
+    "phase": "high"
+  },
+  {
+    "lat_cell": 36.0,
+    "lon_cell": -118.0,
+    "count": 202,
+    "avg_mag": 1.119,
+    "toy_score": 6.855,
+    "phase": "high"
+  },
+  {
+    "lat_cell": 32.0,
+    "lon_cell": -104.0,
+    "count": 222,
+    "avg_mag": 0.972,
+    "toy_score": 6.547,
+    "phase": "high"
+  },
+  {
+    "lat_cell": 60.0,
+    "lon_cell": -150.0,
+    "count": 101,
+    "avg_mag": 1.995,
+    "toy_score": 6.113,
+    "phase": "high"
+  },
+  {
+    "lat_cell": 50.0,
+    "lon_cell": 158.0,
+    "count": 43,
+    "avg_mag": 4.647,
+    "toy_score": 6.062,
+    "phase": "high"
+  },
+  {
+    "lat_cell": 34.0,
+    "lon_cell": -100.0,
+    "count": 126,
+    "avg_mag": 1.441,
+    "toy_score": 5.51,
+    "phase": "high"
+  },
+  {
+    "lat_cell": 50.0,
+    "lon_cell": 176.0,
+    "count": 49,
+    "avg_mag": 3.604,
+    "toy_score": 5.358,
+    "phase": "high"
+  },
+  {
+    "lat_cell": 24.0,
+    "lon_cell": 124.0,
+    "count": 34,
+    "avg_mag": 4.753,
+    "toy_score": 4.903,
+    "phase": "high"
+  },
+  {
+    "lat_cell": 54.0,
+    "lon_cell": -162.0,
+    "count": 75,
+    "avg_mag": 2.152,
+    "toy_score": 4.897,
+    "phase": "high"
+  },
+  {
+    "lat_cell": 32.0,
+    "lon_cell": -116.0,
+    "count": 104,
+    "avg_mag": 1.478,
+    "toy_score": 4.662,
+    "phase": "high"
+  },
+  {
+    "lat_cell": 50.0,
+    "lon_cell": -178.0,
+    "count": 82,
+    "avg_mag": 1.862,
+    "toy_score": 4.632,
+    "phase": "high"
+  },
+  {
+    "lat_cell": 30.0,
+    "lon_cell": -104.0,
+    "count": 120,
+    "avg_mag": 1.255,
+    "toy_score": 4.569,
+    "phase": "high"
+  },
+  {
+    "lat_cell": 16.0,
+    "lon_cell": -68.0,
+    "count": 66,
+    "avg_mag": 2.218,
+    "toy_score": 4.44,
+    "phase": "high"
+  },
+  {
+    "lat_cell": 18.0,
+    "lon_cell": -68.0,
+    "count": 57,
+    "avg_mag": 2.528,
+    "toy_score": 4.372,
+    "phase": "high"
+  },
+  {
+    "lat_cell": 50.0,
+    "lon_cell": -180.0,
+    "count": 99,
+    "avg_mag": 1.428,
+    "toy_score": 4.289,
+    "phase": "high"
+  },
+  {
+    "lat_cell": 34.0,
+    "lon_cell": -120.0,
+    "count": 102,
+    "avg_mag": 1.314,
+    "toy_score": 4.066,
+    "phase": "high"
+  },
+  {
+    "lat_cell": 38.0,
+    "lon_cell": -114.0,
+    "count": 114,
+    "avg_mag": 1.116,
+    "toy_score": 3.861,
+    "phase": "high"
+  },
+  {
+    "lat_cell": 46.0,
+    "lon_cell": -124.0,
+    "count": 115,
+    "avg_mag": 1.044,
+    "toy_score": 3.643,
+    "phase": "high"
+  },
+  {
+    "lat_cell": 52.0,
+    "lon_cell": -166.0,
+    "count": 45,
+    "avg_mag": 2.604,
+    "toy_score": 3.556,
+    "phase": "high"
+  },
+  {
+    "lat_cell": 54.0,
+    "lon_cell": -160.0,
+    "count": 58,
+    "avg_mag": 2.012,
+    "toy_score": 3.54,
+    "phase": "high"
+  },
+  {
+    "lat_cell": 60.0,
+    "lon_cell": -154.0,
+    "count": 325,
+    "avg_mag": 0.354,
+    "toy_score": 3.487,
+    "phase": "high"
+  },
+  {
+    "lat_cell": 56.0,
+    "lon_cell": -156.0,
+    "count": 54,
+    "avg_mag": 2.114,
+    "toy_score": 3.464,
+    "phase": "high"
+  },
+  {
+    "lat_cell": 36.0,
+    "lon_cell": -120.0,
+    "count": 106,
+    "avg_mag": 1.076,
+    "toy_score": 3.459,
+    "phase": "high"
+  },
+  {
+    "lat_cell": 18.0,
+    "lon_cell": -66.0,
+    "count": 31,
+    "avg_mag": 3.093,
+    "toy_score": 2.909,
+    "phase": "medium"
+  },
+  {
+    "lat_cell": 58.0,
+    "lon_cell": -156.0,
+    "count": 179,
+    "avg_mag": 0.517,
+    "toy_score": 2.809,
+    "phase": "medium"
+  },
+  {
+    "lat_cell": 36.0,
+    "lon_cell": -124.0,
+    "count": 70,
+    "avg_mag": 1.301,
+    "toy_score": 2.762,
+    "phase": "medium"
+  },
+  {
+    "lat_cell": 64.0,
+    "lon_cell": -150.0,
+    "count": 56,
+    "avg_mag": 1.62,
+    "toy_score": 2.752,
+    "phase": "medium"
+  },
+  {
+    "lat_cell": 40.0,
+    "lon_cell": -126.0,
+    "count": 38,
+    "avg_mag": 2.379,
+    "toy_score": 2.743,
+    "phase": "medium"
+  },
+  {
+    "lat_cell": 52.0,
+    "lon_cell": -168.0,
+    "count": 103,
+    "avg_mag": 0.8,
+    "toy_score": 2.499,
+    "phase": "medium"
+  },
+  {
+    "lat_cell": 50.0,
+    "lon_cell": 178.0,
+    "count": 39,
+    "avg_mag": 2.056,
+    "toy_score": 2.433,
+    "phase": "medium"
+  },
+  {
+    "lat_cell": -8.0,
+    "lon_cell": 128.0,
+    "count": 17,
+    "avg_mag": 4.388,
+    "toy_score": 2.263,
+    "phase": "medium"
+  },
+  {
+    "lat_cell": 58.0,
+    "lon_cell": -152.0,
+    "count": 34,
+    "avg_mag": 2.115,
+    "toy_score": 2.181,
+    "phase": "medium"
+  },
+  {
+    "lat_cell": 64.0,
+    "lon_cell": -148.0,
+    "count": 45,
+    "avg_mag": 1.436,
+    "toy_score": 1.96,
+    "phase": "medium"
+  },
+  {
+    "lat_cell": -34.0,
+    "lon_cell": -180.0,
+    "count": 13,
+    "avg_mag": 4.9,
+    "toy_score": 1.933,
+    "phase": "medium"
+  },
+  {
+    "lat_cell": 36.0,
+    "lon_cell": -116.0,
+    "count": 37,
+    "avg_mag": 1.686,
+    "toy_score": 1.893,
+    "phase": "medium"
+  },
+  {
+    "lat_cell": 38.0,
+    "lon_cell": -120.0,
+    "count": 38,
+    "avg_mag": 1.629,
+    "toy_score": 1.878,
+    "phase": "medium"
+  },
+  {
+    "lat_cell": 52.0,
+    "lon_cell": -172.0,
+    "count": 19,
+    "avg_mag": 3.142,
+    "toy_score": 1.811,
+    "phase": "medium"
+  },
+  {
+    "lat_cell": 50.0,
+    "lon_cell": -176.0,
+    "count": 22,
+    "avg_mag": 2.712,
+    "toy_score": 1.81,
+    "phase": "medium"
+  },
+  {
+    "lat_cell": -16.0,
+    "lon_cell": -174.0,
+    "count": 10,
+    "avg_mag": 5.51,
+    "toy_score": 1.672,
+    "phase": "low"
+  },
+  {
+    "lat_cell": 38.0,
+    "lon_cell": 20.0,
+    "count": 12,
+    "avg_mag": 4.575,
+    "toy_score": 1.666,
+    "phase": "low"
+  },
+  {
+    "lat_cell": 52.0,
+    "lon_cell": 160.0,
+    "count": 12,
+    "avg_mag": 4.517,
+    "toy_score": 1.644,
+    "phase": "low"
+  },
+  {
+    "lat_cell": 56.0,
+    "lon_cell": -158.0,
+    "count": 27,
+    "avg_mag": 1.959,
+    "toy_score": 1.605,
+    "phase": "low"
+  },
+  {
+    "lat_cell": -12.0,
+    "lon_cell": 162.0,
+    "count": 11,
+    "avg_mag": 4.791,
+    "toy_score": 1.599,
+    "phase": "low"
+  },
+  {
+    "lat_cell": 58.0,
+    "lon_cell": -142.0,
+    "count": 26,
+    "avg_mag": 1.962,
+    "toy_score": 1.547,
+    "phase": "low"
+  },
+  {
+    "lat_cell": 60.0,
+    "lon_cell": -144.0,
+    "count": 30,
+    "avg_mag": 1.673,
+    "toy_score": 1.523,
+    "phase": "low"
+  },
+  {
+    "lat_cell": 44.0,
+    "lon_cell": -112.0,
+    "count": 50,
+    "avg_mag": 0.986,
+    "toy_score": 1.496,
+    "phase": "low"
+  },
+  {
+    "lat_cell": -22.0,
+    "lon_cell": -180.0,
+    "count": 10,
+    "avg_mag": 4.68,
+    "toy_score": 1.42,
+    "phase": "low"
+  },
+  {
+    "lat_cell": 46.0,
+    "lon_cell": 152.0,
+    "count": 10,
+    "avg_mag": 4.67,
+    "toy_score": 1.417,
+    "phase": "low"
+  },
+  {
+    "lat_cell": 46.0,
+    "lon_cell": -122.0,
+    "count": 60,
+    "avg_mag": 0.777,
+    "toy_score": 1.415,
+    "phase": "low"
+  },
+  {
+    "lat_cell": 18.0,
+    "lon_cell": -70.0,
+    "count": 13,
+    "avg_mag": 3.535,
+    "toy_score": 1.394,
+    "phase": "low"
+  },
+  {
+    "lat_cell": -22.0,
+    "lon_cell": -178.0,
+    "count": 10,
+    "avg_mag": 4.58,
+    "toy_score": 1.389,
+    "phase": "low"
+  },
+  {
+    "lat_cell": 62.0,
+    "lon_cell": -148.0,
+    "count": 25,
+    "avg_mag": 1.832,
+    "toy_score": 1.389,
+    "phase": "low"
+  },
+  {
+    "lat_cell": 34.0,
+    "lon_cell": -122.0,
+    "count": 40,
+    "avg_mag": 1.108,
+    "toy_score": 1.344,
+    "phase": "low"
+  },
+  {
+    "lat_cell": 28.0,
+    "lon_cell": -100.0,
+    "count": 24,
+    "avg_mag": 1.713,
+    "toy_score": 1.247,
+    "phase": "low"
+  },
+  {
+    "lat_cell": 40.0,
+    "lon_cell": 142.0,
+    "count": 9,
+    "avg_mag": 4.567,
+    "toy_score": 1.247,
+    "phase": "low"
+  },
+  {
+    "lat_cell": 36.0,
+    "lon_cell": 70.0,
+    "count": 9,
+    "avg_mag": 4.5,
+    "toy_score": 1.229,
+    "phase": "low"
+  },
+  {
+    "lat_cell": 12.0,
+    "lon_cell": -92.0,
+    "count": 9,
+    "avg_mag": 4.378,
+    "toy_score": 1.195,
+    "phase": "low"
+  },
+  {
+    "lat_cell": -18.0,
+    "lon_cell": -180.0,
+    "count": 9,
+    "avg_mag": 4.356,
+    "toy_score": 1.189,
+    "phase": "low"
+  },
+  {
+    "lat_cell": 62.0,
+    "lon_cell": -154.0,
+    "count": 18,
+    "avg_mag": 2.15,
+    "toy_score": 1.174,
+    "phase": "low"
+  },
+  {
+    "lat_cell": 28.0,
+    "lon_cell": -98.0,
+    "count": 24,
+    "avg_mag": 1.562,
+    "toy_score": 1.138,
+    "phase": "low"
+  },
+  {
+    "lat_cell": 68.0,
+    "lon_cell": -144.0,
+    "count": 11,
+    "avg_mag": 3.382,
+    "toy_score": 1.129,
+    "phase": "low"
+  },
+  {
+    "lat_cell": -30.0,
+    "lon_cell": -72.0,
+    "count": 8,
+    "avg_mag": 4.562,
+    "toy_score": 1.107,
+    "phase": "low"
+  },
+  {
+    "lat_cell": 36.0,
+    "lon_cell": -114.0,
+    "count": 21,
+    "avg_mag": 1.721,
+    "toy_score": 1.096,
+    "phase": "low"
+  },
+  {
+    "lat_cell": -24.0,
+    "lon_cell": -180.0,
+    "count": 8,
+    "avg_mag": 4.45,
+    "toy_score": 1.08,
+    "phase": "low"
+  },
+  {
+    "lat_cell": -22.0,
+    "lon_cell": -70.0,
+    "count": 8,
+    "avg_mag": 4.413,
+    "toy_score": 1.071,
+    "phase": "low"
+  },
+  {
+    "lat_cell": -20.0,
+    "lon_cell": -178.0,
+    "count": 8,
+    "avg_mag": 4.35,
+    "toy_score": 1.056,
+    "phase": "low"
+  },
+  {
+    "lat_cell": 38.0,
+    "lon_cell": -112.0,
+    "count": 18,
+    "avg_mag": 1.847,
+    "toy_score": 1.008,
+    "phase": "low"
+  },
+  {
+    "lat_cell": 52.0,
+    "lon_cell": -176.0,
+    "count": 25,
+    "avg_mag": 1.303,
+    "toy_score": 0.988,
+    "phase": "stable"
+  },
+  {
+    "lat_cell": 64.0,
+    "lon_cell": -152.0,
+    "count": 16,
+    "avg_mag": 1.925,
+    "toy_score": 0.934,
+    "phase": "stable"
+  },
+  {
+    "lat_cell": 42.0,
+    "lon_cell": -122.0,
+    "count": 18,
+    "avg_mag": 1.711,
+    "toy_score": 0.934,
+    "phase": "stable"
+  },
+  {
+    "lat_cell": 52.0,
+    "lon_cell": -164.0,
+    "count": 10,
+    "avg_mag": 3.07,
+    "toy_score": 0.931,
+    "phase": "stable"
+  },
+  {
+    "lat_cell": 32.0,
+    "lon_cell": -94.0,
+    "count": 9,
+    "avg_mag": 3.333,
+    "toy_score": 0.91,
+    "phase": "stable"
+  },
+  {
+    "lat_cell": 38.0,
+    "lon_cell": 142.0,
+    "count": 6,
+    "avg_mag": 4.95,
+    "toy_score": 0.901,
+    "phase": "stable"
+  },
+  {
+    "lat_cell": -22.0,
+    "lon_cell": 68.0,
+    "count": 6,
+    "avg_mag": 4.883,
+    "toy_score": 0.889,
+    "phase": "stable"
+  },
+  {
+    "lat_cell": 54.0,
+    "lon_cell": -166.0,
+    "count": 18,
+    "avg_mag": 1.623,
+    "toy_score": 0.886,
+    "phase": "stable"
+  },
+  {
+    "lat_cell": -20.0,
+    "lon_cell": 168.0,
+    "count": 6,
+    "avg_mag": 4.85,
+    "toy_score": 0.883,
+    "phase": "stable"
+  },
+  {
+    "lat_cell": -18.0,
+    "lon_cell": -174.0,
+    "count": 6,
+    "avg_mag": 4.767,
+    "toy_score": 0.868,
+    "phase": "stable"
+  },
+  {
+    "lat_cell": 48.0,
+    "lon_cell": -124.0,
+    "count": 22,
+    "avg_mag": 1.288,
+    "toy_score": 0.86,
+    "phase": "stable"
+  },
+  {
+    "lat_cell": 48.0,
+    "lon_cell": -122.0,
+    "count": 16,
+    "avg_mag": 1.704,
+    "toy_score": 0.827,
+    "phase": "stable"
+  },
+  {
+    "lat_cell": -6.0,
+    "lon_cell": 150.0,
+    "count": 6,
+    "avg_mag": 4.533,
+    "toy_score": 0.825,
+    "phase": "stable"
+  },
+  {
+    "lat_cell": 54.0,
+    "lon_cell": -164.0,
+    "count": 11,
+    "avg_mag": 2.463,
+    "toy_score": 0.822,
+    "phase": "stable"
+  },
+  {
+    "lat_cell": -26.0,
+    "lon_cell": -68.0,
+    "count": 6,
+    "avg_mag": 4.517,
+    "toy_score": 0.822,
+    "phase": "stable"
+  },
+  {
+    "lat_cell": 6.0,
+    "lon_cell": 126.0,
+    "count": 6,
+    "avg_mag": 4.383,
+    "toy_score": 0.798,
+    "phase": "stable"
+  }
+]
