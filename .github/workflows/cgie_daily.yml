@@ -2,7 +2,7 @@ name: CGIE Daily Baseline Run
 
 on:
   schedule:
-    - cron: "15 6 * * *"   # Runs at 06:15 UTC
+    - cron: "15 6 * * *"
   workflow_dispatch:
 
 permissions:
@@ -40,6 +40,10 @@ jobs:
         run: |
           python baseline/v48_alert_engine.py
 
+      - name: Run toy model
+        run: |
+          python scripts/toy_model.py
+
       - name: Run V49 final report
         run: |
           python baseline/v49_final_report.py > outputs/latest/v49_report.txt
@@ -56,23 +60,16 @@ jobs:
         run: |
           python scripts/build_alert.py
 
-      - name: Send email alert
-        env:
-          EMAIL_USER: ${{ secrets.EMAIL_USER }}
-          EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
-          EMAIL_TO: ${{ secrets.EMAIL_TO }}
-        run: |
-          python scripts/notify_email.py
-
       - name: Save current as previous
         run: |
+          mkdir -p outputs/previous
           cp outputs/latest/status.json outputs/previous/status.json || true
 
       - name: Commit updated outputs
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add . || true
+          git add outputs/latest outputs/previous || true
           git diff --cached --quiet && exit 0
           git commit -m "Automated daily CGIE baseline update"
           git push
