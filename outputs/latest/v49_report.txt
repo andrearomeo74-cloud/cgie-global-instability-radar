@@ -1,0 +1,22 @@
+
+===== V49 FINAL REPORT =====
+
+--- CURRENT STATUS ---
+Status: elevated activity
+Trend: increasing
+Avg prob (7d): 0.166
+Max prob (7d): 0.62
+
+--- LAST ALERT ---
+Date: 2025-11-19 00:00:00+00:00
+State: early
+Prob: 0.62
+Reason: quality_jump
+
+--- ALERT ACTIVITY ---
+Alerts last 30 days: 1
+Total alerts: 7
+
+--- INTERPRETATION ---
+Elevated activity detected. Monitoring recommended.
+Trend indicates increasing pressure.
