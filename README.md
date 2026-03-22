@@ -100,6 +100,8 @@ Alert triggers are based on:
   "max_prob": 0.62
 }
 
+---
+
 ## 🧪 Validation approach
 
 The system is evaluated using:
@@ -127,6 +129,8 @@ Key aspects:
 
 ⚠️ CGIE is **not a deterministic prediction system**  
 It is a **systemic instability detection framework**
+
+---
 
 ## 🧩 Repository structure
 
