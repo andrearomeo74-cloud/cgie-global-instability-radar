@@ -30,6 +30,7 @@ jobs:
         run: |
           mkdir -p runtime
           mkdir -p outputs/latest
+          mkdir -p outputs/previous
 
       - name: Ensure events.csv exists
         run: |
@@ -47,11 +48,23 @@ jobs:
         run: |
           python scripts/generate_status.py
 
+      - name: Compare status (only if previous exists)
+        run: |
+          if [ -f outputs/previous/status.json ]; then
+            python scripts/compare_status.py
+          else
+            echo "No previous status, skipping comparison"
+          fi
+
+      - name: Save current as previous for next run
+        run: |
+          cp outputs/latest/status.json outputs/previous/status.json
+
       - name: Commit updated outputs
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add runtime outputs/latest || true
+          git add runtime outputs/latest outputs/previous || true
           git diff --cached --quiet && exit 0
           git commit -m "Automated daily CGIE baseline update"
           git push
