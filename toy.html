@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CGIE Toy Model</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f7fb;
+      color: #1f2937;
+      margin: 0;
+      padding: 24px;
+    }
+    .wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+    h1 {
+      margin-top: 0;
+    }
+    .item {
+      padding: 12px 0;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .phase {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>CGIE Toy Model</h1>
+    <p>Open simplified model based on USGS monthly data and 2x2 degree cell aggregation.</p>
+    <div id="list">Loading...</div>
+  </div>
+
+  <script>
+    fetch("./outputs/latest/toy_cells.json?cache=" + new Date().getTime())
+      .then(r => r.json())
+      .then(data => {
+        const list = document.getElementById("list");
+        list.innerHTML = data.slice(0, 20).map(cell => `
+          <div class="item">
+            <div><strong>Cell</strong>: ${cell.lat_cell}, ${cell.lon_cell}</div>
+            <div><strong>Events</strong>: ${cell.count}</div>
+            <div><strong>Average magnitude</strong>: ${cell.avg_mag}</div>
+            <div><strong>Toy score</strong>: ${cell.toy_score}</div>
+            <div class="phase"><strong>Phase</strong>: ${cell.phase}</div>
+          </div>
+        `).join("");
+      })
+      .catch(() => {
+        document.getElementById("list").innerHTML = "Unable to load toy model data.";
+      });
+  </script>
+</body>
+</html>
