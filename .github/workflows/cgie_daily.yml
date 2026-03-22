@@ -42,10 +42,11 @@ jobs:
       - name: Run V49 final report
         run: |
           python baseline/v49_final_report.py > outputs/latest/v49_report.txt
-          
+
       - name: Generate status JSON
-       run: python scripts/generate_status.py
-       
+        run: |
+          python scripts/generate_status.py
+
       - name: Commit updated outputs
         run: |
           git config user.name "github-actions[bot]"
