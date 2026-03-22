@@ -24,6 +24,33 @@ Instead of predicting specific events, CGIE focuses on:
 
 ---
 
+## 🔬 Scientific positioning
+
+CGIE is designed as a **non-deterministic early instability detection system**.
+
+Unlike traditional forecasting models, it does not attempt to predict specific events.  
+Instead, it identifies **systemic transitions and structural regime shifts**.
+
+The framework is based on:
+
+- probabilistic aggregation of event streams  
+- temporal coherence filtering  
+- transition detection in complex systems  
+- signal persistence analysis  
+
+This positions CGIE closer to:
+
+- early warning systems  
+- anomaly detection frameworks  
+- complex system monitoring  
+- phase transition analysis  
+
+rather than classical prediction models.
+
+The goal is to detect **when a system is becoming unstable**, not to predict **what exact event will occur**.
+
+---
+
 ## ⚙️ How it works
 
 The system runs a fully automated pipeline:
@@ -133,6 +160,50 @@ It is a **systemic instability detection framework**
 
 ---
 
+## 📊 Validation protocol
+
+The system is evaluated using a **strict prospective validation framework**:
+
+### Metrics
+
+- True Positives (TP)  
+- False Positives (FP)  
+- False Negatives (FN)  
+- True Negatives (TN)  
+
+Derived metrics:
+
+- Precision  
+- Recall  
+- Specificity  
+- False Positive Rate  
+- Lead-time distribution  
+
+### Evaluation principles
+
+- no retrospective fitting  
+- no parameter tuning on future data  
+- strict time-forward validation (walk-forward)  
+- base-rate awareness for rare events  
+
+### Key dimensions
+
+- **Temporal proximity**
+  Alignment between detected instability and real-world events  
+
+- **Lead-time**
+  Time between signal detection and event occurrence  
+
+- **Signal sparsity**
+  Avoidance of noisy or excessive alerts  
+
+- **Structural coherence**
+  Stability and consistency of detected patterns  
+
+⚠️ The system is evaluated on **behavior over time**, not single-event prediction accuracy.
+
+---
+
 ## 🧩 Repository structure
 
 baseline/   → core signal engine  
@@ -172,6 +243,44 @@ The system runs via GitHub Actions:
 - anomaly clustering visualization  
 - cross-domain extension (climate, finance, infrastructure)  
 - integration with Congruity framework (ICᵀ)  
+
+---
+
+## 🌍 Public validation
+
+CGIE is currently running as a **live public experiment**.
+
+### Characteristics
+
+- fully automated pipeline  
+- real-time data ingestion  
+- no manual intervention  
+- public outputs (GitHub Pages)  
+
+### Transparency
+
+- all alerts are time-stamped  
+- no retroactive edits  
+- full history available in repository  
+
+### Objective
+
+To demonstrate:
+
+- real-time instability detection capability  
+- robustness in open environments  
+- reproducibility of signals  
+- independence from manual bias  
+
+This approach enables **independent verification** by:
+
+- researchers  
+- institutions  
+- external observers  
+
+---
+
+⚠️ This is a **live observational system**, not a deterministic prediction tool.
 
 ---
 
