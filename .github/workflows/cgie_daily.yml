@@ -56,6 +56,14 @@ jobs:
         run: |
           python scripts/build_alert.py
 
+      - name: Send email alert
+        env:
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+        run: |
+          python scripts/notify_email.py
+
       - name: Save current as previous
         run: |
           cp outputs/latest/status.json outputs/previous/status.json || true
