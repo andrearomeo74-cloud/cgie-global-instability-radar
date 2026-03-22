@@ -1,200 +1,182 @@
-# Congruity Global Instability Engine  
-### Planetary Seismic Instability Radar
+# 🌍 Congruity Global Instability Engine (CGIE)
 
-Live site: https://andrearomeo74-cloud.github.io/cgie-global-instability-radar/
+### Planetary Instability Radar · Public Demo
 
-The Congruity Global Instability Engine (CGIE) is a research prototype for detecting and interpreting systemic instability patterns in global seismic activity.
+🔗 **Live Demo (Full Radar)**  
+https://andrearomeo74-cloud.github.io/cgie-global-instability-radar/map.html  
 
-The project combines spatial aggregation, probabilistic signal construction, and temporal coherence filtering to identify emerging instability regimes across the planetary seismic network.
+🔗 **Live Alert (Minimal View)**  
+https://andrearomeo74-cloud.github.io/cgie-global-instability-radar/alert.html  
 
 ---
 
-## What this repository contains
+## 🧠 What is CGIE
 
-This repository includes two complementary layers:
+The **Congruity Global Instability Engine (CGIE)** is an experimental system designed to detect and interpret **systemic instability patterns** in complex geophysical environments.
 
-### 1. Public radar layer
-A visual and exploratory interface showing global seismic instability patterns based on public earthquake data.
+Instead of predicting specific events, CGIE focuses on:
 
-### 2. Baseline pipeline (reproducible)
-A minimal, reproducible implementation of the core signal processing logic:
-
-- daily aggregation of seismic activity  
-- probabilistic instability signal  
+- detection of structural instability regimes  
+- identification of temporal shifts  
+- probabilistic signal aggregation  
 - coherence-based filtering  
-- alert generation  
-- system-level interpretation  
-
-The baseline pipeline is available in the `baseline/` folder and can be executed end-to-end.
+- early-phase transition signals  
 
 ---
 
-## Overview
+## ⚙️ How it works
 
-This project is designed as an exploratory observatory for complex system instability.
+The system runs a fully automated pipeline:
 
-It does not attempt deterministic prediction of specific earthquake events, but instead focuses on:
+1. **Data ingestion**
+   - seismic event streams (global)
 
-- detection of elevated instability regimes  
-- identification of spatial clustering patterns  
-- temporal evolution of system pressure  
-- interpretation of systemic transitions  
+2. **Aggregation**
+   - daily activity clustering  
+   - probabilistic signal construction  
 
-The approach is based on the idea that large-scale systems exhibit detectable structural deviations before major events.
+3. **Temporal analysis**
+   - coherence filtering  
+   - instability regime detection  
+
+4. **State generation**
+   - `status.json` (current system state)
+
+5. **Change detection**
+   - comparison vs previous state  
+
+6. **Alert engine**
+   - generates:
+     - `alert.txt` (human readable)
+     - `alert.json` (machine readable)
 
 ---
 
-## Validation results
+## 🚨 Alert system (Level 2)
 
-This repository includes an initial validation of the baseline Congruity Global Instability Engine using historical seismic data.
+CGIE includes a **graded alert system**:
 
-The objective is not deterministic prediction, but the evaluation of:
+| Level | Meaning |
+|------|--------|
+| 🟢 Stable | No significant change |
+| 🟡 Low | Minor variation |
+| 🟠 Medium | Moderate instability shift |
+| 🔴 High | Elevated instability regime |
 
-- signal quality  
+Alert triggers are based on:
+
+- state transitions  
+- trend changes  
+- probabilistic thresholds  
+- system coherence dynamics  
+
+---
+
+## 🌍 Public interface
+
+### 1. Global Radar
+- live alert state  
+- system snapshot  
+- embedded seismic visualization  
+
+👉 `map.html`
+
+---
+
+### 2. Alert Monitor
+- minimal real-time alert view  
+
+👉 `alert.html`
+
+---
+
+## 📊 Example system state
+
+```json
+{
+  "state": "elevated activity",
+  "trend": "increasing",
+  "avg_prob": 0.166,
+  "max_prob": 0.62
+}
+
+## 🧪 Validation approach
+
+The system is evaluated using:
+
+- temporal proximity to real events  
+- lead-time estimation  
 - false positive control  
-- temporal anticipation (lead time)  
-- system stability vs reactivity tradeoff  
+- signal coherence quality  
+
+Evaluation focuses on **system behavior over time**, not single-event prediction accuracy.
+
+Key aspects:
+
+- **Temporal alignment**
+  Measures how close detected instability signals are to real seismic events
+
+- **Lead time analysis**
+  Evaluates how early the system detects structural changes before events
+
+- **False positive control**
+  Ensures alerts remain sparse and meaningful rather than noisy
+
+- **Signal coherence**
+  Validates that detected patterns are structurally consistent, not random fluctuations
+
+⚠️ CGIE is **not a deterministic prediction system**  
+It is a **systemic instability detection framework**
+
+## 🧩 Repository structure
+
+baseline/    → core signal engine  
+scripts/     → pipeline utilities  
+outputs/     → generated states and alerts  
+docs/        → documentation  
+
+index.html   → radar visualization  
+alert.html   → alert UI  
+map.html     → full public dashboard  
 
 ---
 
-### Visual results
+## ⚙️ Automation
 
-#### Baseline performance
+The system runs via GitHub Actions:
 
-![V48 Performance](Images/v48_performance.png)
-
-#### Lead time distribution
-
-![Lead Distribution](Images/v48_lead_distribution.png)
-
----
-
-### Final baseline performance (V48)
-
-- Total alerts: 18  
-- True positives (TP): 6  
-- False positives (FP): 3  
-- Precision: **0.667**  
-
-- Average lead time: **~2.8 days**  
-- Max lead time: **5 days**
+- daily baseline execution  
+- automatic state update  
+- alert generation  
+- public deployment (GitHub Pages)  
 
 ---
 
-### Extended validation (V2–V3)
+## 📡 What makes CGIE different
 
-Using a walk-forward style evaluation with event windows of 1–5 days:
-
-- Alerts (V3): 6  
-- Precision: **0.67 → 0.83** (depending on horizon)  
-- Recall: **~0.04 → 0.06**  
-
-Lead time behavior:
-- Most detections occur at **0-day distance** (coincident detection)  
-- Occasional anticipatory signals observed (**up to 4 days lead**)  
+- not event prediction → **system state interpretation**  
+- focuses on **transitions, not outcomes**  
+- integrates **temporal + probabilistic coherence**  
+- designed as a **real-time observatory layer**  
 
 ---
 
-### Interpretation
+## 🚀 Next steps
 
-The system currently behaves as a **high-precision, low-recall instability trigger**:
-
-- Alerts are sparse but highly reliable  
-- False positives are limited  
-- The system prioritizes signal quality over coverage  
-
-Preliminary evidence suggests the presence of **early structural signals**, but these are:
-
-- not consistent across events  
-- not yet sufficient to support stable predictive performance  
+- multi-region instability mapping  
+- anomaly clustering visualization  
+- cross-domain extension (climate, finance, infrastructure)  
+- integration with Congruity framework (ICᵀ)  
 
 ---
 
-### System behavior
+## 📄 License
 
-The engine operates in three main regimes:
-
-- Quiet → stable background state  
-- Pressure / Early → emerging instability signals  
-- Confirmed / Strong → high-confidence activation phase  
-
-Transitions are driven by:
-
-- probability increase  
-- temporal coherence  
-- quality score dynamics  
+MIT  
 
 ---
 
-### What the results show
+## 👤 Author
 
-- Global seismic activity contains detectable structural variations  
-- Coherence filtering significantly reduces noise  
-- The system can identify activation phases  
-- Early signals may emerge before some events  
-
----
-
-### What the results do not show
-
-- Reliable prediction of all events  
-- High recall coverage  
-- Stable anticipatory performance  
-
----
-
-## Baseline pipeline
-
-See `baseline/README.md` for full details.
-
-Pipeline:
-
-`events.csv`  
-→ `v48_alert_engine.py`  
-→ `v48_alerts.csv` and `v48_daily.csv`  
-→ `v49_final_report.py`
-
----
-
-## Validation (baseline)
-
-We evaluated the temporal proximity between detected alerts and seismic events.
-
-Baseline:
-
-- Distances (days): [0, 0]  
-- Mean distance: 0.0 days  
-
-Lead-time test (shift -1 day):
-
-- Lead distances: [1, 1]  
-- Mean lead time: 1.0 day  
-
----
-
-### Events vs Alerts timeline
-
-This figure shows the temporal alignment between detected alerts and seismic events.
-
-![Events vs Alerts](Images/v48_timeline_fixed.png)
-
----
-
-### Notes
-
-This is a preliminary validation on a limited dataset and does not represent a full predictive evaluation.
-
----
-
-## What this project is not
-
-This project is not a deterministic earthquake prediction system.  
-It is not an official warning system.  
-
-It is a research framework for detecting and interpreting systemic instability patterns in complex geophysical systems.
-
----
-
-## License
-
-MIT
+Andrea Romeo  
+Congruity Framework, ICᵀ System
