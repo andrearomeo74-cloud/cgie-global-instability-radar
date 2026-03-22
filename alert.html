@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CGIE Live Alert</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 40px 20px;
+      background: #f7f9fc;
+      color: #1f2937;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 16px;
+      padding: 32px 24px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+
+    h1 {
+      margin-bottom: 8px;
+      font-size: 32px;
+    }
+
+    .subtitle {
+      color: #6b7280;
+      margin-bottom: 28px;
+    }
+
+    .status {
+      font-size: 28px;
+      font-weight: bold;
+      margin: 24px 0;
+    }
+
+    .stable {
+      color: #15803d;
+    }
+
+    .alert {
+      color: #b91c1c;
+    }
+
+    .box {
+      margin-top: 24px;
+      padding: 20px;
+      border-radius: 12px;
+      background: #f3f4f6;
+      text-align: left;
+    }
+
+    .changes {
+      margin-top: 16px;
+      line-height: 1.7;
+    }
+
+    .meta {
+      margin-top: 24px;
+      font-size: 14px;
+      color: #6b7280;
+    }
+
+    a {
+      color: #2563eb;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🌍 CGIE Live Alert</h1>
+    <div class="subtitle">Congruity Global Instability Engine, public alert demo</div>
+
+    <div id="status" class="status">Loading...</div>
+
+    <div id="details" class="box" style="display:none;">
+      <strong>Detected changes</strong>
+      <div id="changes" class="changes"></div>
+    </div>
+
+    <div id="snapshot" class="box" style="display:none;">
+      <strong>Current snapshot</strong>
+      <div id="current" class="changes"></div>
+    </div>
+
+    <div class="meta">
+      Data source: generated automatically from the CGIE workflow<br>
+      <a href="outputs/latest/alert.json">View raw alert.json</a>
+    </div>
+  </div>
+
+  <script>
+    fetch("outputs/latest/alert.json")
+      .then(response => response.json())
+      .then(data => {
+        const statusEl = document.getElementById("status");
+        const detailsEl = document.getElementById("details");
+        const snapshotEl = document.getElementById("snapshot");
+        const changesEl = document.getElementById("changes");
+        const currentEl = document.getElementById("current");
+
+        if (data.alert) {
+          statusEl.textContent = "🚨 ALERT DETECTED";
+          statusEl.className = "status alert";
+
+          detailsEl.style.display = "block";
+          snapshotEl.style.display = "block";
+
+          changesEl.innerHTML = data.changes.map(x => `• ${x}`).join("<br>");
+
+          if (data.current) {
+            currentEl.innerHTML = Object.entries(data.current)
+              .map(([k, v]) => `• <strong>${k}</strong>: ${v}`)
+              .join("<br>");
+          }
+        } else {
+          statusEl.textContent = "✅ System stable";
+          statusEl.className = "status stable";
+        }
+      })
+      .catch(error => {
+        const statusEl = document.getElementById("status");
+        statusEl.textContent = "⚠ Unable to load alert state";
+        statusEl.className = "status alert";
+        console.error(error);
+      });
+  </script>
+</body>
+</html>
