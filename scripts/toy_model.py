@@ -1,32 +1,57 @@
 import json
 import math
+import requests
 from collections import defaultdict
 from pathlib import Path
 
-import requests
-
-USGS_URL = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson"
 OUTPUT_JSON = Path("outputs/latest/toy_cells.json")
 
-GRID_SIZE = 2.0
+USGS_URL = (
+    "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/"
+    "all_month.geojson"
+)
 
 
-def grid_key(lat: float, lon: float, size: float = GRID_SIZE) -> tuple[float, float]:
-    lat_cell = math.floor(lat / size) * size
-    lon_cell = math.floor(lon / size) * size
-    return (lat_cell, lon_cell)
+# -----------------------------
+# Fetch data
+# -----------------------------
+def fetch_usgs():
+    print("Fetching USGS data...")
+    r = requests.get(USGS_URL, timeout=30)
+    r.raise_for_status()
+    return r.json()
 
 
-def fetch_usgs() -> dict:
-    response = requests.get(USGS_URL, timeout=30)
-    response.raise_for_status()
-    return response.json()
+# -----------------------------
+# Grid function (2° x 2°)
+# -----------------------------
+def grid_key(lat, lon):
+    lat_cell = int(lat // 2 * 2)
+    lon_cell = int(lon // 2 * 2)
+    return lat_cell, lon_cell
 
 
-def build_cells(data: dict) -> list[dict]:
-    cells: dict[tuple[float, float], dict] = defaultdict(
-        lambda: {"count": 0, "mag_sum": 0.0, "events": []}
-    )
+# -----------------------------
+# Phase assignment
+# -----------------------------
+def assign_phase(score):
+    if score < 0.5:
+        return "stable"
+    elif score < 1.0:
+        return "low"
+    elif score < 2.0:
+        return "moderate"
+    elif score < 4.0:
+        return "high"
+    else:
+        return "critical"
+
+
+# -----------------------------
+# Build cells
+# -----------------------------
+def build_cells(data):
+    cells = defaultdict(lambda: {"count": 0, "mag_sum": 0.0, "events": []})
 
     features = data.get("features", [])
 
@@ -46,6 +71,7 @@ def build_cells(data: dict) -> list[dict]:
             continue
 
         key = grid_key(lat, lon)
+
         cells[key]["count"] += 1
         cells[key]["mag_sum"] += float(mag)
         cells[key]["events"].append(
@@ -58,6 +84,9 @@ def build_cells(data: dict) -> list[dict]:
             }
         )
 
+    # -----------------------------
+    # Compute baseline (normalization)
+    # -----------------------------
     raw_scores = []
     for cell_data in cells.values():
         avg_mag = cell_data["mag_sum"] / cell_data["count"]
@@ -66,19 +95,19 @@ def build_cells(data: dict) -> list[dict]:
 
     baseline = sum(raw_scores) / len(raw_scores) if raw_scores else 1.0
 
+    # -----------------------------
+    # Build results
+    # -----------------------------
     results = []
+
     for (lat_cell, lon_cell), cell_data in cells.items():
         avg_mag = cell_data["mag_sum"] / cell_data["count"]
-        toy_score = (cell_data["count"] * avg_mag) / baseline if baseline > 0 else 0.0
 
-        if toy_score >= 3.0:
-            phase = "high"
-        elif toy_score >= 1.8:
-            phase = "medium"
-        elif toy_score >= 1.0:
-            phase = "low"
-        else:
-            phase = "stable"
+        toy_score = (
+            (cell_data["count"] * avg_mag) / baseline if baseline > 0 else 0.0
+        )
+
+        phase = assign_phase(toy_score)
 
         results.append(
             {
@@ -91,15 +120,22 @@ def build_cells(data: dict) -> list[dict]:
             }
         )
 
+    # ordina per score
     results.sort(key=lambda x: x["toy_score"], reverse=True)
+
     return results
 
 
-def main() -> None:
+# -----------------------------
+# Main
+# -----------------------------
+def main():
     data = fetch_usgs()
     cells = build_cells(data)
 
     OUTPUT_JSON.parent.mkdir(parents=True, exist_ok=True)
+
+    # salva solo top 100 celle
     OUTPUT_JSON.write_text(json.dumps(cells[:100], indent=2), encoding="utf-8")
 
     print(f"Saved {min(len(cells), 100)} toy model cells to {OUTPUT_JSON}")
