@@ -1,0 +1,53 @@
+name: CGIE Daily Baseline Run
+
+on:
+  schedule:
+    - cron: "15 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  run-baseline:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas numpy requests
+
+      - name: Create runtime folders
+        run: |
+          mkdir -p runtime
+          mkdir -p outputs/latest
+
+      - name: Ensure events.csv exists
+        run: |
+          cp baseline/events.csv events.csv || echo "events.csv missing"
+
+      - name: Run V48 baseline
+        run: |
+          python baseline/v48_alert_engine.py
+
+      - name: Run V49 final report
+        run: |
+          python baseline/v49_final_report.py > outputs/latest/v49_report.txt
+
+      - name: Commit updated outputs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add runtime outputs/latest || true
+          git diff --cached --quiet && exit 0
+          git commit -m "Automated daily CGIE baseline update"
+          git push
