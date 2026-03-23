@@ -1,4 +1,5 @@
 import json
+import math
 import requests
 from collections import defaultdict
 from pathlib import Path
@@ -92,17 +93,19 @@ def build_cells(data):
     raw_scores = []
     for cell_data in cells.values():
         avg_mag = cell_data["mag_sum"] / cell_data["count"]
-        score = cell_data["count"] * avg_mag
-        raw_scores.append(score)
+        base_score = cell_data["count"] * avg_mag
+        raw_scores.append(base_score)
 
     baseline = sum(raw_scores) / len(raw_scores) if raw_scores else 1.0
 
     temp_results = []
     for (lat_cell, lon_cell), cell_data in cells.items():
         avg_mag = cell_data["mag_sum"] / cell_data["count"]
-        toy_score = (
+
+        raw_score = (
             (cell_data["count"] * avg_mag) / baseline if baseline > 0 else 0.0
         )
+        toy_score = math.log1p(raw_score)
 
         temp_results.append(
             {
@@ -120,6 +123,8 @@ def build_cells(data):
     p50 = percentile(scores, 50)
     p70 = percentile(scores, 70)
     p90 = percentile(scores, 90)
+
+    print("Percentiles:", p30, p50, p70, p90)
 
     results = []
     for row in temp_results:
