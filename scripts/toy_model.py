@@ -141,7 +141,7 @@ def main():
     cells = build_cells(data)
 
     OUTPUT_JSON.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT_JSON.write_text(json.dumps(cells[:100], indent=2), encoding="utf-8")
+    OUTPUT_JSON.write_text(json.dumps(results[:100], indent=2), encoding="utf-8")
 
     print(f"Saved {min(len(cells), 100)} toy model cells to {OUTPUT_JSON}")
 
