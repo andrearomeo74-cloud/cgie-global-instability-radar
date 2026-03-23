@@ -43,14 +43,14 @@ def percentile(sorted_values, p):
     return d0 + d1
 
 
-def assign_phase(score, p30, p50, p70, p90):
-    if score >= p90:
+def assign_phase(score, p40, p60, p80, p95):
+    if score >= p95:
         return "critical"
-    elif score >= p70:
+    elif score >= p80:
         return "high"
-    elif score >= p50:
+    elif score >= p60:
         return "moderate"
-    elif score >= p30:
+    elif score >= p40:
         return "low"
     else:
         return "stable"
@@ -105,7 +105,9 @@ def build_cells(data):
         raw_score = (
             (cell_data["count"] * avg_mag) / baseline if baseline > 0 else 0.0
         )
-        toy_score = math.log1p(raw_score)
+
+        toy_score = math.log1p(raw_score) * 2.5
+        toy_score = max(0.0, toy_score)
 
         temp_results.append(
             {
@@ -119,16 +121,16 @@ def build_cells(data):
 
     scores = sorted([r["toy_score"] for r in temp_results])
 
-    p30 = percentile(scores, 30)
-    p50 = percentile(scores, 50)
-    p70 = percentile(scores, 70)
-    p90 = percentile(scores, 90)
+    p40 = percentile(scores, 40)
+    p60 = percentile(scores, 60)
+    p80 = percentile(scores, 80)
+    p95 = percentile(scores, 95)
 
-    print("Percentiles:", p30, p50, p70, p90)
+    print("Percentiles:", p40, p60, p80, p95)
 
     results = []
     for row in temp_results:
-        phase = assign_phase(row["toy_score"], p30, p50, p70, p90)
+        phase = assign_phase(row["toy_score"], p40, p60, p80, p95)
         row["phase"] = phase
         results.append(row)
 
