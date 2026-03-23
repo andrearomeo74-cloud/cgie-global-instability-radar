@@ -43,14 +43,28 @@ def percentile(sorted_values, p):
     return d0 + d1
 
 
-def assign_phase(score, p40, p60, p80, p95):
-    if score >= p95:
+def assign_phase(score, p30, p50, p70, p90):
+    # fallback se i percentili sono troppo vicini
+    if abs(p90 - p30) < 0.5:
+        if score >= 7.0:
+            return "critical"
+        elif score >= 5.0:
+            return "high"
+        elif score >= 3.0:
+            return "moderate"
+        elif score >= 1.5:
+            return "low"
+        else:
+            return "stable"
+
+    # classificazione normale con percentili
+    if score >= p90:
         return "critical"
-    elif score >= p80:
+    elif score >= p70:
         return "high"
-    elif score >= p60:
+    elif score >= p50:
         return "moderate"
-    elif score >= p40:
+    elif score >= p30:
         return "low"
     else:
         return "stable"
@@ -106,7 +120,7 @@ def build_cells(data):
             (cell_data["count"] * avg_mag) / baseline if baseline > 0 else 0.0
         )
 
-        toy_score = math.log1p(raw_score) * 2.5
+        toy_score = math.log1p(raw_score)
         toy_score = max(0.0, toy_score)
 
         temp_results.append(
@@ -134,20 +148,21 @@ def build_cells(data):
 
     norm_scores = sorted([r["norm_score"] for r in temp_results])
 
-    p40 = percentile(norm_scores, 40)
-    p60 = percentile(norm_scores, 60)
-    p80 = percentile(norm_scores, 80)
-    p95 = percentile(norm_scores, 95)
+    p30 = percentile(norm_scores, 30)
+    p50 = percentile(norm_scores, 50)
+    p70 = percentile(norm_scores, 70)
+    p90 = percentile(norm_scores, 90)
 
-    print("Percentiles:", p40, p60, p80, p95)
+    print("Percentiles:", p30, p50, p70, p90)
+    print("Spread:", p90 - p30)
 
     results = []
     for row in temp_results:
-        phase = assign_phase(row["norm_score"], p40, p60, p80, p95)
+        phase = assign_phase(row["toy_score"], p30, p50, p70, p90)
         row["phase"] = phase
         results.append(row)
 
-    results.sort(key=lambda x: x["norm_score"], reverse=True)
+    results.sort(key=lambda x: x["toy_score"], reverse=True)
     return results
 
 
