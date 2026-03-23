@@ -138,12 +138,12 @@ def build_cells(data):
 
 def main():
     data = fetch_usgs()
-    cells = build_cells(data)
+    results = build_cells(data)
 
     OUTPUT_JSON.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT_JSON.write_text(json.dumps(results[:100], indent=2), encoding="utf-8")
 
-    print(f"Saved {min(len(cells), 100)} toy model cells to {OUTPUT_JSON}")
+    print(f"Saved {min(len(results), 100)} toy model cells to {OUTPUT_JSON}")
 
 
 if __name__ == "__main__":
