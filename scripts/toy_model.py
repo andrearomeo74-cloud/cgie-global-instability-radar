@@ -119,22 +119,35 @@ def build_cells(data):
             }
         )
 
-    scores = sorted([r["toy_score"] for r in temp_results])
+    scores = [r["toy_score"] for r in temp_results]
 
-    p40 = percentile(scores, 40)
-    p60 = percentile(scores, 60)
-    p80 = percentile(scores, 80)
-    p95 = percentile(scores, 95)
+    min_s = min(scores) if scores else 0.0
+    max_s = max(scores) if scores else 1.0
+
+    for r in temp_results:
+        if max_s > min_s:
+            r["norm_score"] = round(
+                (r["toy_score"] - min_s) / (max_s - min_s), 3
+            )
+        else:
+            r["norm_score"] = 0.0
+
+    norm_scores = sorted([r["norm_score"] for r in temp_results])
+
+    p40 = percentile(norm_scores, 40)
+    p60 = percentile(norm_scores, 60)
+    p80 = percentile(norm_scores, 80)
+    p95 = percentile(norm_scores, 95)
 
     print("Percentiles:", p40, p60, p80, p95)
 
     results = []
     for row in temp_results:
-        phase = assign_phase(row["toy_score"], p40, p60, p80, p95)
+        phase = assign_phase(row["norm_score"], p40, p60, p80, p95)
         row["phase"] = phase
         results.append(row)
 
-    results.sort(key=lambda x: x["toy_score"], reverse=True)
+    results.sort(key=lambda x: x["norm_score"], reverse=True)
     return results
 
 
