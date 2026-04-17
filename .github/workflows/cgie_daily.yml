@@ -1,8 +1,7 @@
 name: CGIE Daily Baseline Run
 
 on:
-  schedule:
-    - cron: "15 6 * * *"
+  on:
   workflow_dispatch:
 
 permissions:
