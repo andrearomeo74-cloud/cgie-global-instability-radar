@@ -581,6 +581,65 @@ def normalize_features(
         ]
     )
 
+    coverage_policy = missing_config.get(
+        "coverage_policy",
+        {},
+    )
+
+    default_coverage_basis = coverage_policy.get(
+        "default_basis",
+        "all_baseline_endpoints",
+    )
+
+    event_dependent_coverage_basis = (
+        coverage_policy.get(
+            "event_dependent_basis",
+            "nonempty_baseline_windows",
+        )
+    )
+
+    event_dependent_features = set(
+        coverage_policy.get(
+            "event_dependent_features",
+            [],
+        )
+    )
+
+    report_unconditional_coverage = bool(
+        coverage_policy.get(
+            "report_unconditional_coverage",
+            True,
+        )
+    )
+
+    report_conditional_coverage = bool(
+        coverage_policy.get(
+            "report_conditional_coverage",
+            True,
+        )
+    )
+
+    if default_coverage_basis != "all_baseline_endpoints":
+        fail(
+            "Unsupported default coverage basis: "
+            f"{default_coverage_basis}"
+        )
+
+    if (
+        event_dependent_coverage_basis
+        != "nonempty_baseline_windows"
+    ):
+        fail(
+            "Unsupported event-dependent coverage basis: "
+            f"{event_dependent_coverage_basis}"
+        )
+
+    if "event_count" not in output.columns:
+        fail(
+            "event_count is required for conditional "
+            "baseline coverage."
+        )
+
     parameters: dict[str, Any] = {}
 
     for window_id in config[
@@ -611,20 +670,69 @@ def normalize_features(
         parameters[window_id] = {}
 
         for feature in selected_features:
-            baseline_values = output.loc[
+            all_baseline_values = output.loc[
                 baseline_mask,
                 feature,
             ]
 
-            coverage = float(
-                baseline_values.notna().mean()
+            unconditional_coverage = float(
+                all_baseline_values.notna().mean()
             )
+
+            is_event_dependent = (
+                feature in event_dependent_features
+            )
+
+            if is_event_dependent:
+                relevant_baseline_mask = (
+                    baseline_mask
+                    & (
+                        pd.to_numeric(
+                            output["event_count"],
+                            errors="coerce",
+                        ).fillna(0.0)
+                        > 0.0
+                    )
+                )
+
+                baseline_values = output.loc[
+                    relevant_baseline_mask,
+                    feature,
+                ]
+
+                if baseline_values.empty:
+                    fail(
+                        "No nonempty baseline windows for "
+                        f"{window_id}/{feature}."
+                    )
+
+                conditional_coverage = float(
+                    baseline_values.notna().mean()
+                )
+
+                coverage = conditional_coverage
+                coverage_basis = (
+                    "nonempty_baseline_windows"
+                )
+
+            else:
+                baseline_values = (
+                    all_baseline_values
+                )
+
+                conditional_coverage = None
+                coverage = unconditional_coverage
+                coverage_basis = (
+                    "all_baseline_endpoints"
+                )
 
             if coverage < minimum_coverage:
                 fail(
                     "Baseline coverage below frozen "
-                    f"minimum for {window_id}/{feature}: "
-                    f"{coverage:.4f}"
+                    "minimum for "
+                    f"{window_id}/{feature}: "
+                    f"{coverage:.4f} "
+                    f"(basis={coverage_basis})"
                 )
 
             estimates = estimate_robust_parameters(
@@ -704,15 +812,36 @@ def normalize_features(
                 continuity_column,
             ] = continuity
 
-            parameters[window_id][feature] = {
+            parameter_record = {
                 **estimates,
                 "baseline_coverage_fraction":
                     coverage,
+                "coverage_basis":
+                    coverage_basis,
+                "event_dependent_feature":
+                    is_event_dependent,
                 "direction":
                     directions[feature],
                 "imputation_value":
                     median,
             }
+
+            if report_unconditional_coverage:
+                parameter_record[
+                    "unconditional_baseline_coverage_fraction"
+                ] = unconditional_coverage
+
+            if (
+                report_conditional_coverage
+                and conditional_coverage is not None
+            ):
+                parameter_record[
+                    "conditional_nonempty_baseline_coverage_fraction"
+                ] = conditional_coverage
+
+            parameters[window_id][feature] = (
+                parameter_record
+            )
 
     return output, parameters
 
