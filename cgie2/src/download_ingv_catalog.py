@@ -699,7 +699,6 @@ def main() -> None:
 
     baseline_start = parse_utc(
         configuration["baseline"]["start"]
-        + "T00:00:00Z"
     )
 
     test_end = parse_utc(
