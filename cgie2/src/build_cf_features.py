@@ -537,8 +537,8 @@ def load_catalogue(
         working["time_utc"],
         utc=True,
         errors="coerce",
+        format="mixed",
     )
-
     if working["time_utc"].isna().any():
         fail("Catalogue contains invalid timestamps.")
 
@@ -1150,8 +1150,8 @@ def validate_feature_table(
         feature_table["endpoint_utc"],
         utc=True,
         errors="coerce",
+        format="mixed",
     )
-
     if endpoints.isna().any():
         fail(
             "Generated feature table contains invalid endpoints."
@@ -1252,8 +1252,8 @@ def validate_feature_table(
     order_check["_endpoint"] = pd.to_datetime(
         order_check["endpoint_utc"],
         utc=True,
+        format="mixed",
     )
-
     order_check["_window_order"] = (
         order_check["window_id"]
         .map(window_order)
