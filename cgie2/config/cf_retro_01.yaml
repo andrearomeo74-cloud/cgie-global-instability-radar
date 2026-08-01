@@ -1,0 +1,153 @@
+experiment:
+
+  id: CF_RETRO_01
+
+  version: "1.0"
+
+  status: FROZEN
+
+  domain: campi_flegrei
+
+  description: >
+    Retrospective validation of structural instability before
+    the Campi Flegrei earthquake of 31 July 2026.
+
+
+target_event:
+
+  local_time: "2026-07-31T19:46:43"
+
+  utc_time: "2026-07-31T17:46:43Z"
+
+  cutoff_time: "2026-07-31T17:46:42Z"
+
+
+geography:
+
+  latitude: 40.8315
+
+  longitude: 14.1402
+
+  radius_km: 15
+
+
+baseline:
+
+  start: "2025-01-01"
+
+  end: "2025-12-31"
+
+
+test_period:
+
+  start: "2026-01-01"
+
+  end: "2026-07-31T17:46:42Z"
+
+
+time_windows:
+
+  - 1d
+
+  - 3d
+
+  - 7d
+
+  - 30d
+
+
+required_variables:
+
+  - event_id
+
+  - time
+
+  - latitude
+
+  - longitude
+
+  - depth
+
+  - magnitude
+
+  - magnitude_type
+
+
+conventional_metrics:
+
+  - event_count
+
+  - max_magnitude
+
+  - median_magnitude
+
+  - cumulative_energy
+
+  - median_depth
+
+  - depth_dispersion
+
+  - spatial_dispersion
+
+  - median_interevent_time
+
+
+congruity_metrics:
+
+  - Gamma_CF
+
+  - CRM
+
+  - SCI
+
+
+thresholds:
+
+  attention_percentile: 90
+
+  anomaly_percentile: 95
+
+  structural_percentile: 99
+
+  persistence_windows: 2
+
+  reset_windows: 3
+
+
+outputs:
+
+  catalog: outputs/CF_RETRO_01_catalog_frozen.csv
+
+  features: outputs/CF_RETRO_01_features.csv
+
+  metrics: outputs/CF_RETRO_01_metrics.csv
+
+  alerts: outputs/CF_RETRO_01_alerts.csv
+
+  report: outputs/CF_RETRO_01_report.md
+
+
+reproducibility:
+
+  record_commit_hash: true
+
+  record_input_hash: true
+
+  record_execution_time: true
+
+  record_configuration_hash: true
+
+  record_protocol_version: true
+
+
+rules:
+
+  use_future_data: false
+
+  modify_thresholds_after_run: false
+
+  modify_radius_after_run: false
+
+  modify_baseline_after_run: false
+
+  allow_post_event_features: false
