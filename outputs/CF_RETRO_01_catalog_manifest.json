@@ -1,0 +1,175 @@
+{
+  "chunk_count": 20,
+  "chunk_days": 30,
+  "code_commit": "85fc46b2f5435d8de45198d9482242f4e62f904b",
+  "configuration_file": "cgie2/config/cf_retro_01.yaml",
+  "configuration_sha256": "d9b186c83a8600dd6b67c8f6a458e63ddcd4e441f636cbabadafba5ff0c34d4d",
+  "data_cutoff_utc": "2026-07-31T17:46:42Z",
+  "data_start_utc": "2025-01-01T00:00:00Z",
+  "earliest_saved_event_utc": "2025-01-02T16:04:27.539Z",
+  "execution_timestamp_utc": "2026-08-01T14:57:27.892006Z",
+  "experiment_id": "CF_RETRO_01",
+  "experiment_version": "1.1",
+  "geographic_domain": {
+    "latitude": 40.8315,
+    "longitude": 14.1402,
+    "radius_km": 15.0
+  },
+  "latest_saved_event_utc": "2026-07-31T04:23:38.410Z",
+  "output_file": "outputs/CF_RETRO_01_catalog_frozen.csv",
+  "output_sha256": "9778fddde1c30d6130fa3b2431b924b8417ed00fa1faf89677bf3fb0c765c17a",
+  "protocol_status": "FROZEN",
+  "queries": [
+    {
+      "chunk_number": 1,
+      "end_utc": "2025-01-31T00:00:00Z",
+      "records_received": 30,
+      "response_sha256": "a096a51d46c5ad9aa51477f7d887292027813e506ee9d7776eeec93a5bf265ff",
+      "start_utc": "2025-01-01T00:00:00Z"
+    },
+    {
+      "chunk_number": 2,
+      "end_utc": "2025-03-02T00:00:01Z",
+      "records_received": 259,
+      "response_sha256": "33ad7e0d41ede012564ff8d404b4b182e9de90a8e817ef07b3713b7892092d8a",
+      "start_utc": "2025-01-31T00:00:01Z"
+    },
+    {
+      "chunk_number": 3,
+      "end_utc": "2025-04-01T00:00:02Z",
+      "records_received": 69,
+      "response_sha256": "617f71837932ee60782939d03407c754a02d0a89cc4d643f9dd883719ea639b9",
+      "start_utc": "2025-03-02T00:00:02Z"
+    },
+    {
+      "chunk_number": 4,
+      "end_utc": "2025-05-01T00:00:03Z",
+      "records_received": 53,
+      "response_sha256": "eafdf7f399b2fc8f7f05193c9f6a9803059e10a21e6d6aa72ef6adc11ec3c170",
+      "start_utc": "2025-04-01T00:00:03Z"
+    },
+    {
+      "chunk_number": 5,
+      "end_utc": "2025-05-31T00:00:04Z",
+      "records_received": 48,
+      "response_sha256": "c424bfafa01f2e26cdedf73eb78caafc662691223e64cd30e2584397407af5bf",
+      "start_utc": "2025-05-01T00:00:04Z"
+    },
+    {
+      "chunk_number": 6,
+      "end_utc": "2025-06-30T00:00:05Z",
+      "records_received": 64,
+      "response_sha256": "4a34eb1cfa007686246e8fbf2e1d8107f345858d02bd0e7fbdcc950eddd42fab",
+      "start_utc": "2025-05-31T00:00:05Z"
+    },
+    {
+      "chunk_number": 7,
+      "end_utc": "2025-07-30T00:00:06Z",
+      "records_received": 43,
+      "response_sha256": "dc091f7bbac17dcb9d6696144fc2abaff337d510de17dfed7b7d82403f0355e5",
+      "start_utc": "2025-06-30T00:00:06Z"
+    },
+    {
+      "chunk_number": 8,
+      "end_utc": "2025-08-29T00:00:07Z",
+      "records_received": 63,
+      "response_sha256": "e7808d1884d6a3cd9092dcf994e694b22326c7c827d0aa1692c45c692a5cdebd",
+      "start_utc": "2025-07-30T00:00:07Z"
+    },
+    {
+      "chunk_number": 9,
+      "end_utc": "2025-09-28T00:00:08Z",
+      "records_received": 80,
+      "response_sha256": "ae0f6b00410a08a373008a50f2638467f0d7e1afacab048adaa529228b627ea6",
+      "start_utc": "2025-08-29T00:00:08Z"
+    },
+    {
+      "chunk_number": 10,
+      "end_utc": "2025-10-28T00:00:09Z",
+      "records_received": 131,
+      "response_sha256": "6250821ae12fc8f6e6bad202a909795fe1cf4915a173434330b2b4c5c67c5260",
+      "start_utc": "2025-09-28T00:00:09Z"
+    },
+    {
+      "chunk_number": 11,
+      "end_utc": "2025-11-27T00:00:10Z",
+      "records_received": 117,
+      "response_sha256": "1b1d3f0bf2e99253394e554a0d7944c6f0f3bea78f8580ec664425a795f700d5",
+      "start_utc": "2025-10-28T00:00:10Z"
+    },
+    {
+      "chunk_number": 12,
+      "end_utc": "2025-12-27T00:00:11Z",
+      "records_received": 52,
+      "response_sha256": "de10f17ea6f950b53e53c1be38c5a25785d83da47208fe0eb65222c0b6ec2cbb",
+      "start_utc": "2025-11-27T00:00:11Z"
+    },
+    {
+      "chunk_number": 13,
+      "end_utc": "2026-01-26T00:00:12Z",
+      "records_received": 31,
+      "response_sha256": "62e6abb4a7b4eee75751ab0cd5fb0141d06e3566e2ce29335f9eeb2b0be078e4",
+      "start_utc": "2025-12-27T00:00:12Z"
+    },
+    {
+      "chunk_number": 14,
+      "end_utc": "2026-02-25T00:00:13Z",
+      "records_received": 28,
+      "response_sha256": "221fd1555288dbd3e6b947872ba17b105bddf94ccbd382a3c81918baeb9b7bb4",
+      "start_utc": "2026-01-26T00:00:13Z"
+    },
+    {
+      "chunk_number": 15,
+      "end_utc": "2026-03-27T00:00:14Z",
+      "records_received": 19,
+      "response_sha256": "775ed6dec29c080b08ee3aa4a424e266638395551b8c6e8dbc26c99d6c19630a",
+      "start_utc": "2026-02-25T00:00:14Z"
+    },
+    {
+      "chunk_number": 16,
+      "end_utc": "2026-04-26T00:00:15Z",
+      "records_received": 25,
+      "response_sha256": "488185e0cf0d102b72455c004a0b93c360ea4d28cc1221d9543e97a2f4570980",
+      "start_utc": "2026-03-27T00:00:15Z"
+    },
+    {
+      "chunk_number": 17,
+      "end_utc": "2026-05-26T00:00:16Z",
+      "records_received": 23,
+      "response_sha256": "bc433512eef32aa45ba3e4b792995371e7d3efb64d377b921dfe01cac4507d49",
+      "start_utc": "2026-04-26T00:00:16Z"
+    },
+    {
+      "chunk_number": 18,
+      "end_utc": "2026-06-25T00:00:17Z",
+      "records_received": 25,
+      "response_sha256": "fe8adf1abd77fbf7c032c5db3d60d55c2f6bd714cd591099b8f7af62e76c8b05",
+      "start_utc": "2026-05-26T00:00:17Z"
+    },
+    {
+      "chunk_number": 19,
+      "end_utc": "2026-07-25T00:00:18Z",
+      "records_received": 23,
+      "response_sha256": "2f6d8f6f927840a8421639260639ab8b37972ba60954fc8dd2ad7fe37c34dbd0",
+      "start_utc": "2026-06-25T00:00:18Z"
+    },
+    {
+      "chunk_number": 20,
+      "end_utc": "2026-07-31T17:46:42Z",
+      "records_received": 11,
+      "response_sha256": "1daf8bf93fac15bdb8bd04ade1b69eda57033597b09c30185d160a549fcb5f37",
+      "start_utc": "2026-07-25T00:00:19Z"
+    }
+  ],
+  "request_format": "text",
+  "service_endpoint": "https://webservices.ingv.it/fdsnws/event/1/query",
+  "statistics": {
+    "downloaded_rows": 1194,
+    "duplicate_rows_removed": 0,
+    "final_rows": 1194,
+    "invalid_rows_removed": 0,
+    "outside_radius_rows_removed": 0,
+    "post_cutoff_rows_removed": 0
+  },
+  "target_event_utc": "2026-07-31T17:46:43Z"
+}

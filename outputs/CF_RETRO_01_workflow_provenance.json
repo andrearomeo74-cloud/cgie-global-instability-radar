@@ -1,0 +1,14 @@
+{
+  "actor": "andrearomeo74-cloud",
+  "branch": "main",
+  "execution_timestamp_utc": "2026-08-01T14:57:28.370952Z",
+  "experiment_id": "CF_RETRO_01",
+  "repository": "andrearomeo74-cloud/cgie-global-instability-radar",
+  "repository_owner": "andrearomeo74-cloud",
+  "runner_operating_system": "Linux",
+  "source_commit": "85fc46b2f5435d8de45198d9482242f4e62f904b",
+  "workflow_name": "CF-RETRO-01 Download Frozen Catalogue",
+  "workflow_run_attempt": "1",
+  "workflow_run_id": "30704849274",
+  "workflow_run_number": "3"
+}
