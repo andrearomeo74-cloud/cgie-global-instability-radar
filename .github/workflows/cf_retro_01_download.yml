@@ -1,0 +1,304 @@
+name: CF-RETRO-01 Download Frozen Catalogue
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cf-retro-01-download
+  cancel-in-progress: false
+
+jobs:
+  download-frozen-catalogue:
+    name: Download and freeze INGV catalogue
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-cgie2.txt
+
+      - name: Display execution context
+        run: |
+          echo "Repository: $GITHUB_REPOSITORY"
+          echo "Branch: $GITHUB_REF_NAME"
+          echo "Commit before execution: $GITHUB_SHA"
+          echo "Workflow run ID: $GITHUB_RUN_ID"
+          echo "Workflow run attempt: $GITHUB_RUN_ATTEMPT"
+          python --version
+          pip --version
+
+      - name: Upgrade pip
+        run: |
+          python -m pip install --upgrade pip
+
+      - name: Install frozen dependencies
+        run: |
+          python -m pip install -r requirements-cgie2.txt
+
+      - name: Validate required input files
+        run: |
+          test -f cgie2/config/cf_retro_01.yaml
+          test -f cgie2/src/download_ingv_catalog.py
+          test -f requirements-cgie2.txt
+
+          echo "Required input files found:"
+          ls -l cgie2/config/cf_retro_01.yaml
+          ls -l cgie2/src/download_ingv_catalog.py
+          ls -l requirements-cgie2.txt
+
+      - name: Execute frozen catalogue acquisition
+        env:
+          PYTHONUNBUFFERED: "1"
+        run: |
+          python cgie2/src/download_ingv_catalog.py
+
+      - name: Verify generated outputs
+        run: |
+          test -s outputs/CF_RETRO_01_catalog_frozen.csv
+          test -s outputs/CF_RETRO_01_catalog_frozen.csv.sha256
+          test -s outputs/CF_RETRO_01_catalog_manifest.json
+
+          echo "Generated outputs:"
+          ls -lh outputs/CF_RETRO_01_catalog_frozen.csv
+          ls -lh outputs/CF_RETRO_01_catalog_frozen.csv.sha256
+          ls -lh outputs/CF_RETRO_01_catalog_manifest.json
+
+      - name: Verify catalogue hash
+        working-directory: outputs
+        run: |
+          sha256sum --check CF_RETRO_01_catalog_frozen.csv.sha256
+
+      - name: Check target event exclusion
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          import pandas as pd
+
+          catalogue_path = Path(
+              "outputs/CF_RETRO_01_catalog_frozen.csv"
+          )
+
+          manifest_path = Path(
+              "outputs/CF_RETRO_01_catalog_manifest.json"
+          )
+
+          catalogue = pd.read_csv(catalogue_path)
+
+          if catalogue.empty:
+              raise SystemExit(
+                  "ERROR: generated catalogue is empty."
+              )
+
+          required_columns = {
+              "event_id",
+              "time_utc",
+              "latitude",
+              "longitude",
+              "depth_km",
+              "magnitude",
+              "magnitude_type",
+              "distance_from_reference_km",
+              "source",
+          }
+
+          missing_columns = sorted(
+              required_columns.difference(catalogue.columns)
+          )
+
+          if missing_columns:
+              raise SystemExit(
+                  "ERROR: missing catalogue columns: "
+                  + ", ".join(missing_columns)
+              )
+
+          times = pd.to_datetime(
+              catalogue["time_utc"],
+              utc=True,
+              errors="raise",
+          )
+
+          frozen_cutoff = pd.Timestamp(
+              "2026-07-31T17:46:42Z"
+          )
+
+          target_event = pd.Timestamp(
+              "2026-07-31T17:46:43Z"
+          )
+
+          if times.max() > frozen_cutoff:
+              raise SystemExit(
+                  "ERROR: catalogue contains observations "
+                  "after the frozen cutoff."
+              )
+
+          if (times >= target_event).any():
+              raise SystemExit(
+                  "ERROR: target event or later observations "
+                  "are present in the frozen catalogue."
+              )
+
+          distances = pd.to_numeric(
+              catalogue["distance_from_reference_km"],
+              errors="raise",
+          )
+
+          if (distances > 15.000001).any():
+              raise SystemExit(
+                  "ERROR: catalogue contains events outside "
+                  "the frozen 15 km radius."
+              )
+
+          manifest = json.loads(
+              manifest_path.read_text(encoding="utf-8")
+          )
+
+          if (
+              manifest.get("experiment_id")
+              != "CF_RETRO_01"
+          ):
+              raise SystemExit(
+                  "ERROR: unexpected experiment ID "
+                  "in manifest."
+              )
+
+          if (
+              manifest.get("data_cutoff_utc")
+              != "2026-07-31T17:46:42Z"
+          ):
+              raise SystemExit(
+                  "ERROR: unexpected data cutoff "
+                  "in manifest."
+              )
+
+          print(
+              "Safety validation passed."
+          )
+          print(
+              f"Rows: {len(catalogue)}"
+          )
+          print(
+              f"Earliest event: {times.min()}"
+          )
+          print(
+              f"Latest event: {times.max()}"
+          )
+          print(
+              f"Maximum distance: {distances.max():.6f} km"
+          )
+          PY
+
+      - name: Create workflow provenance record
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          output_path = Path(
+              "outputs/CF_RETRO_01_workflow_provenance.json"
+          )
+
+          provenance = {
+              "experiment_id": "CF_RETRO_01",
+              "workflow_name": os.environ.get(
+                  "GITHUB_WORKFLOW"
+              ),
+              "workflow_run_id": os.environ.get(
+                  "GITHUB_RUN_ID"
+              ),
+              "workflow_run_number": os.environ.get(
+                  "GITHUB_RUN_NUMBER"
+              ),
+              "workflow_run_attempt": os.environ.get(
+                  "GITHUB_RUN_ATTEMPT"
+              ),
+              "repository": os.environ.get(
+                  "GITHUB_REPOSITORY"
+              ),
+              "repository_owner": os.environ.get(
+                  "GITHUB_REPOSITORY_OWNER"
+              ),
+              "branch": os.environ.get(
+                  "GITHUB_REF_NAME"
+              ),
+              "source_commit": os.environ.get(
+                  "GITHUB_SHA"
+              ),
+              "actor": os.environ.get(
+                  "GITHUB_ACTOR"
+              ),
+              "runner_operating_system": os.environ.get(
+                  "RUNNER_OS"
+              ),
+              "execution_timestamp_utc": (
+                  datetime.now(timezone.utc)
+                  .isoformat()
+                  .replace("+00:00", "Z")
+              ),
+          }
+
+          output_path.write_text(
+              json.dumps(
+                  provenance,
+                  indent=2,
+                  sort_keys=True,
+              )
+              + "\n",
+              encoding="utf-8",
+          )
+
+          print(
+              f"Created {output_path}"
+          )
+          PY
+
+      - name: Upload frozen catalogue artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CF-RETRO-01-frozen-catalogue
+          path: |
+            outputs/CF_RETRO_01_catalog_frozen.csv
+            outputs/CF_RETRO_01_catalog_frozen.csv.sha256
+            outputs/CF_RETRO_01_catalog_manifest.json
+            outputs/CF_RETRO_01_workflow_provenance.json
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Commit generated frozen outputs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config \
+            user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add \
+            outputs/CF_RETRO_01_catalog_frozen.csv \
+            outputs/CF_RETRO_01_catalog_frozen.csv.sha256 \
+            outputs/CF_RETRO_01_catalog_manifest.json \
+            outputs/CF_RETRO_01_workflow_provenance.json
+
+          if git diff --cached --quiet; then
+            echo "No output changes to commit."
+            exit 0
+          fi
+
+          git commit \
+            -m "Add frozen CF-RETRO-01 INGV catalogue" \
+            -m "Generated automatically from the frozen CF-RETRO-01 configuration. Includes the pre-event catalogue, SHA-256 verification file, acquisition manifest and GitHub Actions provenance record."
+
+          git push
+          
