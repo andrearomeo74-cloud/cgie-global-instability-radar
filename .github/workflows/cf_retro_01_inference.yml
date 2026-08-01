@@ -50,13 +50,22 @@ jobs:
 
       - name: Validate required input files
         run: |
-          test -s requirements-cgie2.txt
+          test -f requirements-cgie2.txt
           test -s cgie2/config/cf_retro_01.yaml
           test -s cgie2/config/cf_retro_01_inference.yaml
           test -s cgie2/src/run_cf_inference.py
           test -s outputs/CF_RETRO_01_features.csv
           test -s outputs/CF_RETRO_01_features.csv.sha256
           test -s outputs/CF_RETRO_01_features_manifest.json
+
+          echo "Required files found:"
+          ls -lh requirements-cgie2.txt
+          ls -lh cgie2/config/cf_retro_01.yaml
+          ls -lh cgie2/config/cf_retro_01_inference.yaml
+          ls -lh cgie2/src/run_cf_inference.py
+          ls -lh outputs/CF_RETRO_01_features.csv
+          ls -lh outputs/CF_RETRO_01_features.csv.sha256
+          ls -lh outputs/CF_RETRO_01_features_manifest.json
 
           echo "Required files found:"
           ls -lh requirements-cgie2.txt
