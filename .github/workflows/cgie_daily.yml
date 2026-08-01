@@ -1,7 +1,6 @@
 name: CGIE Daily Baseline Run
 
 on:
-  on:
   workflow_dispatch:
 
 permissions:
