@@ -1,0 +1,338 @@
+experiment:
+  id: CF_RETRO_01
+  stage: inference
+  configuration_version: "1.0"
+  status: FROZEN
+  domain: campi_flegrei
+  purpose: >
+    Retrospective evaluation of whether the frozen pre-event seismic
+    features contain a measurable structural transition before the
+    Campi Flegrei target earthquake of 31 July 2026.
+
+interpretation_boundary:
+  deterministic_earthquake_prediction: false
+  exact_event_time_prediction: false
+  exact_magnitude_prediction: false
+  structural_instability_detection: true
+  retrospective_validation: true
+  prospective_claim_allowed: false
+
+input:
+  features_file: outputs/CF_RETRO_01_features.csv
+  features_hash_file: outputs/CF_RETRO_01_features.csv.sha256
+  features_manifest_file: outputs/CF_RETRO_01_features_manifest.json
+  source_configuration: cgie2/config/cf_retro_01.yaml
+
+target_event:
+  local_time: "2026-07-31T19:46:43+02:00"
+  utc_time: "2026-07-31T17:46:43Z"
+  frozen_cutoff_utc: "2026-07-31T17:46:42Z"
+
+periods:
+  baseline_start_utc: "2025-01-01T00:00:00Z"
+  baseline_end_utc: "2025-12-31T23:59:59Z"
+  test_start_utc: "2026-01-01T00:00:00Z"
+  test_end_utc: "2026-07-31T17:46:42Z"
+
+windows:
+  primary_window: 7d
+  secondary_windows:
+    - 1d
+    - 3d
+    - 30d
+  complete_window_order:
+    - 1d
+    - 3d
+    - 7d
+    - 30d
+  multi_window_confirmation_required: 2
+
+selected_features:
+  - event_count
+  - maximum_magnitude
+  - log10_cumulative_energy_joule
+  - median_depth_km
+  - depth_mad_km
+  - spatial_dispersion_km
+  - median_interevent_time_hours
+  - interevent_time_mad_hours
+  - temporal_burstiness
+
+feature_directions:
+  event_count: upper
+  maximum_magnitude: upper
+  log10_cumulative_energy_joule: upper
+  median_depth_km: two_sided
+  depth_mad_km: two_sided
+  spatial_dispersion_km: two_sided
+  median_interevent_time_hours: lower
+  interevent_time_mad_hours: two_sided
+  temporal_burstiness: upper
+
+missing_values:
+  strategy: baseline_median
+  minimum_baseline_coverage_fraction: 0.70
+  fail_when_feature_below_minimum_coverage: true
+  preserve_missingness_flags: true
+  allow_test_information_for_imputation: false
+
+normalization:
+  estimation_period: baseline_only
+  method: robust_z_score
+  center: median
+  scale: normalized_mad
+  normalized_mad_factor: 1.4826
+  zero_scale_fallback: baseline_iqr
+  iqr_scale_factor: 1.349
+  final_zero_scale_fallback: 1.0
+  clipping:
+    enabled: true
+    minimum: -12.0
+    maximum: 12.0
+
+continuity_components:
+  transformation: inverse_absolute_deviation
+  formula: "continuity = 1 / (1 + absolute_directional_robust_z)"
+  range_minimum: 0.0
+  range_maximum: 1.0
+
+metrics:
+  Gamma_CF:
+    enabled: true
+    definition: minimum_feature_continuity
+    formula: "Gamma_CF = min(feature_continuity)"
+    interpretation:
+      high: preserved weakest-component continuity
+      low: degradation of at least one monitored component
+
+  SCI:
+    enabled: true
+    definition: geometric_mean_feature_continuity
+    epsilon: 1.0e-12
+    formula: >
+      SCI = exp(mean(log(max(feature_continuity, epsilon))))
+    interpretation:
+      high: preserved multivariate seismic identity
+      low: distributed loss of structural continuity
+
+  CRM:
+    enabled: true
+    definition: rolling_correlation_matrix_distance
+    selected_features:
+      - event_count
+      - log10_cumulative_energy_joule
+      - median_depth_km
+      - depth_mad_km
+      - spatial_dispersion_km
+      - median_interevent_time_hours
+      - temporal_burstiness
+    baseline_matrix_estimation: complete_baseline
+    rolling_history_hours: 720
+    minimum_history_rows: 336
+    correlation_method: spearman
+    matrix_distance: normalized_frobenius
+    use_upper_triangle_without_diagonal: true
+    undefined_correlation_replacement: 0.0
+    formula: >
+      CRM = FrobeniusDistance(current_rolling_correlation,
+      baseline_correlation) / sqrt(number_of_compared_relations)
+    interpretation:
+      low: relational structure similar to baseline
+      high: relational reorganization
+
+conventional_comparators:
+  enabled: true
+  metrics:
+    - event_count
+    - maximum_magnitude
+    - log10_cumulative_energy_joule
+  normalization: same_baseline_robust_z_score
+  purpose: >
+    Determine whether Congruity-derived metrics add information beyond
+    conventional seismic intensity indicators.
+
+baseline_thresholds:
+  estimation_period: baseline_only
+
+  Gamma_CF:
+    direction: lower
+    attention_percentile: 10
+    anomaly_percentile: 5
+    structural_percentile: 1
+
+  SCI:
+    direction: lower
+    attention_percentile: 10
+    anomaly_percentile: 5
+    structural_percentile: 1
+
+  CRM:
+    direction: upper
+    attention_percentile: 90
+    anomaly_percentile: 95
+    structural_percentile: 99
+
+  conventional_upper_tail:
+    attention_percentile: 90
+    anomaly_percentile: 95
+    structural_percentile: 99
+
+window_alert_rule:
+  attention:
+    minimum_conditions: 2
+    conditions:
+      - Gamma_CF_attention
+      - SCI_attention
+      - CRM_attention
+
+  anomaly:
+    minimum_conditions: 2
+    conditions:
+      - Gamma_CF_anomaly
+      - SCI_anomaly
+      - CRM_anomaly
+
+  structural:
+    minimum_conditions: 2
+    conditions:
+      - Gamma_CF_structural
+      - SCI_structural
+      - CRM_structural
+
+persistence:
+  evaluation_frequency: 1h
+  attention_consecutive_endpoints: 2
+  anomaly_consecutive_endpoints: 2
+  structural_consecutive_endpoints: 2
+  reset_consecutive_endpoints: 3
+  reset_condition: all_metrics_inside_attention_region
+
+global_alert_rule:
+  required_confirming_windows: 2
+  primary_window_required_for_structural_alert: true
+  primary_window: 7d
+
+  level_priority:
+    - structural
+    - anomaly
+    - attention
+    - normal
+
+  structural_rule: >
+    At least two windows must hold a persistent structural alert and
+    the primary 7d window must be one of them.
+
+  anomaly_rule: >
+    At least two windows must hold a persistent anomaly alert.
+
+  attention_rule: >
+    At least two windows must hold a persistent attention alert.
+
+lead_time:
+  formula: "target_event_utc - first_persistent_global_alert_utc"
+
+  classes:
+    no_signal:
+      condition: no qualifying alert before target event
+
+    coincident:
+      minimum_seconds: 0
+      maximum_seconds: 3599
+
+    short_hours:
+      minimum_seconds: 3600
+      maximum_seconds: 86399
+
+    short_days:
+      minimum_seconds: 86400
+      maximum_seconds: 604800
+
+    structural:
+      minimum_seconds: 604801
+      maximum_seconds: 2592000
+
+    remote_or_nondiscriminating:
+      minimum_seconds: 2592001
+
+false_positive_evaluation:
+  enabled: true
+  baseline_alerts_counted: true
+  test_alerts_before_target_counted: true
+  alert_episode_definition: >
+    A new episode starts when the global state leaves normal and ends
+    after the frozen reset condition is satisfied.
+  report_episode_count: true
+  report_alert_fraction: true
+  report_median_episode_duration_hours: true
+  report_maximum_episode_duration_hours: true
+  permanent_alert_fraction_threshold: 0.50
+
+incremental_value_tests:
+  enabled: true
+
+  comparisons:
+    - congruity_global_alert_vs_event_count
+    - congruity_global_alert_vs_maximum_magnitude
+    - congruity_global_alert_vs_log_energy
+
+  required_outputs:
+    - first_alert_timestamp
+    - lead_time_hours
+    - alert_episode_count
+    - alert_fraction
+    - overlap_fraction
+    - exclusive_congruity_alert_hours
+    - exclusive_conventional_alert_hours
+
+robustness_checks:
+  enabled: true
+  frozen_checks:
+    - report_all_four_windows_separately
+    - report_primary_7d_window_separately
+    - compare_attention_anomaly_structural_levels
+    - compare_with_conventional_metrics
+    - report_baseline_alert_burden
+    - report_test_alert_burden
+  prohibited:
+    - change_thresholds_after_target_inspection
+    - choose_best_window_as_primary_after_results
+    - remove_unfavourable_alert_episodes
+    - change_feature_set_after_results
+    - present_retrospective_result_as_prediction
+
+outputs:
+  normalized_features: outputs/CF_RETRO_01_normalized_features.csv
+  baseline_parameters: outputs/CF_RETRO_01_baseline_parameters.json
+  metrics: outputs/CF_RETRO_01_metrics.csv
+  thresholds: outputs/CF_RETRO_01_thresholds.json
+  window_alerts: outputs/CF_RETRO_01_window_alerts.csv
+  global_alerts: outputs/CF_RETRO_01_global_alerts.csv
+  alert_episodes: outputs/CF_RETRO_01_alert_episodes.csv
+  summary: outputs/CF_RETRO_01_summary.json
+  report: outputs/CF_RETRO_01_report.md
+  metrics_hash: outputs/CF_RETRO_01_metrics.csv.sha256
+  manifest: outputs/CF_RETRO_01_inference_manifest.json
+  workflow_provenance: outputs/CF_RETRO_01_inference_workflow_provenance.json
+
+reproducibility:
+  record_execution_timestamp_utc: true
+  record_source_commit: true
+  record_input_features_hash: true
+  record_feature_configuration_hash: true
+  record_inference_configuration_hash: true
+  record_script_hash: true
+  deterministic_csv_serialization: true
+  csv_encoding: utf-8
+  csv_line_terminator: LF
+  float_precision: 10
+
+safety_rules:
+  use_target_event_for_threshold_selection: false
+  use_test_period_for_normalization: false
+  use_future_observations: false
+  allow_centered_windows: false
+  modify_primary_window_after_run: false
+  modify_selected_features_after_run: false
+  modify_alert_rules_after_run: false
+  allow_post_event_rows: false
+  allow_silent_configuration_changes: false
