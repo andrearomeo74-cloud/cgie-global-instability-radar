@@ -1,0 +1,19 @@
+{
+  "actor": "andrearomeo74-cloud",
+  "branch": "main",
+  "configuration_sha256": "d9b186c83a8600dd6b67c8f6a458e63ddcd4e441f636cbabadafba5ff0c34d4d",
+  "execution_timestamp_utc": "2026-08-01T15:20:43.249299Z",
+  "experiment_id": "CF_RETRO_01",
+  "feature_builder_sha256": "df0363b3f48c9c6e3615ee44f590aa7c57d8d34dba25b1c5f7891a8b5a6c6fff",
+  "features_manifest_sha256": "a2c33828b992a873511c4fb06a17e0f60fd9eab03777fb9694f276969e13e33c",
+  "features_sha256": "61d726ee920437e0798337e9a2d4c0f2f7d29b6f717fa37e871901f448cfb067",
+  "repository": "andrearomeo74-cloud/cgie-global-instability-radar",
+  "repository_owner": "andrearomeo74-cloud",
+  "runner_operating_system": "Linux",
+  "source_commit": "e7c3f5bac8111baf9e04c488e94f9cc63c636707",
+  "stage": "feature_engineering",
+  "workflow_name": "CF-RETRO-01 Build Frozen Features",
+  "workflow_run_attempt": "1",
+  "workflow_run_id": "30705666207",
+  "workflow_run_number": "1"
+}

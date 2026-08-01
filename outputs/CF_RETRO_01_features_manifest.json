@@ -1,0 +1,92 @@
+{
+  "catalogue_rows": 1194,
+  "code_commit": "e7c3f5bac8111baf9e04c488e94f9cc63c636707",
+  "configuration_file": "cgie2/config/cf_retro_01.yaml",
+  "configuration_sha256": "d9b186c83a8600dd6b67c8f6a458e63ddcd4e441f636cbabadafba5ff0c34d4d",
+  "configuration_version": "1.1",
+  "data_cutoff_utc": "2026-07-31T17:46:42Z",
+  "evaluation_grid": {
+    "endpoint_count": 13843,
+    "final_endpoint_utc": "2026-07-31T17:46:42Z",
+    "first_endpoint_utc": "2025-01-01T00:00:00Z",
+    "frequency": "1h",
+    "timezone": "UTC"
+  },
+  "execution_timestamp_utc": "2026-08-01T15:20:42.497760Z",
+  "experiment_id": "CF_RETRO_01",
+  "experiment_version": "1.1",
+  "feature_names": [
+    "event_count",
+    "maximum_magnitude",
+    "median_magnitude",
+    "cumulative_energy_joule",
+    "log10_cumulative_energy_joule",
+    "median_depth_km",
+    "depth_mad_km",
+    "centroid_latitude",
+    "centroid_longitude",
+    "spatial_dispersion_km",
+    "median_interevent_time_hours",
+    "interevent_time_mad_hours",
+    "temporal_burstiness"
+  ],
+  "feature_row_count": 55372,
+  "future_data_allowed": false,
+  "input_catalogue_file": "outputs/CF_RETRO_01_catalog_frozen.csv",
+  "input_catalogue_sha256": "9778fddde1c30d6130fa3b2431b924b8417ed00fa1faf89677bf3fb0c765c17a",
+  "output_features_file": "outputs/CF_RETRO_01_features.csv",
+  "output_features_sha256": "61d726ee920437e0798337e9a2d4c0f2f7d29b6f717fa37e871901f448cfb067",
+  "protocol_status": "FROZEN",
+  "protocol_version": "1.0",
+  "target_event_included": false,
+  "target_event_utc": "2026-07-31T17:46:43Z",
+  "window_definition": "(endpoint - duration, endpoint]",
+  "window_statistics": {
+    "1d": {
+      "empty_rows": 5534,
+      "maximum_event_count": 80,
+      "median_event_count": 1.0,
+      "nonempty_rows": 8309,
+      "rows": 13843
+    },
+    "30d": {
+      "empty_rows": 41,
+      "maximum_event_count": 268,
+      "median_event_count": 45.0,
+      "nonempty_rows": 13802,
+      "rows": 13843
+    },
+    "3d": {
+      "empty_rows": 1463,
+      "maximum_event_count": 153,
+      "median_event_count": 3.0,
+      "nonempty_rows": 12380,
+      "rows": 13843
+    },
+    "7d": {
+      "empty_rows": 328,
+      "maximum_event_count": 193,
+      "median_event_count": 9.0,
+      "nonempty_rows": 13515,
+      "rows": 13843
+    }
+  },
+  "windows": [
+    {
+      "duration_hours": 24,
+      "id": "1d"
+    },
+    {
+      "duration_hours": 72,
+      "id": "3d"
+    },
+    {
+      "duration_hours": 168,
+      "id": "7d"
+    },
+    {
+      "duration_hours": 720,
+      "id": "30d"
+    }
+  ]
+}
