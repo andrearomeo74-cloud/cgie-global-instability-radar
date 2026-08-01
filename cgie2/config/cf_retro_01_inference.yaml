@@ -1,7 +1,7 @@
 experiment:
   id: CF_RETRO_01
   stage: inference
-  configuration_version: "1.0"
+  configuration_version: "1.1"
   status: FROZEN
   domain: campi_flegrei
   purpose: >
@@ -75,6 +75,25 @@ missing_values:
   fail_when_feature_below_minimum_coverage: true
   preserve_missingness_flags: true
   allow_test_information_for_imputation: false
+
+  coverage_policy:
+    default_basis: all_baseline_endpoints
+    event_dependent_basis: nonempty_baseline_windows
+    nonempty_window_condition: "event_count > 0"
+
+    event_dependent_features:
+      - maximum_magnitude
+      - median_magnitude
+      - log10_cumulative_energy_joule
+      - median_depth_km
+      - depth_mad_km
+      - spatial_dispersion_km
+      - median_interevent_time_hours
+      - interevent_time_mad_hours
+      - temporal_burstiness
+
+    report_unconditional_coverage: true
+    report_conditional_coverage: true
 
 normalization:
   estimation_period: baseline_only
