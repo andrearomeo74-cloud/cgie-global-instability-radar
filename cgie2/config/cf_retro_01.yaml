@@ -1,153 +1,196 @@
 experiment:
-
   id: CF_RETRO_01
-
-  version: "1.0"
-
+  version: "1.1"
   status: FROZEN
-
   domain: campi_flegrei
-
   description: >
     Retrospective validation of structural instability before
     the Campi Flegrei earthquake of 31 July 2026.
 
+protocol:
+  document: docs/CF_RETRO_01_PROTOCOL.md
+  protocol_version: "1.0"
+  configuration_version: "1.1"
 
 target_event:
-
-  local_time: "2026-07-31T19:46:43"
-
+  local_time: "2026-07-31T19:46:43+02:00"
   utc_time: "2026-07-31T17:46:43Z"
-
   cutoff_time: "2026-07-31T17:46:42Z"
 
-
 geography:
-
   latitude: 40.8315
-
   longitude: 14.1402
-
-  radius_km: 15
-
+  radius_km: 15.0
+  distance_method: haversine
+  earth_radius_km: 6371.0088
 
 baseline:
-
-  start: "2025-01-01"
-
-  end: "2025-12-31"
-
+  start: "2025-01-01T00:00:00Z"
+  end: "2025-12-31T23:59:59Z"
 
 test_period:
-
-  start: "2026-01-01"
-
+  start: "2026-01-01T00:00:00Z"
   end: "2026-07-31T17:46:42Z"
 
-
-time_windows:
-
-  - 1d
-
-  - 3d
-
-  - 7d
-
-  - 30d
-
+catalogue:
+  source: INGV_FDSN_EVENT_SERVICE
+  endpoint: "https://webservices.ingv.it/fdsnws/event/1/query"
+  input_file: outputs/CF_RETRO_01_catalog_frozen.csv
+  hash_file: outputs/CF_RETRO_01_catalog_frozen.csv.sha256
+  manifest_file: outputs/CF_RETRO_01_catalog_manifest.json
 
 required_variables:
-
   - event_id
-
-  - time
-
+  - time_utc
   - latitude
-
   - longitude
-
-  - depth
-
+  - depth_km
   - magnitude
-
   - magnitude_type
+  - distance_from_reference_km
+  - source
 
+feature_engineering:
+  evaluation_grid:
+    frequency: 1h
+    timezone: UTC
+    alignment: floor
+    include_baseline_start: true
+    include_frozen_cutoff: true
+
+  windows:
+    - id: 1d
+      duration_hours: 24
+    - id: 3d
+      duration_hours: 72
+    - id: 7d
+      duration_hours: 168
+    - id: 30d
+      duration_hours: 720
+
+  window_type: trailing
+  interval_definition: "(endpoint - duration, endpoint]"
+  future_data_allowed: false
+  centered_windows_allowed: false
+
+  seismic_energy:
+    method: gutenberg_richter_radiated_energy
+    formula: "log10_energy_joule = 1.5 * magnitude + 4.8"
+    output_field: cumulative_energy_joule
+    log_output_field: log10_cumulative_energy_joule
+
+  depth:
+    central_tendency: median
+    dispersion: median_absolute_deviation
+    minimum_events_for_dispersion: 2
+
+  spatial:
+    centre_method: spherical_mean
+    dispersion_method: median_haversine_distance_from_window_centroid
+    output_unit: km
+    minimum_events_for_dispersion: 2
+
+  interevent_time:
+    output_unit: hours
+    central_tendency: median
+    dispersion: median_absolute_deviation
+    minimum_events: 2
+
+  temporal_burstiness:
+    formula: "(standard_deviation - mean) / (standard_deviation + mean)"
+    minimum_intervals: 2
+    undefined_value: null
+
+  magnitude:
+    central_tendency: median
+    maximum: true
+
+  missing_values:
+    event_count: 0
+    cumulative_energy_joule: 0.0
+    log10_cumulative_energy_joule: null
+    maximum_magnitude: null
+    median_magnitude: null
+    median_depth_km: null
+    depth_mad_km: null
+    spatial_dispersion_km: null
+    median_interevent_time_hours: null
+    interevent_time_mad_hours: null
+    temporal_burstiness: null
+
+  quality_control:
+    reject_duplicate_event_ids: true
+    reject_invalid_timestamps: true
+    reject_post_cutoff_events: true
+    reject_events_outside_radius: true
+    reject_missing_coordinates: true
+    reject_missing_depth: true
+    reject_missing_magnitude: true
+    require_monotonic_time_order: true
 
 conventional_metrics:
-
   - event_count
-
-  - max_magnitude
-
+  - maximum_magnitude
   - median_magnitude
-
-  - cumulative_energy
-
-  - median_depth
-
-  - depth_dispersion
-
-  - spatial_dispersion
-
-  - median_interevent_time
-
+  - cumulative_energy_joule
+  - log10_cumulative_energy_joule
+  - median_depth_km
+  - depth_mad_km
+  - spatial_dispersion_km
+  - median_interevent_time_hours
+  - interevent_time_mad_hours
+  - temporal_burstiness
+  - rolling_mean
+  - rolling_standard_deviation
+  - baseline_z_score
+  - baseline_percentile
 
 congruity_metrics:
-
   - Gamma_CF
-
   - CRM
-
   - SCI
 
-
 thresholds:
-
+  estimation_period: baseline
   attention_percentile: 90
-
   anomaly_percentile: 95
-
   structural_percentile: 99
-
+  lower_tail_attention_percentile: 10
+  lower_tail_anomaly_percentile: 5
+  lower_tail_structural_percentile: 1
   persistence_windows: 2
-
   reset_windows: 3
 
-
 outputs:
-
   catalog: outputs/CF_RETRO_01_catalog_frozen.csv
-
+  catalog_hash: outputs/CF_RETRO_01_catalog_frozen.csv.sha256
+  catalog_manifest: outputs/CF_RETRO_01_catalog_manifest.json
+  workflow_provenance: outputs/CF_RETRO_01_workflow_provenance.json
   features: outputs/CF_RETRO_01_features.csv
-
+  features_hash: outputs/CF_RETRO_01_features.csv.sha256
+  features_manifest: outputs/CF_RETRO_01_features_manifest.json
   metrics: outputs/CF_RETRO_01_metrics.csv
-
   alerts: outputs/CF_RETRO_01_alerts.csv
-
+  summary: outputs/CF_RETRO_01_summary.json
   report: outputs/CF_RETRO_01_report.md
 
-
 reproducibility:
-
   record_commit_hash: true
-
   record_input_hash: true
-
   record_execution_time: true
-
   record_configuration_hash: true
-
   record_protocol_version: true
-
+  deterministic_csv_serialization: true
+  csv_encoding: utf-8
+  csv_line_terminator: LF
+  float_precision: 10
 
 rules:
-
   use_future_data: false
-
   modify_thresholds_after_run: false
-
   modify_radius_after_run: false
-
   modify_baseline_after_run: false
-
+  modify_feature_definitions_after_run: false
   allow_post_event_features: false
+  allow_target_event_in_features: false
+  allow_silent_protocol_changes: false
