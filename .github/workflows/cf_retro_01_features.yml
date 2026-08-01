@@ -1,0 +1,764 @@
+name: CF-RETRO-01 Build Frozen Features
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cf-retro-01-features
+  cancel-in-progress: false
+
+jobs:
+  build-frozen-features:
+    name: Build and validate frozen seismic features
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-cgie2.txt
+
+      - name: Display execution context
+        run: |
+          echo "Repository: $GITHUB_REPOSITORY"
+          echo "Branch: $GITHUB_REF_NAME"
+          echo "Source commit: $GITHUB_SHA"
+          echo "Workflow run ID: $GITHUB_RUN_ID"
+          echo "Workflow run number: $GITHUB_RUN_NUMBER"
+          echo "Workflow run attempt: $GITHUB_RUN_ATTEMPT"
+          python --version
+          python -m pip --version
+
+      - name: Upgrade pip
+        run: |
+          python -m pip install --upgrade pip
+
+      - name: Install frozen dependencies
+        run: |
+          python -m pip install -r requirements-cgie2.txt
+
+      - name: Validate required input files
+        run: |
+          test -s requirements-cgie2.txt
+          test -s cgie2/config/cf_retro_01.yaml
+          test -s cgie2/src/build_cf_features.py
+          test -s outputs/CF_RETRO_01_catalog_frozen.csv
+          test -s outputs/CF_RETRO_01_catalog_frozen.csv.sha256
+          test -s outputs/CF_RETRO_01_catalog_manifest.json
+
+          echo "Required files found:"
+          ls -lh requirements-cgie2.txt
+          ls -lh cgie2/config/cf_retro_01.yaml
+          ls -lh cgie2/src/build_cf_features.py
+          ls -lh outputs/CF_RETRO_01_catalog_frozen.csv
+          ls -lh outputs/CF_RETRO_01_catalog_frozen.csv.sha256
+          ls -lh outputs/CF_RETRO_01_catalog_manifest.json
+
+      - name: Verify frozen catalogue hash
+        working-directory: outputs
+        run: |
+          sha256sum --check CF_RETRO_01_catalog_frozen.csv.sha256
+
+      - name: Validate frozen catalogue before feature generation
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          import pandas as pd
+
+          catalogue_path = Path(
+              "outputs/CF_RETRO_01_catalog_frozen.csv"
+          )
+
+          manifest_path = Path(
+              "outputs/CF_RETRO_01_catalog_manifest.json"
+          )
+
+          catalogue = pd.read_csv(
+              catalogue_path,
+              encoding="utf-8",
+          )
+
+          if catalogue.empty:
+              raise SystemExit(
+                  "ERROR: frozen catalogue is empty."
+              )
+
+          required_columns = {
+              "event_id",
+              "time_utc",
+              "latitude",
+              "longitude",
+              "depth_km",
+              "magnitude",
+              "magnitude_type",
+              "distance_from_reference_km",
+              "source",
+          }
+
+          missing_columns = sorted(
+              required_columns.difference(
+                  catalogue.columns
+              )
+          )
+
+          if missing_columns:
+              raise SystemExit(
+                  "ERROR: missing frozen catalogue columns: "
+                  + ", ".join(missing_columns)
+              )
+
+          if catalogue["event_id"].isna().any():
+              raise SystemExit(
+                  "ERROR: catalogue contains missing event IDs."
+              )
+
+          if catalogue["event_id"].duplicated().any():
+              raise SystemExit(
+                  "ERROR: catalogue contains duplicate event IDs."
+              )
+
+          times = pd.to_datetime(
+              catalogue["time_utc"],
+              utc=True,
+              errors="raise",
+              format="mixed",
+          )
+
+          frozen_cutoff = pd.Timestamp(
+              "2026-07-31T17:46:42Z"
+          )
+
+          target_event = pd.Timestamp(
+              "2026-07-31T17:46:43Z"
+          )
+
+          if times.max() > frozen_cutoff:
+              raise SystemExit(
+                  "ERROR: catalogue contains data after "
+                  "the frozen cutoff."
+              )
+
+          if (times >= target_event).any():
+              raise SystemExit(
+                  "ERROR: target event or later data are "
+                  "present in the frozen catalogue."
+              )
+
+          if not times.is_monotonic_increasing:
+              raise SystemExit(
+                  "ERROR: catalogue times are not ordered."
+              )
+
+          distances = pd.to_numeric(
+              catalogue[
+                  "distance_from_reference_km"
+              ],
+              errors="raise",
+          )
+
+          if (distances < 0).any():
+              raise SystemExit(
+                  "ERROR: catalogue contains negative distances."
+              )
+
+          if (distances > 15.000001).any():
+              raise SystemExit(
+                  "ERROR: catalogue contains events outside "
+                  "the frozen 15 km radius."
+              )
+
+          manifest = json.loads(
+              manifest_path.read_text(
+                  encoding="utf-8"
+              )
+          )
+
+          if (
+              manifest.get("experiment_id")
+              != "CF_RETRO_01"
+          ):
+              raise SystemExit(
+                  "ERROR: unexpected experiment ID "
+                  "in catalogue manifest."
+              )
+
+          if (
+              manifest.get("data_cutoff_utc")
+              != "2026-07-31T17:46:42Z"
+          ):
+              raise SystemExit(
+                  "ERROR: unexpected cutoff "
+                  "in catalogue manifest."
+              )
+
+          print("Frozen catalogue validation passed.")
+          print(f"Rows: {len(catalogue)}")
+          print(f"Earliest event: {times.min()}")
+          print(f"Latest event: {times.max()}")
+          print(
+              "Maximum distance: "
+              f"{distances.max():.6f} km"
+          )
+          PY
+
+      - name: Execute deterministic feature builder
+        env:
+          PYTHONUNBUFFERED: "1"
+        run: |
+          python cgie2/src/build_cf_features.py
+
+      - name: Verify generated feature outputs
+        run: |
+          test -s outputs/CF_RETRO_01_features.csv
+          test -s outputs/CF_RETRO_01_features.csv.sha256
+          test -s outputs/CF_RETRO_01_features_manifest.json
+
+          echo "Generated feature outputs:"
+          ls -lh outputs/CF_RETRO_01_features.csv
+          ls -lh outputs/CF_RETRO_01_features.csv.sha256
+          ls -lh outputs/CF_RETRO_01_features_manifest.json
+
+      - name: Verify feature table hash
+        working-directory: outputs
+        run: |
+          sha256sum --check CF_RETRO_01_features.csv.sha256
+
+      - name: Validate feature table structure and cutoff
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          import pandas as pd
+
+          features_path = Path(
+              "outputs/CF_RETRO_01_features.csv"
+          )
+
+          manifest_path = Path(
+              "outputs/CF_RETRO_01_features_manifest.json"
+          )
+
+          features = pd.read_csv(
+              features_path,
+              encoding="utf-8",
+          )
+
+          if features.empty:
+              raise SystemExit(
+                  "ERROR: generated feature table is empty."
+              )
+
+          required_columns = {
+              "experiment_id",
+              "endpoint_utc",
+              "window_id",
+              "window_duration_hours",
+              "window_start_exclusive_utc",
+              "window_end_inclusive_utc",
+              "event_count",
+              "maximum_magnitude",
+              "median_magnitude",
+              "cumulative_energy_joule",
+              "log10_cumulative_energy_joule",
+              "median_depth_km",
+              "depth_mad_km",
+              "centroid_latitude",
+              "centroid_longitude",
+              "spatial_dispersion_km",
+              "median_interevent_time_hours",
+              "interevent_time_mad_hours",
+              "temporal_burstiness",
+          }
+
+          missing_columns = sorted(
+              required_columns.difference(
+                  features.columns
+              )
+          )
+
+          if missing_columns:
+              raise SystemExit(
+                  "ERROR: missing feature columns: "
+                  + ", ".join(missing_columns)
+              )
+
+          experiment_ids = set(
+              features["experiment_id"]
+              .dropna()
+              .astype(str)
+              .unique()
+          )
+
+          if experiment_ids != {"CF_RETRO_01"}:
+              raise SystemExit(
+                  "ERROR: unexpected experiment IDs: "
+                  + repr(experiment_ids)
+              )
+
+          expected_windows = {
+              "1d": 24,
+              "3d": 72,
+              "7d": 168,
+              "30d": 720,
+          }
+
+          observed_windows = set(
+              features["window_id"]
+              .dropna()
+              .astype(str)
+              .unique()
+          )
+
+          if observed_windows != set(expected_windows):
+              raise SystemExit(
+                  "ERROR: unexpected window set: "
+                  + repr(observed_windows)
+              )
+
+          for window_id, expected_hours in (
+              expected_windows.items()
+          ):
+              durations = set(
+                  pd.to_numeric(
+                      features.loc[
+                          features["window_id"]
+                          == window_id,
+                          "window_duration_hours",
+                      ],
+                      errors="raise",
+                  )
+                  .astype(int)
+                  .unique()
+              )
+
+              if durations != {expected_hours}:
+                  raise SystemExit(
+                      "ERROR: unexpected duration for "
+                      f"{window_id}: {durations}"
+                  )
+
+          endpoints = pd.to_datetime(
+              features["endpoint_utc"],
+              utc=True,
+              errors="raise",
+              format="mixed",
+          )
+
+          starts = pd.to_datetime(
+              features[
+                  "window_start_exclusive_utc"
+              ],
+              utc=True,
+              errors="raise",
+              format="mixed",
+          )
+
+          ends = pd.to_datetime(
+              features[
+                  "window_end_inclusive_utc"
+              ],
+              utc=True,
+              errors="raise",
+              format="mixed",
+          )
+
+          frozen_cutoff = pd.Timestamp(
+              "2026-07-31T17:46:42Z"
+          )
+
+          target_event = pd.Timestamp(
+              "2026-07-31T17:46:43Z"
+          )
+
+          if endpoints.max() > frozen_cutoff:
+              raise SystemExit(
+                  "ERROR: feature endpoints exceed "
+                  "the frozen cutoff."
+              )
+
+          if (endpoints >= target_event).any():
+              raise SystemExit(
+                  "ERROR: target-event or later endpoints "
+                  "are present."
+              )
+
+          if not endpoints.equals(ends):
+              raise SystemExit(
+                  "ERROR: endpoint and inclusive window-end "
+                  "columns differ."
+              )
+
+          duration_hours = pd.to_numeric(
+              features["window_duration_hours"],
+              errors="raise",
+          )
+
+          measured_duration = (
+              ends - starts
+          ).dt.total_seconds() / 3600.0
+
+          if not (
+              measured_duration
+              == duration_hours
+          ).all():
+              raise SystemExit(
+                  "ERROR: one or more window durations "
+                  "do not match their timestamps."
+              )
+
+          duplicate_keys = features.duplicated(
+              subset=[
+                  "endpoint_utc",
+                  "window_id",
+              ],
+              keep=False,
+          )
+
+          if duplicate_keys.any():
+              raise SystemExit(
+                  "ERROR: duplicate endpoint-window rows."
+              )
+
+          endpoint_counts = (
+              features.groupby(
+                  "endpoint_utc",
+                  sort=False,
+              )["window_id"]
+              .nunique()
+          )
+
+          if not (endpoint_counts == 4).all():
+              raise SystemExit(
+                  "ERROR: one or more endpoints do not "
+                  "contain all four windows."
+              )
+
+          unique_endpoint_count = (
+              features["endpoint_utc"].nunique()
+          )
+
+          expected_row_count = (
+              unique_endpoint_count * 4
+          )
+
+          if len(features) != expected_row_count:
+              raise SystemExit(
+                  "ERROR: unexpected feature row count. "
+                  f"Expected {expected_row_count}, "
+                  f"found {len(features)}."
+              )
+
+          event_counts = pd.to_numeric(
+              features["event_count"],
+              errors="raise",
+          )
+
+          if (event_counts < 0).any():
+              raise SystemExit(
+                  "ERROR: negative event count detected."
+              )
+
+          if not (
+              event_counts
+              == event_counts.astype(int)
+          ).all():
+              raise SystemExit(
+                  "ERROR: non-integer event count detected."
+              )
+
+          energy = pd.to_numeric(
+              features[
+                  "cumulative_energy_joule"
+              ],
+              errors="raise",
+          )
+
+          if (energy < 0).any():
+              raise SystemExit(
+                  "ERROR: negative cumulative energy."
+              )
+
+          empty_windows = event_counts == 0
+          nonempty_windows = event_counts > 0
+
+          if (
+              energy.loc[empty_windows] != 0.0
+          ).any():
+              raise SystemExit(
+                  "ERROR: empty window has non-zero energy."
+              )
+
+          if (
+              energy.loc[nonempty_windows] <= 0.0
+          ).any():
+              raise SystemExit(
+                  "ERROR: non-empty window has "
+                  "non-positive energy."
+              )
+
+          manifest = json.loads(
+              manifest_path.read_text(
+                  encoding="utf-8"
+              )
+          )
+
+          if (
+              manifest.get("experiment_id")
+              != "CF_RETRO_01"
+          ):
+              raise SystemExit(
+                  "ERROR: unexpected experiment ID "
+                  "in feature manifest."
+              )
+
+          if (
+              manifest.get("data_cutoff_utc")
+              != "2026-07-31T17:46:42Z"
+          ):
+              raise SystemExit(
+                  "ERROR: unexpected cutoff "
+                  "in feature manifest."
+              )
+
+          if (
+              manifest.get("target_event_included")
+              is not False
+          ):
+              raise SystemExit(
+                  "ERROR: feature manifest does not "
+                  "exclude the target event."
+              )
+
+          if (
+              manifest.get("future_data_allowed")
+              is not False
+          ):
+              raise SystemExit(
+                  "ERROR: feature manifest permits "
+                  "future data."
+              )
+
+          if (
+              int(
+                  manifest.get(
+                      "feature_row_count",
+                      -1,
+                  )
+              )
+              != len(features)
+          ):
+              raise SystemExit(
+                  "ERROR: manifest feature-row count "
+                  "does not match the CSV."
+              )
+
+          print("Feature-table validation passed.")
+          print(f"Rows: {len(features)}")
+          print(
+              "Unique endpoints: "
+              f"{unique_endpoint_count}"
+          )
+          print(
+              "First endpoint: "
+              f"{endpoints.min()}"
+          )
+          print(
+              "Final endpoint: "
+              f"{endpoints.max()}"
+          )
+
+          for window_id in [
+              "1d",
+              "3d",
+              "7d",
+              "30d",
+          ]:
+              rows = int(
+                  (
+                      features["window_id"]
+                      == window_id
+                  ).sum()
+              )
+
+              maximum_events = int(
+                  event_counts.loc[
+                      features["window_id"]
+                      == window_id
+                  ].max()
+              )
+
+              print(
+                  f"{window_id}: "
+                  f"{rows} rows, "
+                  f"maximum event count "
+                  f"{maximum_events}"
+              )
+          PY
+
+      - name: Create feature workflow provenance record
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          def sha256_file(path: Path) -> str:
+              digest = hashlib.sha256()
+
+              with path.open("rb") as handle:
+                  for block in iter(
+                      lambda: handle.read(
+                          1024 * 1024
+                      ),
+                      b"",
+                  ):
+                      digest.update(block)
+
+              return digest.hexdigest()
+
+          output_path = Path(
+              "outputs/"
+              "CF_RETRO_01_features_workflow_provenance.json"
+          )
+
+          features_path = Path(
+              "outputs/CF_RETRO_01_features.csv"
+          )
+
+          manifest_path = Path(
+              "outputs/CF_RETRO_01_features_manifest.json"
+          )
+
+          configuration_path = Path(
+              "cgie2/config/cf_retro_01.yaml"
+          )
+
+          script_path = Path(
+              "cgie2/src/build_cf_features.py"
+          )
+
+          provenance = {
+              "experiment_id": "CF_RETRO_01",
+              "stage": "feature_engineering",
+              "workflow_name": os.environ.get(
+                  "GITHUB_WORKFLOW"
+              ),
+              "workflow_run_id": os.environ.get(
+                  "GITHUB_RUN_ID"
+              ),
+              "workflow_run_number": os.environ.get(
+                  "GITHUB_RUN_NUMBER"
+              ),
+              "workflow_run_attempt": os.environ.get(
+                  "GITHUB_RUN_ATTEMPT"
+              ),
+              "repository": os.environ.get(
+                  "GITHUB_REPOSITORY"
+              ),
+              "repository_owner": os.environ.get(
+                  "GITHUB_REPOSITORY_OWNER"
+              ),
+              "branch": os.environ.get(
+                  "GITHUB_REF_NAME"
+              ),
+              "source_commit": os.environ.get(
+                  "GITHUB_SHA"
+              ),
+              "actor": os.environ.get(
+                  "GITHUB_ACTOR"
+              ),
+              "runner_operating_system": os.environ.get(
+                  "RUNNER_OS"
+              ),
+              "execution_timestamp_utc": (
+                  datetime.now(timezone.utc)
+                  .isoformat()
+                  .replace("+00:00", "Z")
+              ),
+              "features_sha256": sha256_file(
+                  features_path
+              ),
+              "features_manifest_sha256": sha256_file(
+                  manifest_path
+              ),
+              "configuration_sha256": sha256_file(
+                  configuration_path
+              ),
+              "feature_builder_sha256": sha256_file(
+                  script_path
+              ),
+          }
+
+          output_path.write_text(
+              json.dumps(
+                  provenance,
+                  indent=2,
+                  ensure_ascii=False,
+                  sort_keys=True,
+              )
+              + "\n",
+              encoding="utf-8",
+          )
+
+          print(f"Created {output_path}")
+          PY
+
+      - name: Upload frozen feature artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CF-RETRO-01-frozen-features
+          path: |
+            outputs/CF_RETRO_01_features.csv
+            outputs/CF_RETRO_01_features.csv.sha256
+            outputs/CF_RETRO_01_features_manifest.json
+            outputs/CF_RETRO_01_features_workflow_provenance.json
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 6
+
+      - name: Commit generated feature outputs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config \
+            user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add \
+            outputs/CF_RETRO_01_features.csv \
+            outputs/CF_RETRO_01_features.csv.sha256 \
+            outputs/CF_RETRO_01_features_manifest.json \
+            outputs/CF_RETRO_01_features_workflow_provenance.json
+
+          if git diff --cached --quiet; then
+            echo "No generated feature changes to commit."
+            exit 0
+          fi
+
+          git commit \
+            -m "Add frozen CF-RETRO-01 seismic features" \
+            -m "Generated automatically from the frozen pre-event INGV catalogue and CF-RETRO-01 configuration. Includes the deterministic hourly feature table, SHA-256 sidecar, feature manifest and GitHub Actions provenance record."
+
+          git pull \
+            --rebase \
+            origin \
+            "$GITHUB_REF_NAME"
+
+          git push \
+            origin \
+            "HEAD:$GITHUB_REF_NAME"
+           
