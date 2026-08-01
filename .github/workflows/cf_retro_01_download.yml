@@ -128,6 +128,7 @@ jobs:
               catalogue["time_utc"],
               utc=True,
               errors="raise",
+              format="mixed",
           )
 
           frozen_cutoff = pd.Timestamp(
