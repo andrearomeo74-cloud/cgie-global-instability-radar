@@ -48,8 +48,22 @@ jobs:
         run: |
           python -m pip install -r requirements-cgie2.txt
 
-      - name: Validate required input files
-        run: |
+      - name: Validate required input files run: |
+          echo "===== CURRENT DIRECTORY ====="
+          pwd
+
+          echo "===== ROOT FILES ====="
+          ls -lah
+
+          echo "===== CGIE2 ====="
+          ls -lah cgie2 || true
+
+          echo "===== CONFIG ====="
+          ls -lah cgie2/config || true
+
+          echo "===== OUTPUTS ====="
+          ls -lah outputs || true
+
           test -f requirements-cgie2.txt
           test -s cgie2/config/cf_retro_01.yaml
           test -s cgie2/config/cf_retro_01_inference.yaml
@@ -57,24 +71,6 @@ jobs:
           test -s outputs/CF_RETRO_01_features.csv
           test -s outputs/CF_RETRO_01_features.csv.sha256
           test -s outputs/CF_RETRO_01_features_manifest.json
-
-          echo "Required files found:"
-          ls -lh requirements-cgie2.txt
-          ls -lh cgie2/config/cf_retro_01.yaml
-          ls -lh cgie2/config/cf_retro_01_inference.yaml
-          ls -lh cgie2/src/run_cf_inference.py
-          ls -lh outputs/CF_RETRO_01_features.csv
-          ls -lh outputs/CF_RETRO_01_features.csv.sha256
-          ls -lh outputs/CF_RETRO_01_features_manifest.json
-
-          echo "Required files found:"
-          ls -lh requirements-cgie2.txt
-          ls -lh cgie2/config/cf_retro_01.yaml
-          ls -lh cgie2/config/cf_retro_01_inference.yaml
-          ls -lh cgie2/src/run_cf_inference.py
-          ls -lh outputs/CF_RETRO_01_features.csv
-          ls -lh outputs/CF_RETRO_01_features.csv.sha256
-          ls -lh outputs/CF_RETRO_01_features_manifest.json
 
       - name: Verify frozen feature hash
         working-directory: outputs
