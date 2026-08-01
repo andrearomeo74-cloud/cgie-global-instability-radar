@@ -1,10 +1,11 @@
+
 # CGIE 2.0 — CF-RETRO-01
 # Frozen Python dependencies
 #
-# Recommended Python version:
+# Python version:
 # Python 3.11
 #
-# Installation command:
+# Installation:
 #
 # python -m pip install --upgrade pip
 # python -m pip install -r requirements-cgie2.txt
@@ -12,6 +13,7 @@
 # These versions must not be changed during CF-RETRO-01 without
 # creating a documented protocol amendment.
 
+numpy==2.3.4
 pandas==3.0.5
 requests==2.34.2
 PyYAML==6.0.3
