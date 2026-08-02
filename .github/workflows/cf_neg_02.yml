@@ -361,21 +361,37 @@ jobs:
               format="mixed",
           )
 
-          if (
-              episode_starts.min()
-              < analysis_start
-          ):
+          overlapping_analysis_period = (
+              (episode_ends >= analysis_start)
+          & (episode_starts <= analysis_end)
+          )
+
+          episodes = episodes.loc[
+              overlapping_analysis_period
+          ].copy()
+
+          episode_starts = episode_starts.loc[
+              overlapping_analysis_period
+          ]
+
+          episode_ends = episode_ends.loc[
+              overlapping_analysis_period
+          ]
+
+          if episodes.empty:
               raise SystemExit(
-                  "ERROR: an alert episode begins "
-                  "before the analysis period."
-              )
+                  "ERROR: no alert 
+          episodes overlap "
+                  "the frozen analysis period."
+          )
 
           if (
               episode_ends.max()
               > analysis_end
           ):
               raise SystemExit(
-                  "ERROR: an alert episode exceeds "
+                  "ERROR: an alert 
+          episode exceeds "
                   "the frozen cutoff."
               )
 
