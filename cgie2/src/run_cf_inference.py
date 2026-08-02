@@ -419,7 +419,10 @@ def load_features(
             "Duplicate endpoint-window combinations."
         )
 
-    for feature in selected_features:
+    for feature in applicable_features_for_window(
+    config,
+    str(window_id),
+):
         features[feature] = pd.to_numeric(
             features[feature],
             errors="coerce",
@@ -524,6 +527,44 @@ def directional_deviation(
     fail(f"Unknown feature direction: {direction}")
 
     return z_score.abs()
+
+    def applicable_features_for_window(
+    config: dict[str, Any],
+    window_id: str,
+) -> list[str]:
+    """
+    Return the frozen feature set applicable to a specific time window.
+    """
+    selected_features = list(
+        config["selected_features"]
+    )
+
+    exclusions = config.get(
+        "feature_window_exclusions",
+        {},
+    )
+
+    applicable_features: list[str] = []
+
+    for feature in selected_features:
+        excluded_windows = exclusions.get(
+            feature,
+            [],
+        )
+
+        if str(window_id) in {
+            str(w) for w in excluded_windows
+        }:
+            continue
+
+        applicable_features.append(feature)
+
+    if not applicable_features:
+        fail(
+            f"No applicable features remain for window {window_id}."
+        )
+
+    return applicable_features
 
 
 def normalize_features(
