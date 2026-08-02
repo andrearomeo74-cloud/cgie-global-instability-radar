@@ -419,10 +419,7 @@ def load_features(
             "Duplicate endpoint-window combinations."
         )
 
-    for feature in applicable_features_for_window(
-    config,
-    str(window_id),
-):
+    for feature in config["selected_features"]:
         features[feature] = pd.to_numeric(
             features[feature],
             errors="coerce",
