@@ -532,13 +532,13 @@ def directional_deviation(
     config: dict[str, Any],
     window_id: str,
 ) -> list[str]:
-    
+    """
     Return the frozen feature set applicable to a specific time window.
-    
+    """
+
     selected_features = list(
         config["selected_features"]
     )
-
     exclusions = config.get(
         "feature_window_exclusions",
         {},
