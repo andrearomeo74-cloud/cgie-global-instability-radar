@@ -1,0 +1,1163 @@
+name: CF-NEG-01 Run Specificity Controls
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cf-neg-01-specificity
+  cancel-in-progress: false
+
+jobs:
+  run-specificity-controls:
+    name: Run and validate frozen specificity controls
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-cgie2.txt
+
+      - name: Display execution context
+        run: |
+          echo "Repository: $GITHUB_REPOSITORY"
+          echo "Branch: $GITHUB_REF_NAME"
+          echo "Source commit: $GITHUB_SHA"
+          echo "Workflow run ID: $GITHUB_RUN_ID"
+          echo "Workflow run number: $GITHUB_RUN_NUMBER"
+          echo "Workflow run attempt: $GITHUB_RUN_ATTEMPT"
+          python --version
+          python -m pip --version
+
+      - name: Upgrade pip
+        run: |
+          python -m pip install --upgrade pip
+
+      - name: Install frozen dependencies
+        run: |
+          python -m pip install -r requirements-cgie2.txt
+
+      - name: Validate required input files
+        run: |
+          required_files=(
+            "requirements-cgie2.txt"
+            "cgie2/config/cf_neg_01.yaml"
+            "cgie2/src/run_cf_negative_controls.py"
+            "outputs/CF_RETRO_01_catalog_frozen.csv"
+            "outputs/CF_RETRO_01_catalog_frozen.csv.sha256"
+            "outputs/CF_RETRO_01_global_alerts.csv"
+            "outputs/CF_RETRO_01_window_alerts.csv"
+            "outputs/CF_RETRO_01_alert_episodes.csv"
+            "outputs/CF_RETRO_01_metrics.csv"
+            "outputs/CF_RETRO_01_metrics.csv.sha256"
+          )
+
+          for file in "${required_files[@]}"; do
+            if [ ! -s "$file" ]; then
+              echo "ERROR: required file is absent or empty: $file"
+              exit 1
+            fi
+
+            echo "FOUND: $file"
+            ls -lh "$file"
+          done
+
+      - name: Verify frozen input hashes
+        working-directory: outputs
+        run: |
+          sha256sum --check \
+            CF_RETRO_01_catalog_frozen.csv.sha256
+
+          sha256sum --check \
+            CF_RETRO_01_metrics.csv.sha256
+
+      - name: Validate frozen CF-NEG-01 configuration
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          import yaml
+
+          path = Path(
+              "cgie2/config/cf_neg_01.yaml"
+          )
+
+          config = yaml.safe_load(
+              path.read_text(
+                  encoding="utf-8"
+              )
+          )
+
+          if not isinstance(config, dict):
+              raise SystemExit(
+                  "ERROR: configuration root "
+                  "must be a mapping."
+              )
+
+          if (
+              config["experiment"]["id"]
+              != "CF_NEG_01"
+          ):
+              raise SystemExit(
+                  "ERROR: unexpected experiment ID."
+              )
+
+          if (
+              config["experiment"]["status"]
+              != "FROZEN"
+          ):
+              raise SystemExit(
+                  "ERROR: configuration is not FROZEN."
+              )
+
+          if (
+              config["interpretation_boundary"]
+              ["modifies_cf_retro_01"]
+              is not False
+          ):
+              raise SystemExit(
+                  "ERROR: CF-NEG-01 must not modify "
+                  "CF-RETRO-01."
+              )
+
+          if (
+              config["interpretation_boundary"]
+              ["permits_threshold_tuning"]
+              is not False
+          ):
+              raise SystemExit(
+                  "ERROR: threshold tuning "
+                  "must remain prohibited."
+              )
+
+          if float(
+              config[
+                  "significant_event_definition"
+              ]["minimum_magnitude"]
+          ) != 3.0:
+              raise SystemExit(
+                  "ERROR: primary magnitude threshold "
+                  "must remain 3.0."
+              )
+
+          if float(
+              config["association_windows"]
+              ["primary"]["maximum_lead_hours"]
+          ) != 168.0:
+              raise SystemExit(
+                  "ERROR: primary association window "
+                  "must remain 168 hours."
+              )
+
+          if int(
+              config["random_control"]
+              ["repetitions"]
+          ) != 1000:
+              raise SystemExit(
+                  "ERROR: random repetitions "
+                  "must remain 1000."
+              )
+
+          if int(
+              config["random_control"]
+              ["random_seed"]
+          ) != 20260731:
+              raise SystemExit(
+                  "ERROR: unexpected random seed."
+              )
+
+          if (
+              config["random_control"]["method"]
+              != "circular_time_shift"
+          ):
+              raise SystemExit(
+                  "ERROR: unexpected random-control method."
+              )
+
+          prohibited = set(
+              config["prohibited_practices"]
+          )
+
+          required_prohibitions = {
+              "change_magnitude_threshold_after_results",
+              "change_primary_association_window_after_results",
+              "remove_unassociated_alert_episodes",
+              "redefine_alert_episode_boundaries",
+              "use_events_after_the_frozen_cutoff",
+              "use_target_event_inside_input_catalogue",
+              "present_retrospective_association_as_prediction",
+              "select_only_the_best_random_control_result",
+          }
+
+          missing = sorted(
+              required_prohibitions.difference(
+                  prohibited
+              )
+          )
+
+          if missing:
+              raise SystemExit(
+                  "ERROR: missing prohibited practices: "
+                  + ", ".join(missing)
+              )
+
+          print(
+              "Frozen CF-NEG-01 configuration "
+              "validation passed."
+          )
+          print(
+              "Magnitude threshold: 3.0"
+          )
+          print(
+              "Association window: 168 hours"
+          )
+          print(
+              "Random repetitions: 1000"
+          )
+          print(
+              "Random seed: 20260731"
+          )
+          PY
+
+      - name: Validate frozen input tables
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          import pandas as pd
+
+          cutoff = pd.Timestamp(
+              "2026-07-31T17:46:42Z"
+          )
+
+          target = pd.Timestamp(
+              "2026-07-31T17:46:43Z"
+          )
+
+          catalogue = pd.read_csv(
+              Path(
+                  "outputs/"
+                  "CF_RETRO_01_catalog_frozen.csv"
+              ),
+              encoding="utf-8",
+          )
+
+          episodes = pd.read_csv(
+              Path(
+                  "outputs/"
+                  "CF_RETRO_01_alert_episodes.csv"
+              ),
+              encoding="utf-8",
+          )
+
+          metrics = pd.read_csv(
+              Path(
+                  "outputs/"
+                  "CF_RETRO_01_metrics.csv"
+              ),
+              encoding="utf-8",
+          )
+
+          global_alerts = pd.read_csv(
+              Path(
+                  "outputs/"
+                  "CF_RETRO_01_global_alerts.csv"
+              ),
+              encoding="utf-8",
+          )
+
+          window_alerts = pd.read_csv(
+              Path(
+                  "outputs/"
+                  "CF_RETRO_01_window_alerts.csv"
+              ),
+              encoding="utf-8",
+          )
+
+          if catalogue.empty:
+              raise SystemExit(
+                  "ERROR: catalogue is empty."
+              )
+
+          if episodes.empty:
+              raise SystemExit(
+                  "ERROR: alert episodes are empty."
+              )
+
+          if metrics.empty:
+              raise SystemExit(
+                  "ERROR: metrics table is empty."
+              )
+
+          if global_alerts.empty:
+              raise SystemExit(
+                  "ERROR: global alerts are empty."
+              )
+
+          if window_alerts.empty:
+              raise SystemExit(
+                  "ERROR: window alerts are empty."
+              )
+
+          required_catalogue_columns = {
+              "event_id",
+              "time_utc",
+              "latitude",
+              "longitude",
+              "depth_km",
+              "magnitude",
+          }
+
+          missing_catalogue_columns = sorted(
+              required_catalogue_columns.difference(
+                  catalogue.columns
+              )
+          )
+
+          if missing_catalogue_columns:
+              raise SystemExit(
+                  "ERROR: missing catalogue columns: "
+                  + ", ".join(
+                      missing_catalogue_columns
+                  )
+              )
+
+          catalogue_times = pd.to_datetime(
+              catalogue["time_utc"],
+              utc=True,
+              errors="raise",
+              format="mixed",
+          )
+
+          if catalogue_times.max() > cutoff:
+              raise SystemExit(
+                  "ERROR: catalogue exceeds "
+                  "the frozen cutoff."
+              )
+
+          if (catalogue_times >= target).any():
+              raise SystemExit(
+                  "ERROR: target event or later data "
+                  "are present in the catalogue."
+              )
+
+          if catalogue["event_id"].duplicated().any():
+              raise SystemExit(
+                  "ERROR: duplicate catalogue event IDs."
+              )
+
+          required_episode_columns = {
+              "episode_id",
+              "start_utc",
+              "end_utc",
+              "duration_hours",
+              "maximum_level",
+          }
+
+          missing_episode_columns = sorted(
+              required_episode_columns.difference(
+                  episodes.columns
+              )
+          )
+
+          if missing_episode_columns:
+              raise SystemExit(
+                  "ERROR: missing episode columns: "
+                  + ", ".join(
+                      missing_episode_columns
+                  )
+              )
+
+          episode_starts = pd.to_datetime(
+              episodes["start_utc"],
+              utc=True,
+              errors="raise",
+              format="mixed",
+          )
+
+          episode_ends = pd.to_datetime(
+              episodes["end_utc"],
+              utc=True,
+              errors="raise",
+              format="mixed",
+          )
+
+          if (episode_ends < episode_starts).any():
+              raise SystemExit(
+                  "ERROR: an alert episode ends "
+                  "before it begins."
+              )
+
+          valid_levels = {
+              "attention",
+              "anomaly",
+              "structural",
+          }
+
+          observed_levels = set(
+              episodes["maximum_level"]
+              .astype(str)
+              .unique()
+          )
+
+          if not observed_levels.issubset(
+              valid_levels
+          ):
+              raise SystemExit(
+                  "ERROR: unsupported alert level: "
+                  + repr(observed_levels)
+              )
+
+          metric_times = pd.to_datetime(
+              metrics["endpoint_utc"],
+              utc=True,
+              errors="raise",
+              format="mixed",
+          )
+
+          if metric_times.max() > cutoff:
+              raise SystemExit(
+                  "ERROR: metrics exceed "
+                  "the frozen cutoff."
+              )
+
+          print(
+              "Frozen input-table validation passed."
+          )
+          print(
+              f"Catalogue rows: {len(catalogue)}"
+          )
+          print(
+              f"Alert episodes: {len(episodes)}"
+          )
+          print(
+              f"Metrics rows: {len(metrics)}"
+          )
+          print(
+              "Latest catalogue event: "
+              f"{catalogue_times.max()}"
+          )
+          print(
+              "Latest metric endpoint: "
+              f"{metric_times.max()}"
+          )
+          PY
+
+      - name: Check specificity engine syntax
+        run: |
+          python -m py_compile \
+            cgie2/src/run_cf_negative_controls.py
+
+          echo "Python syntax validation passed."
+
+      - name: Execute frozen CF-NEG-01 controls
+        env:
+          PYTHONUNBUFFERED: "1"
+        run: |
+          python \
+            cgie2/src/run_cf_negative_controls.py
+
+      - name: Verify generated CF-NEG-01 outputs
+        run: |
+          generated_files=(
+            "outputs/CF_NEG_01_episode_associations.csv"
+            "outputs/CF_NEG_01_event_clusters.csv"
+            "outputs/CF_NEG_01_random_controls.csv"
+            "outputs/CF_NEG_01_threshold_sensitivity.csv"
+            "outputs/CF_NEG_01_summary.json"
+            "outputs/CF_NEG_01_report.md"
+            "outputs/CF_NEG_01_manifest.json"
+          )
+
+          for file in "${generated_files[@]}"; do
+            if [ ! -s "$file" ]; then
+              echo "ERROR: generated output "
+              echo "is absent or empty: $file"
+              exit 1
+            fi
+
+            echo "GENERATED: $file"
+            ls -lh "$file"
+          done
+
+      - name: Validate CF-NEG-01 results
+        run: |
+          python - <<'PY'
+          import json
+          import math
+          from pathlib import Path
+
+          import pandas as pd
+
+          associations = pd.read_csv(
+              Path(
+                  "outputs/"
+                  "CF_NEG_01_episode_associations.csv"
+              ),
+              encoding="utf-8",
+          )
+
+          clusters = pd.read_csv(
+              Path(
+                  "outputs/"
+                  "CF_NEG_01_event_clusters.csv"
+              ),
+              encoding="utf-8",
+          )
+
+          controls = pd.read_csv(
+              Path(
+                  "outputs/"
+                  "CF_NEG_01_random_controls.csv"
+              ),
+              encoding="utf-8",
+          )
+
+          sensitivity = pd.read_csv(
+              Path(
+                  "outputs/"
+                  "CF_NEG_01_threshold_sensitivity.csv"
+              ),
+              encoding="utf-8",
+          )
+
+          summary = json.loads(
+              Path(
+                  "outputs/"
+                  "CF_NEG_01_summary.json"
+              ).read_text(
+                  encoding="utf-8"
+              )
+          )
+
+          manifest = json.loads(
+              Path(
+                  "outputs/"
+                  "CF_NEG_01_manifest.json"
+              ).read_text(
+                  encoding="utf-8"
+              )
+          )
+
+          if associations.empty:
+              raise SystemExit(
+                  "ERROR: association table is empty."
+              )
+
+          if controls.empty:
+              raise SystemExit(
+                  "ERROR: random-control table is empty."
+              )
+
+          if sensitivity.empty:
+              raise SystemExit(
+                  "ERROR: sensitivity table is empty."
+              )
+
+          required_association_columns = {
+              "episode_id",
+              "episode_start_utc",
+              "episode_end_utc",
+              "episode_duration_hours",
+              "maximum_level",
+              "association_window_hours",
+              "associated",
+              "classification",
+              "lead_time_hours",
+          }
+
+          missing_association_columns = sorted(
+              required_association_columns.difference(
+                  associations.columns
+              )
+          )
+
+          if missing_association_columns:
+              raise SystemExit(
+                  "ERROR: missing association columns: "
+                  + ", ".join(
+                      missing_association_columns
+                  )
+              )
+
+          if len(controls) != 1000:
+              raise SystemExit(
+                  "ERROR: expected 1000 random controls, "
+                  f"found {len(controls)}."
+              )
+
+          repetitions = pd.to_numeric(
+              controls["repetition"],
+              errors="raise",
+          ).astype(int)
+
+          expected_repetitions = set(
+              range(1, 1001)
+          )
+
+          if set(repetitions) != expected_repetitions:
+              raise SystemExit(
+                  "ERROR: random-control repetition "
+                  "indices are incomplete."
+              )
+
+          shifts = pd.to_numeric(
+              controls["shift_hours"],
+              errors="raise",
+          )
+
+          if (shifts < 168).any():
+              raise SystemExit(
+                  "ERROR: a random shift is below "
+                  "the frozen minimum."
+              )
+
+          random_counts = pd.to_numeric(
+              controls[
+                  "associated_episode_count"
+              ],
+              errors="raise",
+          )
+
+          if (random_counts < 0).any():
+              raise SystemExit(
+                  "ERROR: negative random association count."
+              )
+
+          random_fractions = pd.to_numeric(
+              controls[
+                  "associated_episode_fraction"
+              ],
+              errors="raise",
+          )
+
+          if (
+              (random_fractions < 0.0).any()
+              or (random_fractions > 1.0).any()
+          ):
+              raise SystemExit(
+                  "ERROR: random association fraction "
+                  "outside [0, 1]."
+              )
+
+          if summary.get(
+              "experiment_id"
+          ) != "CF_NEG_01":
+              raise SystemExit(
+                  "ERROR: unexpected summary experiment ID."
+              )
+
+          if summary.get(
+              "target_event_included"
+          ) is not False:
+              raise SystemExit(
+                  "ERROR: target event is marked "
+                  "as included."
+              )
+
+          if summary.get(
+              "earthquake_prediction_claim"
+          ) is not False:
+              raise SystemExit(
+                  "ERROR: summary contains an unsupported "
+                  "prediction claim."
+              )
+
+          if float(
+              summary.get(
+                  "primary_magnitude_threshold",
+                  -1,
+              )
+          ) != 3.0:
+              raise SystemExit(
+                  "ERROR: summary magnitude threshold "
+                  "does not equal 3.0."
+              )
+
+          if float(
+              summary.get(
+                  "primary_association_window_hours",
+                  -1,
+              )
+          ) != 168.0:
+              raise SystemExit(
+                  "ERROR: summary association window "
+                  "does not equal 168 hours."
+              )
+
+          observed = summary.get(
+              "primary_observed_metrics",
+              {}
+          )
+
+          random_summary = summary.get(
+              "random_control",
+              {}
+          )
+
+          observed_episode_count = int(
+              observed.get(
+                  "alert_episode_count",
+                  -1,
+              )
+          )
+
+          if observed_episode_count != len(
+              associations
+          ):
+              raise SystemExit(
+                  "ERROR: association-row count "
+                  "does not match summary."
+              )
+
+          associated_count = int(
+              observed.get(
+                  "associated_episode_count",
+                  -1,
+              )
+          )
+
+          observed_associated = int(
+              associations["associated"]
+              .astype(str)
+              .str.lower()
+              .eq("true")
+              .sum()
+          )
+
+          if associated_count != observed_associated:
+              raise SystemExit(
+                  "ERROR: associated episode count "
+                  "does not match the association CSV."
+              )
+
+          unassociated_count = int(
+              observed.get(
+                  "unassociated_episode_count",
+                  -1,
+              )
+          )
+
+          if (
+              associated_count
+              + unassociated_count
+              != observed_episode_count
+          ):
+              raise SystemExit(
+                  "ERROR: associated and unassociated "
+                  "counts do not sum to all episodes."
+              )
+
+          associated_fraction = float(
+              observed.get(
+                  "associated_episode_fraction",
+                  math.nan,
+              )
+          )
+
+          false_discovery = float(
+              observed.get(
+                  "false_discovery_fraction",
+                  math.nan,
+              )
+          )
+
+          event_detection = float(
+              observed.get(
+                  "event_detection_fraction",
+                  math.nan,
+              )
+          )
+
+          alert_time_fraction = float(
+              observed.get(
+                  "alert_time_fraction",
+                  math.nan,
+              )
+          )
+
+          for name, value in {
+              "associated_episode_fraction":
+                  associated_fraction,
+              "false_discovery_fraction":
+                  false_discovery,
+              "event_detection_fraction":
+                  event_detection,
+              "alert_time_fraction":
+                  alert_time_fraction,
+          }.items():
+              if (
+                  not math.isfinite(value)
+                  or value < 0.0
+                  or value > 1.0
+              ):
+                  raise SystemExit(
+                      "ERROR: invalid fraction "
+                      f"{name}: {value}"
+                  )
+
+          if not math.isclose(
+              associated_fraction
+              + false_discovery,
+              1.0,
+              rel_tol=1e-9,
+              abs_tol=1e-9,
+          ):
+              raise SystemExit(
+                  "ERROR: associated fraction and "
+                  "false-discovery fraction "
+                  "do not sum to 1."
+              )
+
+          empirical_p = float(
+              random_summary.get(
+                  "empirical_p_value",
+                  math.nan,
+              )
+          )
+
+          if (
+              not math.isfinite(empirical_p)
+              or empirical_p <= 0.0
+              or empirical_p > 1.0
+          ):
+              raise SystemExit(
+                  "ERROR: invalid empirical p-value."
+              )
+
+          if int(
+              random_summary.get(
+                  "repetitions",
+                  -1,
+              )
+          ) != 1000:
+              raise SystemExit(
+                  "ERROR: summary random-control "
+                  "repetition count is not 1000."
+              )
+
+          if int(
+              random_summary.get(
+                  "random_seed",
+                  -1,
+              )
+          ) != 20260731:
+              raise SystemExit(
+                  "ERROR: summary random seed "
+                  "is unexpected."
+              )
+
+          allowed_evidence_classes = {
+              "specific",
+              "preliminary",
+              "non_discriminating",
+              "excessive_false_positives",
+          }
+
+          evidence_class = summary.get(
+              "evidence_class"
+          )
+
+          if evidence_class not in (
+              allowed_evidence_classes
+          ):
+              raise SystemExit(
+                  "ERROR: invalid evidence class: "
+                  f"{evidence_class}"
+              )
+
+          if (
+              manifest.get("experiment_id")
+              != "CF_NEG_01"
+          ):
+              raise SystemExit(
+                  "ERROR: unexpected manifest "
+                  "experiment ID."
+              )
+
+          if (
+              manifest.get("target_event_included")
+              is not False
+          ):
+              raise SystemExit(
+                  "ERROR: manifest does not exclude "
+                  "the target event."
+              )
+
+          if (
+              manifest.get("post_cutoff_data_used")
+              is not False
+          ):
+              raise SystemExit(
+                  "ERROR: manifest indicates "
+                  "post-cutoff data use."
+              )
+
+          if (
+              manifest.get("cf_retro_01_modified")
+              is not False
+          ):
+              raise SystemExit(
+                  "ERROR: manifest indicates "
+                  "CF-RETRO-01 modification."
+              )
+
+          if int(
+              manifest.get(
+                  "random_control_repetitions",
+                  -1,
+              )
+          ) != 1000:
+              raise SystemExit(
+                  "ERROR: manifest repetition count "
+                  "is not 1000."
+              )
+
+          print(
+              "CF-NEG-01 result validation passed."
+          )
+          print(
+              f"Alert episodes: {len(associations)}"
+          )
+          print(
+              f"Event clusters: {len(clusters)}"
+          )
+          print(
+              "Associated episodes: "
+              f"{associated_count}"
+          )
+          print(
+              "Associated episode fraction: "
+              f"{associated_fraction:.6f}"
+          )
+          print(
+              "False-discovery fraction: "
+              f"{false_discovery:.6f}"
+          )
+          print(
+              "Event-detection fraction: "
+              f"{event_detection:.6f}"
+          )
+          print(
+              "Empirical p-value: "
+              f"{empirical_p:.6f}"
+          )
+          print(
+              "Evidence class: "
+              f"{evidence_class}"
+          )
+          PY
+
+      - name: Create CF-NEG-01 workflow provenance
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          def sha256_file(path: Path) -> str:
+              digest = hashlib.sha256()
+
+              with path.open("rb") as handle:
+                  for block in iter(
+                      lambda: handle.read(
+                          1024 * 1024
+                      ),
+                      b"",
+                  ):
+                      digest.update(block)
+
+              return digest.hexdigest()
+
+          output_path = Path(
+              "outputs/"
+              "CF_NEG_01_workflow_provenance.json"
+          )
+
+          tracked_files = {
+              "configuration":
+                  Path(
+                      "cgie2/config/"
+                      "cf_neg_01.yaml"
+                  ),
+              "script":
+                  Path(
+                      "cgie2/src/"
+                      "run_cf_negative_controls.py"
+                  ),
+              "episode_associations":
+                  Path(
+                      "outputs/"
+                      "CF_NEG_01_episode_associations.csv"
+                  ),
+              "event_clusters":
+                  Path(
+                      "outputs/"
+                      "CF_NEG_01_event_clusters.csv"
+                  ),
+              "random_controls":
+                  Path(
+                      "outputs/"
+                      "CF_NEG_01_random_controls.csv"
+                  ),
+              "threshold_sensitivity":
+                  Path(
+                      "outputs/"
+                      "CF_NEG_01_threshold_sensitivity.csv"
+                  ),
+              "summary":
+                  Path(
+                      "outputs/"
+                      "CF_NEG_01_summary.json"
+                  ),
+              "report":
+                  Path(
+                      "outputs/"
+                      "CF_NEG_01_report.md"
+                  ),
+              "manifest":
+                  Path(
+                      "outputs/"
+                      "CF_NEG_01_manifest.json"
+                  ),
+          }
+
+          provenance = {
+              "experiment_id":
+                  "CF_NEG_01",
+              "stage":
+                  "negative_control_and_specificity",
+              "workflow_name":
+                  os.environ.get(
+                      "GITHUB_WORKFLOW"
+                  ),
+              "workflow_run_id":
+                  os.environ.get(
+                      "GITHUB_RUN_ID"
+                  ),
+              "workflow_run_number":
+                  os.environ.get(
+                      "GITHUB_RUN_NUMBER"
+                  ),
+              "workflow_run_attempt":
+                  os.environ.get(
+                      "GITHUB_RUN_ATTEMPT"
+                  ),
+              "repository":
+                  os.environ.get(
+                      "GITHUB_REPOSITORY"
+                  ),
+              "repository_owner":
+                  os.environ.get(
+                      "GITHUB_REPOSITORY_OWNER"
+                  ),
+              "branch":
+                  os.environ.get(
+                      "GITHUB_REF_NAME"
+                  ),
+              "source_commit":
+                  os.environ.get(
+                      "GITHUB_SHA"
+                  ),
+              "actor":
+                  os.environ.get(
+                      "GITHUB_ACTOR"
+                  ),
+              "runner_operating_system":
+                  os.environ.get(
+                      "RUNNER_OS"
+                  ),
+              "execution_timestamp_utc": (
+                  datetime.now(timezone.utc)
+                  .isoformat()
+                  .replace("+00:00", "Z")
+              ),
+              "file_hashes": {
+                  name: sha256_file(path)
+                  for name, path
+                  in tracked_files.items()
+              },
+          }
+
+          output_path.write_text(
+              json.dumps(
+                  provenance,
+                  indent=2,
+                  ensure_ascii=False,
+                  sort_keys=True,
+              )
+              + "\n",
+              encoding="utf-8",
+          )
+
+          print(
+              f"Created {output_path}"
+          )
+          PY
+
+      - name: Upload frozen CF-NEG-01 artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: CF-NEG-01-frozen-specificity
+          path: |
+            outputs/CF_NEG_01_episode_associations.csv
+            outputs/CF_NEG_01_event_clusters.csv
+            outputs/CF_NEG_01_random_controls.csv
+            outputs/CF_NEG_01_threshold_sensitivity.csv
+            outputs/CF_NEG_01_summary.json
+            outputs/CF_NEG_01_report.md
+            outputs/CF_NEG_01_manifest.json
+            outputs/CF_NEG_01_workflow_provenance.json
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 6
+
+      - name: Commit generated CF-NEG-01 outputs
+        run: |
+          git config \
+            user.name \
+            "github-actions[bot]"
+
+          git config \
+            user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add \
+            outputs/CF_NEG_01_episode_associations.csv \
+            outputs/CF_NEG_01_event_clusters.csv \
+            outputs/CF_NEG_01_random_controls.csv \
+            outputs/CF_NEG_01_threshold_sensitivity.csv \
+            outputs/CF_NEG_01_summary.json \
+            outputs/CF_NEG_01_report.md \
+            outputs/CF_NEG_01_manifest.json \
+            outputs/CF_NEG_01_workflow_provenance.json
+
+          if git diff --cached --quiet; then
+            echo "No generated CF-NEG-01 changes to commit."
+            exit 0
+          fi
+
+          git commit \
+            -m "Add frozen CF-NEG-01 specificity results" \
+            -m "Generated automatically from the frozen CF-RETRO-01 catalogue, alert episodes and CF-NEG-01 protocol. Includes event associations, significant-event clusters, 1000 circular time-shift controls, threshold sensitivity, summary, report, manifest and workflow provenance."
+
+          git pull \
+            --rebase \
+            origin \
+            "$GITHUB_REF_NAME"
+
+          git push \
+            origin \
+            "HEAD:$GITHUB_REF_NAME"
