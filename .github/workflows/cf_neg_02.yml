@@ -1,0 +1,1067 @@
+name: CF-NEG-02 Run Event-Time Placebos
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cf-neg-02-event-time-placebos
+  cancel-in-progress: false
+
+jobs:
+  run-event-time-placebos:
+    name: Run and validate frozen event-time placebos
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-cgie2.txt
+
+      - name: Display execution context
+        run: |
+          echo "Repository: $GITHUB_REPOSITORY"
+          echo "Branch: $GITHUB_REF_NAME"
+          echo "Source commit: $GITHUB_SHA"
+          echo "Workflow run ID: $GITHUB_RUN_ID"
+          echo "Workflow run number: $GITHUB_RUN_NUMBER"
+          echo "Workflow run attempt: $GITHUB_RUN_ATTEMPT"
+          python --version
+          python -m pip --version
+
+      - name: Upgrade pip
+        run: |
+          python -m pip install --upgrade pip
+
+      - name: Install frozen dependencies
+        run: |
+          python -m pip install -r requirements-cgie2.txt
+
+      - name: Validate required input files
+        run: |
+          required_files=(
+            "requirements-cgie2.txt"
+            "cgie2/config/cf_neg_02.yaml"
+            "cgie2/src/run_cf_event_time_placebos.py"
+            "outputs/CF_RETRO_01_catalog_frozen.csv"
+            "outputs/CF_RETRO_01_catalog_frozen.csv.sha256"
+            "outputs/CF_RETRO_01_alert_episodes.csv"
+            "outputs/CF_NEG_01_event_clusters.csv"
+            "outputs/CF_NEG_01_episode_associations.csv"
+            "outputs/CF_NEG_01_summary.json"
+          )
+
+          for file in "${required_files[@]}"; do
+            if [ ! -s "$file" ]; then
+              echo "ERROR: required file is absent or empty: $file"
+              exit 1
+            fi
+
+            echo "FOUND: $file"
+            ls -lh "$file"
+          done
+
+      - name: Verify frozen catalogue hash
+        working-directory: outputs
+        run: |
+          sha256sum --check \
+            CF_RETRO_01_catalog_frozen.csv.sha256
+
+      - name: Validate frozen CF-NEG-02 configuration
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          import yaml
+
+          path = Path(
+              "cgie2/config/cf_neg_02.yaml"
+          )
+
+          config = yaml.safe_load(
+              path.read_text(
+                  encoding="utf-8"
+              )
+          )
+
+          if not isinstance(config, dict):
+              raise SystemExit(
+                  "ERROR: configuration root "
+                  "must be a mapping."
+              )
+
+          if (
+              config["experiment"]["id"]
+              != "CF_NEG_02"
+          ):
+              raise SystemExit(
+                  "ERROR: unexpected experiment ID."
+              )
+
+          if (
+              config["experiment"]["status"]
+              != "FROZEN"
+          ):
+              raise SystemExit(
+                  "ERROR: CF-NEG-02 is not FROZEN."
+              )
+
+          if (
+              config["placebo_control"]["method"]
+              != "circular_event_cluster_shift"
+          ):
+              raise SystemExit(
+                  "ERROR: unexpected placebo method."
+              )
+
+          if int(
+              config["placebo_control"]
+              ["repetitions"]
+          ) != 1000:
+              raise SystemExit(
+                  "ERROR: repetitions must remain 1000."
+              )
+
+          if int(
+              config["placebo_control"]
+              ["random_seed"]
+          ) != 20260802:
+              raise SystemExit(
+                  "ERROR: unexpected random seed."
+              )
+
+          if float(
+              config[
+                  "significant_event_definition"
+              ]["primary_minimum_magnitude"]
+          ) != 3.0:
+              raise SystemExit(
+                  "ERROR: primary magnitude threshold "
+                  "must remain 3.0."
+              )
+
+          if float(
+              config["association_rule"]
+              ["primary_maximum_lead_hours"]
+          ) != 168.0:
+              raise SystemExit(
+                  "ERROR: association window "
+                  "must remain 168 hours."
+              )
+
+          if int(
+              config["primary_statistic"]
+              ["expected_observed_value"]
+          ) != 1:
+              raise SystemExit(
+                  "ERROR: expected observed value "
+                  "must remain 1."
+              )
+
+          boundary = config[
+              "interpretation_boundary"
+          ]
+
+          if (
+              boundary["modifies_cf_retro_01"]
+              is not False
+          ):
+              raise SystemExit(
+                  "ERROR: CF-RETRO-01 modification "
+                  "is prohibited."
+              )
+
+          if (
+              boundary["modifies_cf_neg_01"]
+              is not False
+          ):
+              raise SystemExit(
+                  "ERROR: CF-NEG-01 modification "
+                  "is prohibited."
+              )
+
+          if (
+              boundary["permits_threshold_tuning"]
+              is not False
+          ):
+              raise SystemExit(
+                  "ERROR: threshold tuning "
+                  "must remain prohibited."
+              )
+
+          if (
+              config["safety_rules"]
+              ["present_overlap_as_early_warning"]
+              is not False
+          ):
+              raise SystemExit(
+                  "ERROR: overlapping detection "
+                  "must not be presented as warning."
+              )
+
+          prohibited = set(
+              config["prohibited_practices"]
+          )
+
+          required_prohibitions = {
+              "change_primary_magnitude_threshold_after_results",
+              "change_primary_association_window_after_results",
+              "redefine_alert_episode_boundaries",
+              "remove_false_positive_alert_episodes",
+              "exclude_unfavourable_event_clusters",
+              "select_only_favourable_placebo_shifts",
+              "change_random_seed_after_inspecting_results",
+              "use_events_after_the_frozen_cutoff",
+              "use_target_event_inside_input_data",
+              "present_overlapping_detection_as_anticipation",
+              "present_retrospective_temporal_association_as_prediction",
+          }
+
+          missing = sorted(
+              required_prohibitions.difference(
+                  prohibited
+              )
+          )
+
+          if missing:
+              raise SystemExit(
+                  "ERROR: missing prohibited practices: "
+                  + ", ".join(missing)
+              )
+
+          print(
+              "Frozen CF-NEG-02 configuration "
+              "validation passed."
+          )
+          print(
+              "Placebo repetitions: 1000"
+          )
+          print(
+              "Random seed: 20260802"
+          )
+          print(
+              "Primary magnitude threshold: 3.0"
+          )
+          print(
+              "Association window: 168 hours"
+          )
+          PY
+
+      - name: Validate frozen input tables
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          import pandas as pd
+
+          analysis_start = pd.Timestamp(
+              "2026-01-01T00:00:00Z"
+          )
+
+          analysis_end = pd.Timestamp(
+              "2026-07-31T17:46:42Z"
+          )
+
+          catalogue = pd.read_csv(
+              Path(
+                  "outputs/"
+                  "CF_RETRO_01_catalog_frozen.csv"
+              ),
+              encoding="utf-8",
+          )
+
+          episodes = pd.read_csv(
+              Path(
+                  "outputs/"
+                  "CF_RETRO_01_alert_episodes.csv"
+              ),
+              encoding="utf-8",
+          )
+
+          clusters = pd.read_csv(
+              Path(
+                  "outputs/"
+                  "CF_NEG_01_event_clusters.csv"
+              ),
+              encoding="utf-8",
+          )
+
+          associations = pd.read_csv(
+              Path(
+                  "outputs/"
+                  "CF_NEG_01_episode_associations.csv"
+              ),
+              encoding="utf-8",
+          )
+
+          summary = json.loads(
+              Path(
+                  "outputs/"
+                  "CF_NEG_01_summary.json"
+              ).read_text(
+                  encoding="utf-8"
+              )
+          )
+
+          if catalogue.empty:
+              raise SystemExit(
+                  "ERROR: catalogue is empty."
+              )
+
+          if episodes.empty:
+              raise SystemExit(
+                  "ERROR: alert episodes are empty."
+              )
+
+          if clusters.empty:
+              raise SystemExit(
+                  "ERROR: event clusters are empty."
+              )
+
+          if associations.empty:
+              raise SystemExit(
+                  "ERROR: association table is empty."
+              )
+
+          catalogue_times = pd.to_datetime(
+              catalogue["time_utc"],
+              utc=True,
+              errors="raise",
+              format="mixed",
+          )
+
+          if catalogue_times.max() > analysis_end:
+              raise SystemExit(
+                  "ERROR: catalogue exceeds "
+                  "the frozen cutoff."
+              )
+
+          episode_starts = pd.to_datetime(
+              episodes["start_utc"],
+              utc=True,
+              errors="raise",
+              format="mixed",
+          )
+
+          episode_ends = pd.to_datetime(
+              episodes["end_utc"],
+              utc=True,
+              errors="raise",
+              format="mixed",
+          )
+
+          if (
+              episode_starts.min()
+              < analysis_start
+          ):
+              raise SystemExit(
+                  "ERROR: an alert episode begins "
+                  "before the analysis period."
+              )
+
+          if (
+              episode_ends.max()
+              > analysis_end
+          ):
+              raise SystemExit(
+                  "ERROR: an alert episode exceeds "
+                  "the frozen cutoff."
+              )
+
+          cluster_times = pd.to_datetime(
+              clusters[
+                  "representative_event_time_utc"
+              ],
+              utc=True,
+              errors="raise",
+              format="mixed",
+          )
+
+          cluster_magnitudes = pd.to_numeric(
+              clusters[
+                  "representative_magnitude"
+              ],
+              errors="raise",
+          )
+
+          if (
+              cluster_times.min()
+              < analysis_start
+          ):
+              raise SystemExit(
+                  "ERROR: a cluster precedes "
+                  "the analysis period."
+              )
+
+          if (
+              cluster_times.max()
+              > analysis_end
+          ):
+              raise SystemExit(
+                  "ERROR: a cluster exceeds "
+                  "the frozen cutoff."
+              )
+
+          if (
+              cluster_magnitudes < 3.0
+          ).any():
+              raise SystemExit(
+                  "ERROR: a primary event cluster "
+                  "has magnitude below 3.0."
+              )
+
+          associated_count = int(
+              associations["associated"]
+              .astype(str)
+              .str.lower()
+              .eq("true")
+              .sum()
+          )
+
+          summary_count = int(
+              summary[
+                  "primary_observed_metrics"
+              ]["associated_episode_count"]
+          )
+
+          if associated_count != 1:
+              raise SystemExit(
+                  "ERROR: expected exactly one "
+                  "CF-NEG-01 association."
+              )
+
+          if summary_count != associated_count:
+              raise SystemExit(
+                  "ERROR: summary association count "
+                  "does not match the CSV."
+              )
+
+          overlapping_count = int(
+              associations["classification"]
+              .astype(str)
+              .eq("overlapping")
+              .sum()
+          )
+
+          if overlapping_count != 1:
+              raise SystemExit(
+                  "ERROR: expected exactly one "
+                  "overlapping association."
+              )
+
+          print(
+              "Frozen CF-NEG-02 input validation passed."
+          )
+          print(
+              f"Catalogue rows: {len(catalogue)}"
+          )
+          print(
+              f"Alert episodes: {len(episodes)}"
+          )
+          print(
+              f"Event clusters: {len(clusters)}"
+          )
+          print(
+              f"Observed associations: {associated_count}"
+          )
+          print(
+              f"Overlapping associations: {overlapping_count}"
+          )
+          PY
+
+      - name: Check CF-NEG-02 engine syntax
+        run: |
+          python -m py_compile \
+            cgie2/src/run_cf_event_time_placebos.py
+
+          echo "Python syntax validation passed."
+
+      - name: Execute frozen CF-NEG-02 placebos
+        env:
+          PYTHONUNBUFFERED: "1"
+        run: |
+          python \
+            cgie2/src/run_cf_event_time_placebos.py
+
+      - name: Verify generated CF-NEG-02 outputs
+        run: |
+          generated_files=(
+            "outputs/CF_NEG_02_event_time_placebos.csv"
+            "outputs/CF_NEG_02_observed_associations.csv"
+            "outputs/CF_NEG_02_robustness.csv"
+            "outputs/CF_NEG_02_summary.json"
+            "outputs/CF_NEG_02_report.md"
+            "outputs/CF_NEG_02_manifest.json"
+          )
+
+          for file in "${generated_files[@]}"; do
+            if [ ! -s "$file" ]; then
+              echo "ERROR: generated output is absent or empty: $file"
+              exit 1
+            fi
+
+            echo "GENERATED: $file"
+            ls -lh "$file"
+          done
+
+      - name: Validate CF-NEG-02 results
+        run: |
+          python - <<'PY'
+          import json
+          import math
+          from pathlib import Path
+
+          import pandas as pd
+
+          placebo = pd.read_csv(
+              Path(
+                  "outputs/"
+                  "CF_NEG_02_event_time_placebos.csv"
+              ),
+              encoding="utf-8",
+          )
+
+          observed = pd.read_csv(
+              Path(
+                  "outputs/"
+                  "CF_NEG_02_observed_associations.csv"
+              ),
+              encoding="utf-8",
+          )
+
+          robustness = pd.read_csv(
+              Path(
+                  "outputs/"
+                  "CF_NEG_02_robustness.csv"
+              ),
+              encoding="utf-8",
+          )
+
+          summary = json.loads(
+              Path(
+                  "outputs/"
+                  "CF_NEG_02_summary.json"
+              ).read_text(
+                  encoding="utf-8"
+              )
+          )
+
+          manifest = json.loads(
+              Path(
+                  "outputs/"
+                  "CF_NEG_02_manifest.json"
+              ).read_text(
+                  encoding="utf-8"
+              )
+          )
+
+          if len(placebo) != 1000:
+              raise SystemExit(
+                  "ERROR: expected 1000 placebo rows, "
+                  f"found {len(placebo)}."
+              )
+
+          repetitions = pd.to_numeric(
+              placebo["repetition"],
+              errors="raise",
+          ).astype(int)
+
+          if set(repetitions) != set(
+              range(1, 1001)
+          ):
+              raise SystemExit(
+                  "ERROR: placebo repetition "
+                  "indices are incomplete."
+              )
+
+          shifts = pd.to_numeric(
+              placebo["shift_hours"],
+              errors="raise",
+          )
+
+          if (shifts < 168).any():
+              raise SystemExit(
+                  "ERROR: a placebo shift is below "
+                  "the frozen minimum."
+              )
+
+          associated_counts = pd.to_numeric(
+              placebo[
+                  "associated_episode_count"
+              ],
+              errors="raise",
+          )
+
+          if (associated_counts < 0).any():
+              raise SystemExit(
+                  "ERROR: negative associated count."
+              )
+
+          if observed.empty:
+              raise SystemExit(
+                  "ERROR: observed associations "
+                  "are empty."
+              )
+
+          reconstructed_count = int(
+              observed["associated"]
+              .astype(str)
+              .str.lower()
+              .eq("true")
+              .sum()
+          )
+
+          if reconstructed_count != 1:
+              raise SystemExit(
+                  "ERROR: reconstructed observed "
+                  "association count is not 1."
+              )
+
+          overlapping_count = int(
+              observed["classification"]
+              .astype(str)
+              .eq("overlapping")
+              .sum()
+          )
+
+          post_episode_count = int(
+              observed["classification"]
+              .astype(str)
+              .eq("post_episode_associated")
+              .sum()
+          )
+
+          if overlapping_count != 1:
+              raise SystemExit(
+                  "ERROR: expected one overlapping "
+                  "observed episode."
+              )
+
+          if post_episode_count != 0:
+              raise SystemExit(
+                  "ERROR: expected zero post-episode "
+                  "observed associations."
+              )
+
+          if robustness.empty:
+              raise SystemExit(
+                  "ERROR: robustness table is empty."
+              )
+
+          if summary.get(
+              "experiment_id"
+          ) != "CF_NEG_02":
+              raise SystemExit(
+                  "ERROR: unexpected summary "
+                  "experiment ID."
+              )
+
+          observed_metrics = summary.get(
+              "observed_metrics",
+              {}
+          )
+
+          placebo_summary = summary.get(
+              "placebo_control",
+              {}
+          )
+
+          if int(
+              observed_metrics.get(
+                  "associated_episode_count",
+                  -1,
+              )
+          ) != 1:
+              raise SystemExit(
+                  "ERROR: summary observed count "
+                  "is not 1."
+              )
+
+          if int(
+              observed_metrics.get(
+                  "overlapping_episode_count",
+                  -1,
+              )
+          ) != 1:
+              raise SystemExit(
+                  "ERROR: summary overlapping count "
+                  "is not 1."
+              )
+
+          if int(
+              observed_metrics.get(
+                  "post_episode_associated_count",
+                  -1,
+              )
+          ) != 0:
+              raise SystemExit(
+                  "ERROR: summary post-episode "
+                  "count is not 0."
+              )
+
+          empirical_p = float(
+              placebo_summary.get(
+                  "empirical_p_value",
+                  math.nan,
+              )
+          )
+
+          if (
+              not math.isfinite(empirical_p)
+              or empirical_p <= 0.0
+              or empirical_p > 1.0
+          ):
+              raise SystemExit(
+                  "ERROR: invalid empirical p-value."
+              )
+
+          if int(
+              placebo_summary.get(
+                  "repetitions",
+                  -1,
+              )
+          ) != 1000:
+              raise SystemExit(
+                  "ERROR: summary repetitions "
+                  "do not equal 1000."
+              )
+
+          if int(
+              placebo_summary.get(
+                  "random_seed",
+                  -1,
+              )
+          ) != 20260802:
+              raise SystemExit(
+                  "ERROR: summary random seed "
+                  "is unexpected."
+              )
+
+          allowed_classes = {
+              "temporally_specific",
+              "preliminary",
+              "non_discriminating",
+              "inconclusive_low_power",
+          }
+
+          evidence_class = summary.get(
+              "evidence_class"
+          )
+
+          if evidence_class not in allowed_classes:
+              raise SystemExit(
+                  "ERROR: invalid evidence class: "
+                  f"{evidence_class}"
+              )
+
+          if (
+              summary.get(
+                  "overlap_only_observed_signal"
+              )
+              is not True
+          ):
+              raise SystemExit(
+                  "ERROR: observed signal should be "
+                  "classified as overlap-only."
+              )
+
+          if (
+              summary.get(
+                  "earthquake_prediction_claim"
+              )
+              is not False
+          ):
+              raise SystemExit(
+                  "ERROR: unsupported prediction claim."
+              )
+
+          if (
+              manifest.get("experiment_id")
+              != "CF_NEG_02"
+          ):
+              raise SystemExit(
+                  "ERROR: unexpected manifest "
+                  "experiment ID."
+              )
+
+          if (
+              manifest.get(
+                  "target_event_included"
+              )
+              is not False
+          ):
+              raise SystemExit(
+                  "ERROR: target event is marked "
+                  "as included."
+              )
+
+          if (
+              manifest.get(
+                  "post_cutoff_data_used"
+              )
+              is not False
+          ):
+              raise SystemExit(
+                  "ERROR: manifest indicates "
+                  "post-cutoff data use."
+              )
+
+          if (
+              manifest.get(
+                  "cf_retro_01_modified"
+              )
+              is not False
+          ):
+              raise SystemExit(
+                  "ERROR: manifest indicates "
+                  "CF-RETRO-01 modification."
+              )
+
+          if (
+              manifest.get(
+                  "cf_neg_01_modified"
+              )
+              is not False
+          ):
+              raise SystemExit(
+                  "ERROR: manifest indicates "
+                  "CF-NEG-01 modification."
+              )
+
+          print(
+              "CF-NEG-02 result validation passed."
+          )
+          print(
+              f"Observed associated episodes: "
+              f"{reconstructed_count}"
+          )
+          print(
+              f"Observed overlapping episodes: "
+              f"{overlapping_count}"
+          )
+          print(
+              f"Observed post-episode associations: "
+              f"{post_episode_count}"
+          )
+          print(
+              f"Placebo median: "
+              f"{float(placebo_summary['placebo_associated_count_median']):.6f}"
+          )
+          print(
+              f"Placebo mean: "
+              f"{float(placebo_summary['placebo_associated_count_mean']):.6f}"
+          )
+          print(
+              f"Empirical p-value: "
+              f"{empirical_p:.6f}"
+          )
+          print(
+              f"Evidence class: "
+              f"{evidence_class}"
+          )
+          PY
+
+      - name: Create workflow provenance
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          def sha256_file(path: Path) -> str:
+              digest = hashlib.sha256()
+
+              with path.open("rb") as handle:
+                  for block in iter(
+                      lambda: handle.read(
+                          1024 * 1024
+                      ),
+                      b"",
+                  ):
+                      digest.update(block)
+
+              return digest.hexdigest()
+
+          output_path = Path(
+              "outputs/"
+              "CF_NEG_02_workflow_provenance.json"
+          )
+
+          tracked_files = {
+              "configuration":
+                  Path(
+                      "cgie2/config/"
+                      "cf_neg_02.yaml"
+                  ),
+              "script":
+                  Path(
+                      "cgie2/src/"
+                      "run_cf_event_time_placebos.py"
+                  ),
+              "placebo_runs":
+                  Path(
+                      "outputs/"
+                      "CF_NEG_02_event_time_placebos.csv"
+                  ),
+              "observed_associations":
+                  Path(
+                      "outputs/"
+                      "CF_NEG_02_observed_associations.csv"
+                  ),
+              "robustness":
+                  Path(
+                      "outputs/"
+                      "CF_NEG_02_robustness.csv"
+                  ),
+              "summary":
+                  Path(
+                      "outputs/"
+                      "CF_NEG_02_summary.json"
+                  ),
+              "report":
+                  Path(
+                      "outputs/"
+                      "CF_NEG_02_report.md"
+                  ),
+              "manifest":
+                  Path(
+                      "outputs/"
+                      "CF_NEG_02_manifest.json"
+                  ),
+          }
+
+          provenance = {
+              "experiment_id":
+                  "CF_NEG_02",
+              "stage":
+                  "event_time_placebo_control",
+              "workflow_name":
+                  os.environ.get(
+                      "GITHUB_WORKFLOW"
+                  ),
+              "workflow_run_id":
+                  os.environ.get(
+                      "GITHUB_RUN_ID"
+                  ),
+              "workflow_run_number":
+                  os.environ.get(
+                      "GITHUB_RUN_NUMBER"
+                  ),
+              "workflow_run_attempt":
+                  os.environ.get(
+                      "GITHUB_RUN_ATTEMPT"
+                  ),
+              "repository":
+                  os.environ.get(
+                      "GITHUB_REPOSITORY"
+                  ),
+              "branch":
+                  os.environ.get(
+                      "GITHUB_REF_NAME"
+                  ),
+              "source_commit":
+                  os.environ.get(
+                      "GITHUB_SHA"
+                  ),
+              "actor":
+                  os.environ.get(
+                      "GITHUB_ACTOR"
+                  ),
+              "runner_operating_system":
+                  os.environ.get(
+                      "RUNNER_OS"
+                  ),
+              "execution_timestamp_utc": (
+                  datetime.now(timezone.utc)
+                  .isoformat()
+                  .replace("+00:00", "Z")
+              ),
+              "file_hashes": {
+                  name: sha256_file(path)
+                  for name, path
+                  in tracked_files.items()
+              },
+          }
+
+          output_path.write_text(
+              json.dumps(
+                  provenance,
+                  indent=2,
+                  ensure_ascii=False,
+                  sort_keys=True,
+              )
+              + "\n",
+              encoding="utf-8",
+          )
+
+          print(
+              f"Created {output_path}"
+          )
+          PY
+
+      - name: Upload frozen CF-NEG-02 artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: CF-NEG-02-frozen-event-time-placebos
+          path: |
+            outputs/CF_NEG_02_event_time_placebos.csv
+            outputs/CF_NEG_02_observed_associations.csv
+            outputs/CF_NEG_02_robustness.csv
+            outputs/CF_NEG_02_summary.json
+            outputs/CF_NEG_02_report.md
+            outputs/CF_NEG_02_manifest.json
+            outputs/CF_NEG_02_workflow_provenance.json
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 6
+
+      - name: Commit generated CF-NEG-02 outputs
+        run: |
+          git config \
+            user.name \
+            "github-actions[bot]"
+
+          git config \
+            user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add \
+            outputs/CF_NEG_02_event_time_placebos.csv \
+            outputs/CF_NEG_02_observed_associations.csv \
+            outputs/CF_NEG_02_robustness.csv \
+            outputs/CF_NEG_02_summary.json \
+            outputs/CF_NEG_02_report.md \
+            outputs/CF_NEG_02_manifest.json \
+            outputs/CF_NEG_02_workflow_provenance.json
+
+          if git diff --cached --quiet; then
+            echo "No generated CF-NEG-02 changes to commit."
+            exit 0
+          fi
+
+          git commit \
+            -m "Add frozen CF-NEG-02 placebo results" \
+            -m "Generated automatically from the frozen CF-RETRO-01 alert episodes and CF-NEG-01 seismic clusters. Includes 1000 circular event-time placebos, reconstructed observed associations, robustness checks, summary, report, manifest and workflow provenance."
+
+          git pull \
+            --rebase \
+            origin \
+            "$GITHUB_REF_NAME"
+
+          git push \
+            origin \
+            "HEAD:$GITHUB_REF_NAME"
+                
