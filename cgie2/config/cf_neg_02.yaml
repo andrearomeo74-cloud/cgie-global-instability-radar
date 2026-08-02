@@ -249,6 +249,6 @@ prohibited_practices:
   - select_only_favourable_placebo_shifts
   - change_random_seed_after_inspecting_results
   - use_events_after_the_frozen_cutoff
-  - use_target_event_inside_input data
+  - use_target_event_inside_input_data
   - present_overlapping_detection_as_anticipation
   - present_retrospective_temporal_association_as_prediction
