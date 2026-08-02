@@ -754,7 +754,10 @@ def normalize_features(
 
         parameters[window_id] = {}
 
-        for feature in selected_features:
+        for feature in applicable_features_for_window(
+    config,
+    window_id,
+):
             all_baseline_values = output.loc[
                 baseline_mask,
                 feature,
