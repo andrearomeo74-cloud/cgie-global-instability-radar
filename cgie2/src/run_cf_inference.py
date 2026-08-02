@@ -949,45 +949,96 @@ def calculate_gamma_and_sci(
 ) -> pd.DataFrame:
     output = normalized.copy()
 
-    continuity_columns = [
-        f"{feature}__continuity"
-        for feature in config[
-            "selected_features"
-        ]
-    ]
-
-    matrix = output[
-        continuity_columns
-    ].to_numpy(dtype=float)
-
-    if not np.isfinite(matrix).all():
-        fail(
-            "Non-finite continuity values detected."
-        )
-
-    output["Gamma_CF"] = np.min(
-        matrix,
-        axis=1,
-    )
-
     epsilon = float(
         config["metrics"]["SCI"]["epsilon"]
     )
 
-    output["SCI"] = np.exp(
-        np.mean(
-            np.log(
-                np.maximum(
-                    matrix,
-                    epsilon,
-                )
-            ),
-            axis=1,
-        )
+    output["Gamma_CF"] = np.nan
+    output["SCI"] = np.nan
+
+    window_ids = (
+        output["window_id"]
+        .astype(str)
+        .drop_duplicates()
+        .tolist()
     )
 
-    return output
+    for window_id in window_ids:
+        window_mask = (
+            output["window_id"].astype(str)
+            == str(window_id)
+        )
 
+        applicable_features = (
+            applicable_features_for_window(
+                config,
+                window_id,
+            )
+        )
+
+        continuity_columns = [
+            f"{feature}__continuity"
+            for feature in applicable_features
+        ]
+
+        missing_columns = [
+            column
+            for column in continuity_columns
+            if column not in output.columns
+        ]
+
+        if missing_columns:
+            fail(
+                "Missing continuity columns for "
+                f"window {window_id}: "
+                + ", ".join(missing_columns)
+            )
+
+        matrix = output.loc[
+            window_mask,
+            continuity_columns,
+        ].to_numpy(dtype=float)
+
+        if not np.isfinite(matrix).all():
+            fail(
+                "Non-finite continuity values detected "
+                f"for window {window_id}."
+            )
+
+        output.loc[
+            window_mask,
+            "Gamma_CF",
+        ] = np.min(
+            matrix,
+            axis=1,
+        )
+
+        output.loc[
+            window_mask,
+            "SCI",
+        ] = np.exp(
+            np.mean(
+                np.log(
+                    np.maximum(
+                        matrix,
+                        epsilon,
+                    )
+                ),
+                axis=1,
+            )
+        )
+
+    if not np.isfinite(
+        output["Gamma_CF"].to_numpy(dtype=float)
+    ).all():
+        fail("Non-finite Gamma_CF values detected.")
+
+    if not np.isfinite(
+        output["SCI"].to_numpy(dtype=float)
+    ).all():
+        fail("Non-finite SCI values detected.")
+
+    return output
 
 def correlation_vector(
     frame: pd.DataFrame,
