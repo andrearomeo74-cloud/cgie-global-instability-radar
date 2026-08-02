@@ -532,13 +532,8 @@ def directional_deviation(
     config: dict[str, Any],
     window_id: str,
 ) -> list[str]:
-    """
-    Return the frozen feature set applicable to a specific time window.
-    """
+    selected_features = list(config["selected_features"])
 
-    selected_features = list(
-        config["selected_features"]
-    )
     exclusions = config.get(
         "feature_window_exclusions",
         {},
@@ -552,9 +547,11 @@ def directional_deviation(
             [],
         )
 
-        if str(window_id) in {
+        normalized_excluded_windows = {
             str(value) for value in excluded_windows
-        }:
+        }
+
+        if str(window_id) in normalized_excluded_windows:
             continue
 
         applicable_features.append(feature)
@@ -565,7 +562,6 @@ def directional_deviation(
         )
 
     return applicable_features
-
 
 def normalize_features(
     features: pd.DataFrame,
