@@ -1,0 +1,254 @@
+experiment:
+  id: CF_NEG_02
+  version: "1.0"
+  status: FROZEN
+  domain: campi_flegrei
+  stage: event_time_placebo_control
+  purpose: >
+    Test whether the temporal association observed between frozen
+    CF-RETRO-01 alert episodes and significant seismic-event clusters
+    exceeds the association expected after circularly shifting the
+    complete event-cluster sequence.
+
+interpretation_boundary:
+  earthquake_prediction_claim: false
+  exact_event_time_prediction: false
+  exact_magnitude_prediction: false
+  prospective_claim_allowed: false
+  modifies_cf_retro_01: false
+  modifies_cf_neg_01: false
+  permits_threshold_tuning: false
+  permits_post_result_selection: false
+  allowed_interpretation: >
+    Retrospective test of temporal coupling between frozen alert episodes
+    and significant seismic-event clusters.
+  prohibited_interpretation: >
+    Evidence of deterministic earthquake prediction or successful
+    anticipation of the 31 July 2026 target earthquake.
+
+inputs:
+  frozen_catalogue:
+    file: outputs/CF_RETRO_01_catalog_frozen.csv
+    hash_file: outputs/CF_RETRO_01_catalog_frozen.csv.sha256
+
+  alert_episodes:
+    file: outputs/CF_RETRO_01_alert_episodes.csv
+
+  cf_neg_01_event_clusters:
+    file: outputs/CF_NEG_01_event_clusters.csv
+
+  cf_neg_01_episode_associations:
+    file: outputs/CF_NEG_01_episode_associations.csv
+
+  cf_neg_01_summary:
+    file: outputs/CF_NEG_01_summary.json
+
+analysis_period:
+  start_utc: "2026-01-01T00:00:00Z"
+  end_utc: "2026-07-31T17:46:42Z"
+  target_event_excluded: true
+  post_cutoff_data_allowed: false
+
+significant_event_definition:
+  primary_minimum_magnitude: 3.0
+  event_cluster_gap_hours: 24
+  reuse_cf_neg_01_clusters: true
+  recompute_clusters: false
+
+alert_episode_definition:
+  source: CF_RETRO_01
+  included_levels:
+    - attention
+    - anomaly
+    - structural
+  primary_levels:
+    - anomaly
+    - structural
+  preserve_episode_boundaries: true
+  preserve_episode_levels: true
+  preserve_episode_durations: true
+
+association_rule:
+  temporal_reference: episode_start_utc
+  primary_maximum_lead_hours: 168
+  lower_bound_hours: 0
+  include_event_at_episode_start: true
+  include_event_at_upper_boundary: true
+
+  classifications:
+    overlapping: >
+      The representative event occurs between episode start and episode end.
+    post_episode_associated: >
+      The representative event occurs after episode end but within 168 hours
+      from episode start.
+    unassociated: >
+      No representative event occurs within the frozen association window.
+
+primary_statistic:
+  name: associated_episode_count
+  definition: >
+    Number of frozen alert episodes associated with at least one significant
+    seismic-event cluster within the 168-hour frozen association window.
+  observed_value_source: outputs/CF_NEG_01_summary.json
+  expected_observed_value: 1
+  higher_is_stronger: true
+
+secondary_statistics:
+  - associated_episode_fraction
+  - overlapping_episode_count
+  - post_episode_associated_count
+  - event_clusters_preceded_by_alert
+  - event_detection_fraction
+  - median_lead_time_hours
+  - false_discovery_fraction
+
+placebo_control:
+  method: circular_event_cluster_shift
+  repetitions: 1000
+  random_seed: 20260802
+
+  preserve:
+    cluster_count: true
+    cluster_order: true
+    intercluster_intervals: true
+    representative_magnitudes: true
+    representative_depths: true
+    cluster_membership: true
+
+  shift:
+    unit: hours
+    minimum_absolute_shift_hours: 168
+    wrap_inside_analysis_period: true
+    apply_single_common_shift_per_repetition: true
+    prohibit_zero_shift: true
+    prohibit_partial_cluster_shift: true
+
+empirical_test:
+  alternative: greater_or_equal
+  formula: >
+    empirical_p_value =
+    (1 + number_of_placebo_statistics_greater_than_or_equal_to_observed)
+    / (1 + repetitions)
+  significance_level: 0.05
+  multiple_testing_correction_required: false
+
+effect_size:
+  enabled: true
+  measures:
+    - observed_minus_placebo_mean
+    - observed_minus_placebo_median
+    - standardized_difference
+    - observed_percentile_in_placebo_distribution
+
+evidence_classes:
+  temporally_specific:
+    conditions:
+      - empirical_p_value < 0.05
+      - observed_associated_episode_count > placebo_median
+    interpretation: >
+      Frozen alert episodes show stronger temporal coupling to significant
+      seismic clusters than expected from circularly shifted event sequences.
+
+  preliminary:
+    conditions:
+      - empirical_p_value >= 0.05
+      - empirical_p_value < 0.10
+      - observed_associated_episode_count > placebo_median
+    interpretation: >
+      Directionally positive but statistically inconclusive temporal coupling.
+
+  non_discriminating:
+    conditions:
+      - observed_associated_episode_count <= placebo_median
+    interpretation: >
+      The observed association is not stronger than the typical placebo result.
+
+  inconclusive_low_power:
+    conditions:
+      - significant_event_cluster_count < 5
+    interpretation: >
+      Too few significant event clusters for a stable specificity conclusion.
+
+robustness_checks:
+  report_primary_result_without_overlap:
+    enabled: true
+    statistic: post_episode_associated_count
+
+  leave_one_episode_out:
+    enabled: true
+
+  leave_one_event_cluster_out:
+    enabled: true
+
+  secondary_lead_windows:
+    enabled: true
+    hours:
+      - 24
+      - 72
+      - 336
+      - 720
+    exploratory_only: true
+
+  secondary_magnitude_thresholds:
+    enabled: true
+    values:
+      - 2.5
+      - 3.5
+      - 4.0
+    exploratory_only: true
+
+required_outputs:
+  placebo_runs:
+    file: outputs/CF_NEG_02_event_time_placebos.csv
+
+  observed_associations:
+    file: outputs/CF_NEG_02_observed_associations.csv
+
+  robustness:
+    file: outputs/CF_NEG_02_robustness.csv
+
+  summary:
+    file: outputs/CF_NEG_02_summary.json
+
+  report:
+    file: outputs/CF_NEG_02_report.md
+
+  manifest:
+    file: outputs/CF_NEG_02_manifest.json
+
+reproducibility:
+  record_execution_timestamp_utc: true
+  record_source_commit: true
+  record_configuration_hash: true
+  record_script_hash: true
+  record_all_input_hashes: true
+  deterministic_random_generator: numpy_default_rng
+  random_seed: 20260802
+  csv_encoding: utf-8
+  csv_line_terminator: LF
+  float_precision: 10
+
+safety_rules:
+  use_target_event_for_parameter_selection: false
+  use_cf_neg_01_result_for_threshold_selection: false
+  change_alert_episode_boundaries: false
+  remove_unassociated_alerts: false
+  remove_overlapping_events: false
+  choose_best_placebo_subset: false
+  change_random_seed_after_results: false
+  use_post_cutoff_observations: false
+  present_overlap_as_early_warning: false
+  present_retrospective_result_as_prediction: false
+
+prohibited_practices:
+  - change_primary_magnitude_threshold_after_results
+  - change_primary_association_window_after_results
+  - redefine_alert_episode_boundaries
+  - remove_false_positive_alert_episodes
+  - exclude_unfavourable_event_clusters
+  - select_only_favourable_placebo_shifts
+  - change_random_seed_after_inspecting_results
+  - use_events_after_the_frozen_cutoff
+  - use_target_event_inside_input data
+  - present_overlapping_detection_as_anticipation
+  - present_retrospective_temporal_association_as_prediction
