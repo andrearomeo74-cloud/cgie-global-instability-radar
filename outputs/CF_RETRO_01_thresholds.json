@@ -1,0 +1,174 @@
+{
+  "1d": {
+    "CRM": {
+      "direction": "upper",
+      "values": {
+        "anomaly": 0.4567708783872328,
+        "attention": 0.30081520618682056,
+        "structural": 0.5655807094940422
+      }
+    },
+    "Gamma_CF": {
+      "direction": "lower",
+      "values": {
+        "anomaly": 0.07692307692307693,
+        "attention": 0.12911709891487988,
+        "structural": 0.07692307692307693
+      }
+    },
+    "SCI": {
+      "direction": "lower",
+      "values": {
+        "anomaly": 0.42785856481433243,
+        "attention": 0.4628977307995286,
+        "structural": 0.36504696590349744
+      }
+    },
+    "conventional": {
+      "event_count": {
+        "anomaly": 10.0,
+        "attention": 6.0,
+        "structural": 23.0
+      },
+      "log10_cumulative_energy_joule": {
+        "anomaly": 9.655699664,
+        "attention": 8.944421554,
+        "structural": 10.89769902
+      },
+      "maximum_magnitude": {
+        "anomaly": 3.2,
+        "attention": 2.6100000000000363,
+        "structural": 4.0
+      }
+    }
+  },
+  "30d": {
+    "CRM": {
+      "direction": "upper",
+      "values": {
+        "anomaly": 0.6699127768873316,
+        "attention": 0.642173165887291,
+        "structural": 0.7347561098037172
+      }
+    },
+    "Gamma_CF": {
+      "direction": "lower",
+      "values": {
+        "anomaly": 0.12911709891488,
+        "attention": 0.13438355419393433,
+        "structural": 0.10996395354011844
+      }
+    },
+    "SCI": {
+      "direction": "lower",
+      "values": {
+        "anomaly": 0.4366667982653164,
+        "attention": 0.444085998644424,
+        "structural": 0.3935805037773389
+      }
+    },
+    "conventional": {
+      "event_count": {
+        "anomaly": 253.0,
+        "attention": 136.0,
+        "structural": 260.0
+      },
+      "log10_cumulative_energy_joule": {
+        "anomaly": 11.746252525000001,
+        "attention": 11.71991585,
+        "structural": 11.81246648
+      },
+      "maximum_magnitude": {
+        "anomaly": 4.6,
+        "attention": 4.6,
+        "structural": 4.6
+      }
+    }
+  },
+  "3d": {
+    "CRM": {
+      "direction": "upper",
+      "values": {
+        "anomaly": 0.31392861750783096,
+        "attention": 0.2916780138946609,
+        "structural": 0.40326743573068713
+      }
+    },
+    "Gamma_CF": {
+      "direction": "lower",
+      "values": {
+        "anomaly": 0.13499535629086012,
+        "attention": 0.1620457741604063,
+        "structural": 0.07692307692307693
+      }
+    },
+    "SCI": {
+      "direction": "lower",
+      "values": {
+        "anomaly": 0.44484727763420934,
+        "attention": 0.502248166517489,
+        "structural": 0.3673073899328068
+      }
+    },
+    "conventional": {
+      "event_count": {
+        "anomaly": 25.0,
+        "attention": 18.0,
+        "structural": 66.40999999999985
+      },
+      "log10_cumulative_energy_joule": {
+        "anomaly": 10.679254862,
+        "attention": 9.759976199,
+        "structural": 11.70014472
+      },
+      "maximum_magnitude": {
+        "anomaly": 3.9,
+        "attention": 3.2,
+        "structural": 4.6
+      }
+    }
+  },
+  "7d": {
+    "CRM": {
+      "direction": "upper",
+      "values": {
+        "anomaly": 0.5156734692634736,
+        "attention": 0.46713903616614466,
+        "structural": 0.5929138216494975
+      }
+    },
+    "Gamma_CF": {
+      "direction": "lower",
+      "values": {
+        "anomaly": 0.1565134128798894,
+        "attention": 0.19813968406703564,
+        "structural": 0.07692307692307693
+      }
+    },
+    "SCI": {
+      "direction": "lower",
+      "values": {
+        "anomaly": 0.459245909513291,
+        "attention": 0.48706590250153736,
+        "structural": 0.3588410794509357
+      }
+    },
+    "conventional": {
+      "event_count": {
+        "anomaly": 43.0,
+        "attention": 34.0,
+        "structural": 182.0
+      },
+      "log10_cumulative_energy_joule": {
+        "anomaly": 11.44559882,
+        "attention": 10.80172296,
+        "structural": 11.71474405
+      },
+      "maximum_magnitude": {
+        "anomaly": 4.4,
+        "attention": 3.9,
+        "structural": 4.6
+      }
+    }
+  }
+}

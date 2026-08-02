@@ -1,0 +1,20 @@
+{
+  "alert_episode_count": 20,
+  "experiment_id": "CF_RETRO_01",
+  "first_anomaly_utc": "2026-06-25T04:00:00Z",
+  "first_attention_utc": "2026-03-21T22:00:00Z",
+  "first_qualifying_alert_utc": "2026-06-25T04:00:00Z",
+  "first_structural_utc": null,
+  "interpretation": "Retrospective structural-instability evaluation only.",
+  "lead_time_class": "remote_or_nondiscriminating",
+  "lead_time_days": 36.574108796296294,
+  "lead_time_hours": 877.7786111111111,
+  "lead_time_seconds": 3160003.0,
+  "maximum_episode_duration_hours": 202.0,
+  "median_episode_duration_hours": 7.0,
+  "permanent_alert_detected": false,
+  "permanent_alert_threshold": 0.5,
+  "prospective_prediction_claim": false,
+  "target_event_utc": "2026-07-31T17:46:43Z",
+  "test_alert_fraction": 0.02478851072201456
+}

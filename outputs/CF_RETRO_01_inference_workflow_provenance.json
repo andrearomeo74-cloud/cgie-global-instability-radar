@@ -1,0 +1,22 @@
+{
+  "actor": "andrearomeo74-cloud",
+  "branch": "main",
+  "execution_timestamp_utc": "2026-08-02T15:30:28.226339Z",
+  "experiment_id": "CF_RETRO_01",
+  "feature_configuration_sha256": "d9b186c83a8600dd6b67c8f6a458e63ddcd4e441f636cbabadafba5ff0c34d4d",
+  "inference_configuration_sha256": "e08b346d4ba3737d954dad6eaecacff856ddbeff1803539b74e14655e669ff9e",
+  "inference_script_sha256": "3078320a32e5d454d3451b78dd79c822a24edf7437e5c8b4bbae903bb0b8391e",
+  "input_features_sha256": "61d726ee920437e0798337e9a2d4c0f2f7d29b6f717fa37e871901f448cfb067",
+  "metrics_sha256": "6b9cedb6d8ee1dd3b5cdbf14483067cc6e102a0a0756ecc6344a9b474c7dd01e",
+  "report_sha256": "39450716678c1a3d506f987a6f18fe15b4c0e447041f895001ae49a2b2698962",
+  "repository": "andrearomeo74-cloud/cgie-global-instability-radar",
+  "repository_owner": "andrearomeo74-cloud",
+  "runner_operating_system": "Linux",
+  "source_commit": "05d71ec153cf8cc9a9d218063a34425836b0d3fb",
+  "stage": "inference",
+  "summary_sha256": "334523b0c7185e3bd9d29b81ca5da6c813832d36d4b4a06705e4af7de2577dc9",
+  "workflow_name": "CF-RETRO-01 Run Frozen Inference",
+  "workflow_run_attempt": "1",
+  "workflow_run_id": "30754411054",
+  "workflow_run_number": "34"
+}
