@@ -59,7 +59,7 @@ selected_features:
   - temporal_burstiness
 
 feature_window_exclusions:
-  depth_mad_km:
+  temporal_burstiness:
     - 1d
 
 feature_directions:
