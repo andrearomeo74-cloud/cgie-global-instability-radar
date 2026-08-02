@@ -1,0 +1,275 @@
+experiment:
+  id: CF_NEG_01
+  version: "1.0"
+  status: FROZEN
+  domain: campi_flegrei
+  type: negative_control_and_specificity_validation
+
+  purpose: >
+    Determine whether CF-RETRO-01 alert episodes are rare and associated
+    with subsequent significant seismic activity, or whether comparable
+    alerts occur frequently without meaningful event association.
+
+interpretation_boundary:
+  earthquake_prediction_claim: false
+  retrospective_validation: true
+  modifies_cf_retro_01: false
+  permits_threshold_tuning: false
+  permits_episode_removal: false
+
+inputs:
+  frozen_catalogue:
+    file: outputs/CF_RETRO_01_catalog_frozen.csv
+    hash_file: outputs/CF_RETRO_01_catalog_frozen.csv.sha256
+
+  global_alerts:
+    file: outputs/CF_RETRO_01_global_alerts.csv
+
+  window_alerts:
+    file: outputs/CF_RETRO_01_window_alerts.csv
+
+  alert_episodes:
+    file: outputs/CF_RETRO_01_alert_episodes.csv
+
+  metrics:
+    file: outputs/CF_RETRO_01_metrics.csv
+    hash_file: outputs/CF_RETRO_01_metrics.csv.sha256
+
+analysis_period:
+  start_utc: "2026-01-01T00:00:00Z"
+  end_utc: "2026-07-31T17:46:42Z"
+
+target_event:
+  utc_time: "2026-07-31T17:46:43Z"
+  included_in_input_catalogue: false
+
+significant_event_definition:
+  magnitude_field: magnitude
+  minimum_magnitude: 3.0
+  magnitude_operator: greater_than_or_equal
+
+  rationale: >
+    Magnitude 3.0 is fixed before CF-NEG-01 execution as the primary
+    threshold for event association. Results for additional thresholds
+    may be reported only as secondary sensitivity analyses.
+
+  secondary_thresholds:
+    - 2.5
+    - 3.5
+    - 4.0
+
+event_clustering:
+  enabled: true
+  method: temporal_declustering
+  cluster_gap_hours: 24
+
+  representative_event:
+    selection: maximum_magnitude
+    tie_break:
+      - earliest_time
+      - event_id_lexicographic
+
+alert_episode_definition:
+  source: CF_RETRO_01_alert_episodes.csv
+
+  included_levels:
+    - attention
+    - anomaly
+    - structural
+
+  primary_episode_levels:
+    - anomaly
+    - structural
+
+association_windows:
+  primary:
+    minimum_lead_hours: 0
+    maximum_lead_hours: 168
+
+  secondary:
+    - id: 24h
+      minimum_lead_hours: 0
+      maximum_lead_hours: 24
+
+    - id: 72h
+      minimum_lead_hours: 0
+      maximum_lead_hours: 72
+
+    - id: 7d
+      minimum_lead_hours: 0
+      maximum_lead_hours: 168
+
+    - id: 14d
+      minimum_lead_hours: 0
+      maximum_lead_hours: 336
+
+    - id: 30d
+      minimum_lead_hours: 0
+      maximum_lead_hours: 720
+
+association_rule:
+  alert_reference_time: episode_start_utc
+  event_reference_time: event_time_utc
+
+  associated_when: >
+    A significant event occurs after the alert episode begins and within
+    the frozen lead-time window.
+
+  allow_event_before_alert: false
+  allow_post_cutoff_event_information: false
+  allow_target_event_in_catalogue: false
+
+episode_classification:
+  associated:
+    definition: >
+      At least one significant event occurs inside the selected
+      post-alert association window.
+
+  unassociated:
+    definition: >
+      No significant event occurs inside the selected post-alert
+      association window.
+
+  overlapping:
+    definition: >
+      Alert episode is already active at the time of a significant event.
+
+  remote:
+    definition: >
+      First subsequent significant event occurs later than the maximum
+      selected association window.
+
+metrics:
+  alert_episode_count: true
+  anomaly_episode_count: true
+  structural_episode_count: true
+
+  associated_episode_count: true
+  unassociated_episode_count: true
+  associated_episode_fraction: true
+
+  event_count: true
+  event_cluster_count: true
+  event_detection_fraction: true
+
+  precision:
+    formula: associated_alert_episodes / all_alert_episodes
+
+  recall:
+    formula: events_preceded_by_alert / all_significant_events
+
+  false_discovery_fraction:
+    formula: unassociated_alert_episodes / all_alert_episodes
+
+  alert_time_fraction: true
+
+  lead_time:
+    report:
+      - minimum_hours
+      - median_hours
+      - mean_hours
+      - maximum_hours
+
+  episode_duration:
+    report:
+      - minimum_hours
+      - median_hours
+      - mean_hours
+      - maximum_hours
+
+random_control:
+  enabled: true
+  method: circular_time_shift
+
+  repetitions: 1000
+  random_seed: 20260731
+
+  minimum_shift_hours: 168
+  preserve_episode_durations: true
+  preserve_interepisode_structure: true
+  wrap_inside_analysis_period: true
+
+  null_hypothesis: >
+    The observed alert-event association is no greater than expected
+    when the complete alert sequence is shifted in time while preserving
+    its internal temporal structure.
+
+  empirical_p_value:
+    formula: >
+      (1 + number_of_random_associations_greater_than_or_equal_to_observed)
+      / (1 + repetitions)
+
+primary_evaluation:
+  association_window: 7d
+  event_magnitude_threshold: 3.0
+
+  evidence_classes:
+    specific:
+      conditions:
+        - empirical_p_value_less_than_0_05
+        - associated_episode_fraction_greater_than_random_median
+        - false_discovery_fraction_below_0_50
+
+    preliminary:
+      conditions:
+        - observed_association_above_random_median
+        - empirical_p_value_greater_than_or_equal_to_0_05
+
+    non_discriminating:
+      conditions:
+        - observed_association_not_above_random_median
+
+    excessive_false_positives:
+      conditions:
+        - false_discovery_fraction_greater_than_or_equal_to_0_50
+
+frozen_questions:
+  - Are CF-RETRO-01 alert episodes rare in the 2026 test interval?
+  - How many alerts are followed by magnitude 3.0 or larger events?
+  - How many significant events are preceded by an alert?
+  - Is the observed association stronger than circularly shifted controls?
+  - Is the 24-26 June transition unusual or one of many similar episodes?
+  - Does Congruity provide useful specificity beyond general unrest?
+
+required_outputs:
+  episode_associations:
+    file: outputs/CF_NEG_01_episode_associations.csv
+
+  event_clusters:
+    file: outputs/CF_NEG_01_event_clusters.csv
+
+  random_controls:
+    file: outputs/CF_NEG_01_random_controls.csv
+
+  threshold_sensitivity:
+    file: outputs/CF_NEG_01_threshold_sensitivity.csv
+
+  summary:
+    file: outputs/CF_NEG_01_summary.json
+
+  report:
+    file: outputs/CF_NEG_01_report.md
+
+  manifest:
+    file: outputs/CF_NEG_01_manifest.json
+
+reproducibility:
+  record_execution_timestamp_utc: true
+  record_source_commit: true
+  record_all_input_hashes: true
+  record_configuration_hash: true
+  deterministic_random_seed: true
+  deterministic_csv_serialization: true
+  csv_encoding: utf-8
+  csv_line_terminator: LF
+  float_precision: 10
+
+prohibited_practices:
+  - change_magnitude_threshold_after_results
+  - change_primary_association_window_after_results
+  - remove_unassociated_alert_episodes
+  - redefine_alert_episode_boundaries
+  - use_events_after_the_frozen_cutoff
+  - use_target_event_inside_input_catalogue
+  - present_retrospective_association_as_prediction
+  - select_only_the_best_random_control_result
