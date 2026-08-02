@@ -779,20 +779,20 @@ def normalize_features(
 
             if coverage < minimum_coverage:
 
-    print()
-    print("=" * 70)
-    print("BASELINE COVERAGE DIAGNOSTIC")
-    print("=" * 70)
-    print(f"Window: {window_id}")
-    print(f"Feature: {feature}")
-    print(f"Coverage basis: {coverage_basis}")
-    print(f"Eligible baseline windows : {coverage_denominator}")
-    print(f"Non-missing values        : {baseline_nonmissing_count}")
-    print(f"Coverage                 : {coverage:.4f}")
-    print(f"Required                 : {minimum_coverage:.4f}")
-    print(f"Unconditional coverage   : {unconditional_coverage:.4f}")
+        print()
+        print("=" * 70)
+        print("BASELINE COVERAGE DIAGNOSTIC")
+        print("=" * 70)
+        print(f"Window: {window_id}")
+        print(f"Feature: {feature}")
+        print(f"Coverage basis: {coverage_basis}")
+        print(f"Eligible baseline windows : {coverage_denominator}")
+        print(f"Non-missing values        : {baseline_nonmissing_count}")
+        print(f"Coverage                 : {coverage:.4f}")
+        print(f"Required                 : {minimum_coverage:.4f}")
+        print(f"Unconditional coverage   : {unconditional_coverage:.4f}")
 
-    if feature == "depth_mad_km":
+           if feature == "depth_mad_km":
         event_counts = pd.to_numeric(
             output.loc[coverage_mask, "event_count"],
             errors="coerce",
@@ -802,10 +802,10 @@ def normalize_features(
         print("Event-count distribution")
         print(event_counts.value_counts().sort_index())
 
-    fail(
+        fail(
         "Baseline coverage below frozen minimum "
         f"for {window_id}/{feature}: {coverage:.4f}"
-    )
+        )
 
             estimates = estimate_robust_parameters(
                 baseline_values,
