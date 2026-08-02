@@ -566,7 +566,8 @@ def directional_deviation(
 
     return applicable_features
 
-    def normalize_features(
+
+def normalize_features(
     features: pd.DataFrame,
     config: dict[str, Any],
 ) -> tuple[pd.DataFrame, dict[str, Any]]:
