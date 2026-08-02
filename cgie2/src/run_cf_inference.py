@@ -531,8 +531,7 @@ def directional_deviation(
     def applicable_features_for_window(
     config: dict[str, Any],
     window_id: str,
-) -> list[str]:
-    selected_features = list(config["selected_features"])
+) -> list[str]: selected_features = list(config["selected_features"])
 
     exclusions = config.get(
         "feature_window_exclusions",
