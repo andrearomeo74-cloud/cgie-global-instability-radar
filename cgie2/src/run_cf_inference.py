@@ -586,6 +586,57 @@ def normalize_features(
         {},
     )
 
+    event_dependent_features = set(
+        coverage_policy.get(
+            "event_dependent_features",
+            [
+                "maximum_magnitude",
+                "median_magnitude",
+                "log10_cumulative_energy_joule",
+                "median_depth_km",
+                "depth_mad_km",
+                "spatial_dispersion_km",
+                "median_interevent_time_hours",
+                "interevent_time_mad_hours",
+                "temporal_burstiness",
+            ],
+        )
+    )
+
+    default_coverage_basis = str(
+        coverage_policy.get(
+            "default_basis",
+            "all_baseline_endpoints",
+        )
+    )
+
+    event_dependent_coverage_basis = str(
+        coverage_policy.get(
+            "event_dependent_basis",
+            "nonempty_baseline_windows",
+        )
+    )
+
+    if default_coverage_basis != "all_baseline_endpoints":
+        fail(
+            "Unsupported default baseline coverage basis: "
+            f"{default_coverage_basis}"
+        )
+
+    if (
+        event_dependent_coverage_basis
+        != "nonempty_baseline_windows"
+    ):
+        fail(
+            "Unsupported event-dependent coverage basis: "
+            f"{event_dependent_coverage_basis}"
+        )
+    
+    coverage_policy = missing_config.get(
+        "coverage_policy",
+        {},
+    )
+
     default_coverage_basis = coverage_policy.get(
         "default_basis",
         "all_baseline_endpoints",
