@@ -789,16 +789,7 @@ def normalize_features(
                 print(f"Required                 : {minimum_coverage:.4f}")
                 print(f"Unconditional coverage   : {unconditional_coverage:.4f}")
 
-            if feature == "depth_mad_km":
-                event_counts = pd.to_numeric(
-                output.loc[coverage_mask, "event_count"],
-                errors="coerce",
-                ).fillna(0).astype(int)
-
-                print()
-                print("Event-count distribution")
-                print(event_counts.value_counts().sort_index())
-
+            
                 fail(
                 "Baseline coverage below frozen minimum "
                 f"for {window_id}/{feature}: {coverage:.4f}"
