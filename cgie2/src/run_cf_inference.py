@@ -791,7 +791,7 @@ def normalize_features(
                 print(f"Required                 : {minimum_coverage:.4f}")
                 print(f"Unconditional coverage   : {unconditional_coverage:.4f}")
 
-           if feature == "depth_mad_km":
+            if feature == "depth_mad_km":
                 event_counts = pd.to_numeric(
                 output.loc[coverage_mask, "event_count"],
                 errors="coerce",
