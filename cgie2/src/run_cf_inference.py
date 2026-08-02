@@ -785,7 +785,6 @@ def normalize_features(
                 print(f"Window: {window_id}")
                 print(f"Feature: {feature}")
                 print(f"Coverage basis: {coverage_basis}")
-                print(f"Non-missing values        : {baseline_nonmissing_count}")
                 print(f"Coverage                 : {coverage:.4f}")
                 print(f"Required                 : {minimum_coverage:.4f}")
                 print(f"Unconditional coverage   : {unconditional_coverage:.4f}")
