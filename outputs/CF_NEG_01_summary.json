@@ -1,0 +1,51 @@
+{
+  "analysis_end_utc": "2026-07-31T17:46:42Z",
+  "analysis_start_utc": "2026-01-01T00:00:00Z",
+  "configuration_version": "1.0",
+  "earthquake_prediction_claim": false,
+  "evidence_class": "non_discriminating",
+  "experiment_id": "CF_NEG_01",
+  "interpretation": "Retrospective alert specificity and negative-control evaluation only.",
+  "primary_association_window_hours": 168.0,
+  "primary_magnitude_threshold": 3.0,
+  "primary_observed_metrics": {
+    "alert_duration_hours": 122.0,
+    "alert_episode_count": 7,
+    "alert_time_fraction": 0.024007343885850983,
+    "associated_episode_count": 1,
+    "associated_episode_fraction": 0.14285714285714285,
+    "episode_duration": {
+      "maximum_hours": 47.0,
+      "mean_hours": 17.428571428571427,
+      "median_hours": 22.0,
+      "minimum_hours": 0.0
+    },
+    "event_cluster_count": 7,
+    "event_clusters_preceded_by_alert": 1,
+    "event_detection_fraction": 0.14285714285714285,
+    "false_discovery_fraction": 0.8571428571428571,
+    "lead_time": {
+      "maximum_hours": 23.298047222222223,
+      "mean_hours": 23.298047222222223,
+      "median_hours": 23.298047222222223,
+      "minimum_hours": 23.298047222222223
+    },
+    "precision": 0.14285714285714285,
+    "unassociated_episode_count": 6
+  },
+  "random_control": {
+    "empirical_p_value": 0.6793206793206793,
+    "observed_associated_episode_count": 1,
+    "random_associated_count_maximum": 4,
+    "random_associated_count_mean": 1.129,
+    "random_associated_count_median": 1.0,
+    "random_associated_count_minimum": 0,
+    "random_associated_fraction_mean": 0.16128571428571425,
+    "random_associated_fraction_median": 0.14285714285714285,
+    "random_greater_than_or_equal_count": 679,
+    "random_seed": 20260731,
+    "repetitions": 1000
+  },
+  "target_event_included": false,
+  "target_event_utc": "2026-07-31T17:46:43Z"
+}

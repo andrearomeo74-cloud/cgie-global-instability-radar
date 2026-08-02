@@ -1,0 +1,8 @@
+episode_id,episode_start_utc,episode_end_utc,episode_duration_hours,maximum_level,is_primary_episode,association_window_hours,associated,classification,overlapping_event,associated_cluster_count,first_event_cluster_id,first_event_id,first_event_time_utc,first_event_magnitude,lead_time_hours
+14,2026-03-21T22:00:00Z,2026-03-21T22:00:00Z,0,attention,False,168,False,remote,False,0,3,45526562,2026-04-07T02:32:57.920000Z,3.3,388.5494222
+15,2026-04-08T16:00:00Z,2026-04-09T14:00:00Z,22,attention,False,168,False,remote,False,0,5,45927482,2026-05-21T03:50:52.069000Z,4.4,1019.847797
+16,2026-05-21T05:00:00Z,2026-05-22T05:00:00Z,24,attention,False,168,False,remote,False,0,6,46317822,2026-06-24T01:02:59.779000Z,3,812.0499386
+17,2026-05-23T00:00:00Z,2026-05-23T01:00:00Z,1,attention,False,168,False,remote,False,0,6,46317822,2026-06-24T01:02:59.779000Z,3,769.0499386
+18,2026-06-02T00:00:00Z,2026-06-03T01:00:00Z,25,attention,False,168,False,remote,False,0,6,46317822,2026-06-24T01:02:59.779000Z,3,529.0499386
+19,2026-06-24T03:00:00Z,2026-06-26T02:00:00Z,47,anomaly,True,168,True,overlapping,True,1,7,46330842,2026-06-25T02:17:52.970000Z,3.6,23.29804722
+20,2026-06-30T02:00:00Z,2026-06-30T05:00:00Z,3,attention,False,168,False,unassociated,False,0,,,,,

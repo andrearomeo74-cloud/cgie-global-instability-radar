@@ -1,0 +1,26 @@
+{
+  "actor": "andrearomeo74-cloud",
+  "branch": "main",
+  "execution_timestamp_utc": "2026-08-02T16:52:57.574527Z",
+  "experiment_id": "CF_NEG_01",
+  "file_hashes": {
+    "configuration": "d32a4cbe660720cfe712712b97e61c3d31ecdbe478f5b79c5be3543e0de514b4",
+    "episode_associations": "986d560280edc63f598ded404465e7a3331c7a2c4210309d56a094bd16f0455d",
+    "event_clusters": "98ac8f057dada37626fc4dcda0f75ad091e45c83bf33a2bfc4015ae6084b047e",
+    "manifest": "abc4e544801a5b9086a4255c04772699f15baaea3c40c07d387c18809f284f26",
+    "random_controls": "692206402d26b7b5ab238fb5b82801f3c8e56b417eb77144b22ff1c2ae371e86",
+    "report": "b4e8cad50425f410b31aeaea1a8d4b82c8c597bea82e1f4889e52857ab3c7b30",
+    "script": "91a5b424bd921841913413720cb42d35b1521c71dfae40b3940974e2ebcb4dd1",
+    "summary": "3f38854701c72bd4143002145ebdeb6dc3e0cbebbe40457ba6a1c2d377feb686",
+    "threshold_sensitivity": "26c796c0ee4a69cd2d8d35bfa1d394c0d919226c0915ff2a6523090656ffd6b9"
+  },
+  "repository": "andrearomeo74-cloud/cgie-global-instability-radar",
+  "repository_owner": "andrearomeo74-cloud",
+  "runner_operating_system": "Linux",
+  "source_commit": "6fdf1a77a0db8c4a19a44bce8b4d79f8f0143224",
+  "stage": "negative_control_and_specificity",
+  "workflow_name": "CF-NEG-01 Run Specificity Controls",
+  "workflow_run_attempt": "1",
+  "workflow_run_id": "30757609261",
+  "workflow_run_number": "1"
+}

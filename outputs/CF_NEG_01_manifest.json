@@ -1,0 +1,84 @@
+{
+  "alert_episode_count": 7,
+  "catalogue_rows": 176,
+  "cf_retro_01_modified": false,
+  "configuration_file": "cgie2/config/cf_neg_01.yaml",
+  "configuration_sha256": "d32a4cbe660720cfe712712b97e61c3d31ecdbe478f5b79c5be3543e0de514b4",
+  "configuration_status": "FROZEN",
+  "event_cluster_count": 7,
+  "execution_timestamp_utc": "2026-08-02T16:52:57.123302Z",
+  "experiment_id": "CF_NEG_01",
+  "input_hashes": {
+    "alert_episodes_sha256": "7dc29d75c06a23f21944d143a77ffa45947e9c2bc71d00005b4b4ae3a0404975",
+    "catalogue_sha256": "9778fddde1c30d6130fa3b2431b924b8417ed00fa1faf89677bf3fb0c765c17a",
+    "global_alerts_sha256": "fe0b6ad2fff33f7e13c85cfc10f0ae429931ee95fcb19dc2d3b08eccde504127",
+    "metrics_sha256": "6b9cedb6d8ee1dd3b5cdbf14483067cc6e102a0a0756ecc6344a9b474c7dd01e",
+    "window_alerts_sha256": "7845e7ac114ab087692ef121a3551f1af9a387c7c2b0816e0b591c28aeb69203"
+  },
+  "output_hashes": {
+    "episode_associations_sha256": "986d560280edc63f598ded404465e7a3331c7a2c4210309d56a094bd16f0455d",
+    "event_clusters_sha256": "98ac8f057dada37626fc4dcda0f75ad091e45c83bf33a2bfc4015ae6084b047e",
+    "random_controls_sha256": "692206402d26b7b5ab238fb5b82801f3c8e56b417eb77144b22ff1c2ae371e86",
+    "report_sha256": "b4e8cad50425f410b31aeaea1a8d4b82c8c597bea82e1f4889e52857ab3c7b30",
+    "summary_sha256": "3f38854701c72bd4143002145ebdeb6dc3e0cbebbe40457ba6a1c2d377feb686",
+    "threshold_sensitivity_sha256": "26c796c0ee4a69cd2d8d35bfa1d394c0d919226c0915ff2a6523090656ffd6b9"
+  },
+  "post_cutoff_data_used": false,
+  "random_control_repetitions": 1000,
+  "random_seed": 20260731,
+  "script_sha256": "91a5b424bd921841913413720cb42d35b1521c71dfae40b3940974e2ebcb4dd1",
+  "source_commit": "6fdf1a77a0db8c4a19a44bce8b4d79f8f0143224",
+  "stage": "negative_control_and_specificity",
+  "summary": {
+    "analysis_end_utc": "2026-07-31T17:46:42Z",
+    "analysis_start_utc": "2026-01-01T00:00:00Z",
+    "configuration_version": "1.0",
+    "earthquake_prediction_claim": false,
+    "evidence_class": "non_discriminating",
+    "experiment_id": "CF_NEG_01",
+    "interpretation": "Retrospective alert specificity and negative-control evaluation only.",
+    "primary_association_window_hours": 168.0,
+    "primary_magnitude_threshold": 3.0,
+    "primary_observed_metrics": {
+      "alert_duration_hours": 122.0,
+      "alert_episode_count": 7,
+      "alert_time_fraction": 0.024007343885850983,
+      "associated_episode_count": 1,
+      "associated_episode_fraction": 0.14285714285714285,
+      "episode_duration": {
+        "maximum_hours": 47.0,
+        "mean_hours": 17.428571428571427,
+        "median_hours": 22.0,
+        "minimum_hours": 0.0
+      },
+      "event_cluster_count": 7,
+      "event_clusters_preceded_by_alert": 1,
+      "event_detection_fraction": 0.14285714285714285,
+      "false_discovery_fraction": 0.8571428571428571,
+      "lead_time": {
+        "maximum_hours": 23.298047222222223,
+        "mean_hours": 23.298047222222223,
+        "median_hours": 23.298047222222223,
+        "minimum_hours": 23.298047222222223
+      },
+      "precision": 0.14285714285714285,
+      "unassociated_episode_count": 6
+    },
+    "random_control": {
+      "empirical_p_value": 0.6793206793206793,
+      "observed_associated_episode_count": 1,
+      "random_associated_count_maximum": 4,
+      "random_associated_count_mean": 1.129,
+      "random_associated_count_median": 1.0,
+      "random_associated_count_minimum": 0,
+      "random_associated_fraction_mean": 0.16128571428571425,
+      "random_associated_fraction_median": 0.14285714285714285,
+      "random_greater_than_or_equal_count": 679,
+      "random_seed": 20260731,
+      "repetitions": 1000
+    },
+    "target_event_included": false,
+    "target_event_utc": "2026-07-31T17:46:43Z"
+  },
+  "target_event_included": false
+}
