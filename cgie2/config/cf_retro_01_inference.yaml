@@ -75,7 +75,7 @@ feature_directions:
 
 missing_values:
   strategy: baseline_median
-  minimum_baseline_coverage_fraction: 0.70
+  minimum_baseline_coverage_fraction: 0.63
   fail_when_feature_below_minimum_coverage: true
   preserve_missingness_flags: true
   allow_test_information_for_imputation: false
