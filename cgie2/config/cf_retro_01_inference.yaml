@@ -58,6 +58,10 @@ selected_features:
   - interevent_time_mad_hours
   - temporal_burstiness
 
+feature_window_exclusions:
+  depth_mad_km:
+    - 1d
+
 feature_directions:
   event_count: upper
   maximum_magnitude: upper
