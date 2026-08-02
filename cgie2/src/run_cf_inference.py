@@ -528,7 +528,7 @@ def directional_deviation(
 
     return z_score.abs()
 
-    def applicable_features_for_window(
+def applicable_features_for_window(
     config: dict[str, Any],
     window_id: str,
 ) -> list[str]: selected_features = list(config["selected_features"])
