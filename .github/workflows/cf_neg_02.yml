@@ -384,14 +384,18 @@ jobs:
               raise SystemExit(
                   "ERROR: no alert 
           episodes overlap "
-                  "the frozen analysis 
-          period."
-              )
+                  "the frozen analysis period."
+          )
+
+          if (
+              episode_ends.max()
+              > analysis_end
+          ):
               raise SystemExit(
-                  "ERROR: an alert 
-          episode exceeds "
+                  "ERROR: an alert episode 
+          exceeds "
                   "the frozen cutoff."
-              )
+          )
 
           cluster_times = pd.to_datetime(
               clusters[
