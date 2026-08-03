@@ -382,8 +382,7 @@ jobs:
 
           if episodes.empty:
               raise SystemExit(
-                  "ERROR: no alert 
-          episodes overlap "
+                  "ERROR: no alert episodes overlap "
                   "the frozen analysis period."
           )
 
@@ -392,8 +391,7 @@ jobs:
               > analysis_end
           ):
               raise SystemExit(
-                  "ERROR: an alert episode 
-          exceeds "
+                  "ERROR: an alert episode exceeds "
                   "the frozen cutoff."
           )
 
