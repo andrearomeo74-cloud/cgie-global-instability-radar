@@ -568,7 +568,7 @@ def load_alert_episodes(
             overlap_mask
         ].copy()
 
-        if episodes.empty:
+if episodes.empty:
     fail(
         "No alert episodes overlap "
         "the frozen analysis period."
