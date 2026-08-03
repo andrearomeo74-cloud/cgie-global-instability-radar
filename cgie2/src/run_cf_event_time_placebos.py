@@ -480,9 +480,7 @@ def load_alert_episodes(
 ) -> tuple[pd.DataFrame, str]:
     """Load frozen CF-RETRO-01 alert episodes."""
     path = resolve_path(
-        config["inputs"][
-            "alert_episodes"
-        ]["file"]
+        config["inputs"]["alert_episodes"]["file"]
     )
 
     if not path.exists():
@@ -550,37 +548,36 @@ def load_alert_episodes(
             "An alert episode ends before it starts."
         )
 
-        analysis_start = parse_utc(
+    analysis_start = parse_utc(
         config["analysis_period"]["start_utc"]
-        )
+    )
 
-        analysis_end = parse_utc(
+    analysis_end = parse_utc(
         config["analysis_period"]["end_utc"]
-        )
-
-        overlap_mask = (
-            (episodes["end_utc"] >= 
-        analysis_start)
-            & (episodes["start_utc"] <= analysis_end)
-        )
-
-        episodes = episodes.loc[
-            overlap_mask
-        ].copy()
-
-if episodes.empty:
-    fail(
-        "No alert episodes overlap "
-        "the frozen analysis period."
     )
 
-if (
-    episodes["end_utc"] > analysis_end
-).any():
-    fail(
-        "An alert episode exceeds "
-        "the frozen analysis cutoff."
+    overlap_mask = (
+        (episodes["end_utc"] >= analysis_start)
+        & (episodes["start_utc"] <= analysis_end)
     )
+
+    episodes = episodes.loc[
+        overlap_mask
+    ].copy()
+
+    if episodes.empty:
+        fail(
+            "No alert episodes overlap "
+            "the frozen analysis period."
+        )
+
+    if (
+        episodes["end_utc"] > analysis_end
+    ).any():
+        fail(
+            "An alert episode exceeds "
+            "the frozen analysis cutoff."
+        )
 
     return (
         episodes.sort_values(
