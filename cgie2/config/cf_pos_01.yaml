@@ -1,0 +1,143 @@
+experiment:
+  id: CF_POS_01
+  name: Frozen Positive Temporal Association Test
+  status: FROZEN
+  configuration_version: "1.0"
+  interpretation: >
+    Retrospective positive temporal-association evaluation only.
+    This experiment does not establish earthquake prediction,
+    causal precursors, prospective forecasting ability, or
+    operational warning capability.
+
+analysis_period:
+  start_utc: "2026-01-01T00:00:00Z"
+  end_utc: "2026-07-31T17:46:42Z"
+
+inputs:
+  catalogue:
+    file: "outputs/CF_RETRO_01_catalog_frozen.csv"
+    sha256_file: "outputs/CF_RETRO_01_catalog_frozen.csv.sha256"
+
+  alert_episodes:
+    file: "outputs/CF_RETRO_01_alert_episodes.csv"
+
+  event_clusters:
+    file: "outputs/CF_NEG_01_event_clusters.csv"
+
+  negative_control_summary:
+    file: "outputs/CF_NEG_02_summary.json"
+
+significant_event_definition:
+  primary_minimum_magnitude: 3.0
+  event_time_column: representative_event_time_utc
+  event_magnitude_column: representative_magnitude
+  event_cluster_id_column: cluster_id
+
+association_rule:
+  method: alert_episode_precedes_or_overlaps_event_cluster
+  primary_maximum_lead_hours: 168.0
+  include_overlapping_episode: true
+  count_each_cluster_once: true
+  count_each_episode_once_per_cluster: true
+
+primary_statistic:
+  name: associated_event_cluster_count
+  expected_direction: greater_than_placebo
+  minimum_associated_cluster_count: 2
+
+placebo_control:
+  method: circular_alert_episode_structure_shift
+  repetitions: 1000
+  random_seed: 20260803
+  preserve_episode_count: true
+  preserve_episode_duration: true
+  preserve_relative_episode_spacing: true
+  preserve_internal_alert_structure: true
+  preserve_analysis_interval: true
+  minimum_shift_hours: 168.0
+
+significance:
+  alpha: 0.05
+  preliminary_alpha: 0.10
+  empirical_tail: upper
+  plus_one_correction: true
+  required_percentile: 0.95
+
+evidence_classification:
+  temporally_specific:
+    maximum_empirical_p_value_exclusive: 0.05
+    require_above_placebo_median: true
+    require_above_placebo_95th_percentile: true
+    minimum_associated_cluster_count: 2
+
+  preliminary:
+    minimum_empirical_p_value_inclusive: 0.05
+    maximum_empirical_p_value_exclusive: 0.10
+    require_above_placebo_median: true
+    minimum_associated_cluster_count: 2
+
+  non_discriminating:
+    fallback: true
+
+  inconclusive_low_power:
+    minimum_required_event_clusters: 5
+
+sensitivity_analysis:
+  magnitude_thresholds:
+    - 2.5
+    - 3.0
+    - 3.5
+    - 4.0
+
+  association_windows_hours:
+    - 24.0
+    - 72.0
+    - 168.0
+    - 336.0
+    - 720.0
+
+  confirmatory: false
+  interpretation: descriptive_only
+
+required_prohibitions:
+  - change_alert_threshold_after_results
+  - change_primary_magnitude_threshold_after_results
+  - change_primary_association_window_after_results
+  - redefine_alert_episode_boundaries
+  - remove_unfavourable_alert_episodes
+  - remove_unfavourable_event_clusters
+  - select_only_favourable_placebo_shifts
+  - change_random_seed_after_results
+  - use_target_event_inside_input_data
+  - present_retrospective_temporal_association_as_prediction
+  - replace_primary_statistic_with_secondary_metric
+
+required_outputs:
+  observed_associations:
+    file: "outputs/CF_POS_01_observed_associations.csv"
+
+  placebo_distribution:
+    file: "outputs/CF_POS_01_placebo_distribution.csv"
+
+  sensitivity:
+    file: "outputs/CF_POS_01_sensitivity.csv"
+
+  summary:
+    file: "outputs/CF_POS_01_summary.json"
+
+  report:
+    file: "outputs/CF_POS_01_report.md"
+
+  manifest:
+    file: "outputs/CF_POS_01_manifest.json"
+
+  workflow_provenance:
+    file: "outputs/CF_POS_01_workflow_provenance.json"
+
+interpretation_boundary:
+  establishes_temporal_association_only: true
+  establishes_earthquake_prediction: false
+  establishes_causal_precursors: false
+  establishes_prospective_forecasting: false
+  establishes_operational_warning: false
+  establishes_external_generalisation: false
