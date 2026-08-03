@@ -569,23 +569,18 @@ def load_alert_episodes(
         ].copy()
 
         if episodes.empty:
-            fail(
-                "No alert episodes 
-        overlap "
-                "the frozen analysis 
-        period."
-            )
+    fail(
+        "No alert episodes overlap "
+        "the frozen analysis period."
+    )
 
-        if (
-            episodes["end_utc"] > 
-        analysis_end
-        ).any():
-            fail(
-                "An alert episode 
-        exceeds "
-                "the frozen analysis 
-        cutoff."
-            )
+if (
+    episodes["end_utc"] > analysis_end
+).any():
+    fail(
+        "An alert episode exceeds "
+        "the frozen analysis cutoff."
+    )
 
     return (
         episodes.sort_values(
