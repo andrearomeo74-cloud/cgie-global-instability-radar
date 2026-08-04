@@ -639,15 +639,25 @@ def build_context(
         len(feature_table.columns),
     )
 
-    context.register_metadata(
-        "windows",
-        sorted(
-            feature_table["window"]
-            .astype(str)
-            .unique()
-            .tolist()
-        ),
-    )
+    feature_config = require_mapping(
+    configuration["feature_table"],
+    "feature_table",
+)
+
+window_column = require_non_empty_string(
+    feature_config["window_column"],
+    "feature_table.window_column",
+)
+
+context.register_metadata(
+    "windows",
+    sorted(
+        feature_table[window_column]
+        .astype(str)
+        .unique()
+        .tolist()
+    ),
+)
 
     return context
 
