@@ -130,3 +130,228 @@ def resolve_repository_path(
         ) from exc
 
     return resolved
+
+
+  def sha256_file(path: Path) -> str:
+    """Calculate the SHA-256 digest of one file."""
+    if not path.exists():
+        fail(
+            f"File not found for hashing: {path}"
+        )
+
+    if not path.is_file():
+        fail(
+            f"Path is not a file: {path}"
+        )
+
+    digest = hashlib.sha256()
+
+    try:
+        with path.open("rb") as handle:
+            for block in iter(
+                lambda: handle.read(
+                    1024 * 1024
+                ),
+                b"",
+            ):
+                digest.update(block)
+    except OSError as exc:
+        raise ExperimentLoaderError(
+            f"Unable to hash file {path}: {exc}"
+        ) from exc
+
+    return digest.hexdigest()
+
+
+def get_git_commit() -> str:
+    """Return the current repository commit, when available."""
+    try:
+        result = subprocess.run(
+            [
+                "git",
+                "rev-parse",
+                "HEAD",
+            ],
+            cwd=REPOSITORY_ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+    except (
+        OSError,
+        subprocess.CalledProcessError,
+    ):
+        return "UNAVAILABLE"
+
+    commit = result.stdout.strip()
+
+    return (
+        commit
+        if commit
+        else "UNAVAILABLE"
+    )
+
+
+def load_configuration(
+    path: Path = CONFIGURATION_PATH,
+) -> dict[str, Any]:
+    """
+    Load and validate the frozen CGIE3-ID-02 YAML configuration.
+
+    This function validates only the configuration envelope.
+    Detailed scientific rules are checked by their respective stages.
+    """
+    configuration_path = path.resolve()
+
+    if not configuration_path.exists():
+        fail(
+            "Relation-discovery configuration not found: "
+            f"{configuration_path}"
+        )
+
+    if not configuration_path.is_file():
+        fail(
+            "Relation-discovery configuration path "
+            f"is not a file: {configuration_path}"
+        )
+
+    try:
+        text = configuration_path.read_text(
+            encoding="utf-8"
+        )
+    except OSError as exc:
+        raise ExperimentLoaderError(
+            "Unable to read relation-discovery "
+            f"configuration: {exc}"
+        ) from exc
+
+    if not text.strip():
+        fail(
+            "Relation-discovery configuration is empty."
+        )
+
+    try:
+        payload = yaml.safe_load(text)
+    except yaml.YAMLError as exc:
+        raise ExperimentLoaderError(
+            "Invalid YAML in relation-discovery "
+            f"configuration: {exc}"
+        ) from exc
+
+    configuration = dict(
+        require_mapping(
+            payload,
+            "configuration root",
+        )
+    )
+
+    required_sections = {
+        "experiment",
+        "interpretation_boundary",
+        "identity_declaration",
+        "inputs",
+        "analysis_period",
+        "feature_table",
+        "candidate_generation",
+        "estimability",
+        "classification",
+        "window_rules",
+        "reproducibility",
+        "safety_rules",
+        "decision_boundary",
+    }
+
+    missing_sections = sorted(
+        required_sections
+        - set(configuration)
+    )
+
+    if missing_sections:
+        fail(
+            "Configuration is missing required sections: "
+            + ", ".join(missing_sections)
+        )
+
+    experiment = require_mapping(
+        configuration["experiment"],
+        "experiment",
+    )
+
+    experiment_id = require_non_empty_string(
+        experiment.get("id"),
+        "experiment.id",
+    )
+
+    if experiment_id != "CGIE3_ID_02":
+        fail(
+            "Unexpected experiment ID. "
+            f"Expected CGIE3_ID_02, observed {experiment_id}."
+        )
+
+    status = require_non_empty_string(
+        experiment.get("status"),
+        "experiment.status",
+    )
+
+    if status != "FROZEN":
+        fail(
+            "CGIE3-ID-02 configuration must have "
+            "status FROZEN."
+        )
+
+    protocol_version = require_non_empty_string(
+        experiment.get("protocol_version"),
+        "experiment.protocol_version",
+    )
+
+    if protocol_version != "CGIE3_ID_02_v1.0":
+        fail(
+            "Unexpected protocol version. "
+            "Expected CGIE3_ID_02_v1.0, "
+            f"observed {protocol_version}."
+        )
+
+    interpretation_boundary = require_mapping(
+        configuration["interpretation_boundary"],
+        "interpretation_boundary",
+    )
+
+    prohibited_true_claims = {
+        "establishes_primary_relations",
+        "establishes_indispensability",
+        "establishes_causality",
+        "establishes_predictive_capability",
+        "establishes_earthquake_prediction",
+        "allows_target_informed_selection",
+        "allows_post_result_threshold_tuning",
+    }
+
+    active_prohibited_claims = sorted(
+        claim
+        for claim in prohibited_true_claims
+        if interpretation_boundary.get(claim) is True
+    )
+
+    if active_prohibited_claims:
+        fail(
+            "Configuration violates the interpretation "
+            "boundary: "
+            + ", ".join(active_prohibited_claims)
+        )
+
+    configuration["_loader"] = {
+        "configuration_file":
+            str(
+                configuration_path.relative_to(
+                    REPOSITORY_ROOT
+                )
+            ),
+        "configuration_sha256":
+            sha256_file(
+                configuration_path
+            ),
+        "loaded_at_utc":
+            utc_now_iso(),
+    }
+
+    return configuration
