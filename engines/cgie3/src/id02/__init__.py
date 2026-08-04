@@ -29,6 +29,8 @@ __all__ = [
     "evaluate_equivalence",
     "ReportingStageError",
     "generate_reports",
+    "ProvenanceStageError",
+    "generate_provenance",
 ]
 
 from .discovery import (
@@ -64,4 +66,9 @@ from .equivalence import (
 from .reporting import (
     ReportingStageError,
     generate_reports,
+)
+
+from .provenance import (
+    ProvenanceStageError,
+    generate_provenance,
 )
