@@ -128,3 +128,87 @@ Every metric introduced in this experiment must be evaluated using:
 - reproducibility checks.
 
 No metric is considered validated before passing these tests.
+
+---
+
+# 13. Relation Eligibility
+
+A candidate relation may belong to the identity network only if it
+satisfies all required eligibility criteria.
+
+The objective is to distinguish structural relations from accidental
+statistical associations.
+
+Relations failing any mandatory criterion must not be included in
+the primary identity network.
+
+---
+
+# 14. Eligibility Criteria
+
+Each candidate relation is evaluated according to:
+
+- reproducibility;
+- temporal persistence;
+- estimability;
+- robustness;
+- uncertainty;
+- sensitivity to missing data;
+- stability under baseline resampling.
+
+Only eligible relations may become primary relations.
+
+---
+
+# 15. Relation Status
+
+Every relation receives one of the following classifications:
+
+- primary
+- secondary
+- rejected
+- non_estimable
+
+The status must remain explicitly stored.
+
+---
+
+# 16. Baseline Lock
+
+Primary relations are identified only during baseline construction.
+
+After freezing the baseline, no new primary relation may be added.
+
+Future observations may only evaluate whether the existing identity
+network remains preserved or degrades.
+
+---
+
+# 17. Missingness
+
+Missing observations must never be interpreted as structural change.
+
+Every missing value must preserve its origin:
+
+- unavailable
+- insufficient observations
+- non estimable
+- excluded by protocol
+
+Missingness propagation must remain explicit throughout the entire
+pipeline.
+
+---
+
+# 18. Provenance
+
+Every relation stored by the experiment must record:
+
+- source features;
+- estimation method;
+- baseline version;
+- experiment identifier;
+- timestamp;
+- protocol version.
+
+Every result must therefore be fully reproducible.
