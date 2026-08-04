@@ -1,0 +1,551 @@
+name: CGIE3-ID-01 Identity Declaration Audit
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cgie3-id-01-identity-audit
+  cancel-in-progress: false
+
+jobs:
+  identity-audit:
+    name: Validate CGIE-3 identity declaration
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Display execution context
+        run: |
+          echo "Repository: $GITHUB_REPOSITORY"
+          echo "Branch: $GITHUB_REF_NAME"
+          echo "Source commit: $GITHUB_SHA"
+          echo "Workflow run ID: $GITHUB_RUN_ID"
+          echo "Workflow run number: $GITHUB_RUN_NUMBER"
+          echo "Workflow run attempt: $GITHUB_RUN_ATTEMPT"
+          python --version
+          python -m pip --version
+
+      - name: Install audit dependency
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install PyYAML
+
+      - name: Validate required files
+        run: |
+          required_files=(
+            "congruity/__init__.py"
+            "congruity/identity/__init__.py"
+            "congruity/identity/models.py"
+            "congruity/identity/declaration.py"
+            "engines/cgie3/config/campi_flegrei_identity.yaml"
+            "engines/cgie3/src/validate_identity_declaration.py"
+          )
+
+          for file in "${required_files[@]}"; do
+            if [ ! -s "$file" ]; then
+              echo "ERROR: required file is absent or empty: $file"
+              exit 1
+            fi
+
+            echo "FOUND: $file"
+            ls -lh "$file"
+          done
+
+      - name: Check Python syntax
+        run: |
+          python -m py_compile \
+            congruity/identity/models.py \
+            congruity/identity/declaration.py \
+            congruity/identity/__init__.py \
+            engines/cgie3/src/validate_identity_declaration.py
+
+          echo "Python syntax validation passed."
+
+      - name: Test Congruity Core import
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          python - <<'PY'
+          from congruity.identity import (
+              IdentityDeclaration,
+              IdentityDeclarationError,
+              IdentityModelError,
+              load_identity_declaration,
+              serialize_model,
+          )
+
+          print("Congruity Core import passed.")
+          print(
+              "Loaded model:",
+              IdentityDeclaration.__name__,
+          )
+          print(
+              "Loaded errors:",
+              IdentityDeclarationError.__name__,
+              IdentityModelError.__name__,
+          )
+          print(
+              "Loaded functions:",
+              load_identity_declaration.__name__,
+              serialize_model.__name__,
+          )
+          PY
+
+      - name: Validate identity YAML directly
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          from congruity.identity import (
+              load_identity_declaration,
+              serialize_model,
+          )
+
+          path = Path(
+              "engines/cgie3/config/"
+              "campi_flegrei_identity.yaml"
+          )
+
+          declaration = load_identity_declaration(
+              path,
+              reject_unknown_fields=True,
+          )
+
+          serialized = serialize_model(
+              declaration
+          )
+
+          expected_scales = {
+              "1d",
+              "3d",
+              "7d",
+              "30d",
+          }
+
+          observed_scales = set(
+              serialized["temporal_scales"]
+          )
+
+          if observed_scales != expected_scales:
+              raise SystemExit(
+                  "ERROR: unexpected temporal scales. "
+                  f"Observed: {sorted(observed_scales)}"
+              )
+
+          expected_components = {
+              "event_count",
+              "maximum_magnitude",
+              "log10_cumulative_energy_joule",
+              "median_depth_km",
+              "depth_mad_km",
+              "spatial_dispersion_km",
+              "median_interevent_time_hours",
+              "interevent_time_mad_hours",
+              "temporal_burstiness",
+          }
+
+          observed_components = set(
+              serialized["component_ids"]
+          )
+
+          if observed_components != expected_components:
+              missing = sorted(
+                  expected_components
+                  - observed_components
+              )
+
+              unexpected = sorted(
+                  observed_components
+                  - expected_components
+              )
+
+              raise SystemExit(
+                  "ERROR: component-set mismatch. "
+                  f"Missing: {missing}. "
+                  f"Unexpected: {unexpected}."
+              )
+
+          required_exclusions = {
+              "deterministic_earthquake_prediction",
+              "operational_public_warning",
+              "non_estimable_state_interpreted_as_normal",
+          }
+
+          observed_exclusions = set(
+              serialized[
+                  "excluded_interpretations"
+              ]
+          )
+
+          missing_exclusions = sorted(
+              required_exclusions
+              - observed_exclusions
+          )
+
+          if missing_exclusions:
+              raise SystemExit(
+                  "ERROR: required interpretation "
+                  "exclusions are missing: "
+                  + ", ".join(missing_exclusions)
+              )
+
+          if (
+              serialized["protocol_version"]
+              != "CGIE3_ID_01_v1.0"
+          ):
+              raise SystemExit(
+                  "ERROR: unexpected protocol version."
+              )
+
+          print(
+              "Direct identity declaration "
+              "validation passed."
+          )
+          print(
+              "System ID:",
+              serialized["system_id"],
+          )
+          print(
+              "Temporal scales:",
+              ", ".join(
+                  serialized["temporal_scales"]
+              ),
+          )
+          print(
+              "Components:",
+              len(
+                  serialized["component_ids"]
+              ),
+          )
+          PY
+
+      - name: Execute identity declaration audit
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+          PYTHONUNBUFFERED: "1"
+        run: |
+          python \
+            engines/cgie3/src/validate_identity_declaration.py
+
+      - name: Verify generated audit outputs
+        run: |
+          generated_files=(
+            "outputs/CGIE3_ID_01_identity_declaration_audit.json"
+            "outputs/CGIE3_ID_01_identity_declaration_audit.md"
+          )
+
+          for file in "${generated_files[@]}"; do
+            if [ ! -s "$file" ]; then
+              echo "ERROR: generated output is absent or empty: $file"
+              exit 1
+            fi
+
+            echo "GENERATED: $file"
+            ls -lh "$file"
+          done
+
+      - name: Validate generated audit JSON
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path(
+              "outputs/"
+              "CGIE3_ID_01_identity_declaration_audit.json"
+          )
+
+          audit = json.loads(
+              path.read_text(
+                  encoding="utf-8"
+              )
+          )
+
+          if (
+              audit.get("audit_id")
+              !=
+              "CGIE3_ID_01_IDENTITY_DECLARATION_AUDIT"
+          ):
+              raise SystemExit(
+                  "ERROR: unexpected audit identifier."
+              )
+
+          if audit.get("status") != "VALID":
+              raise SystemExit(
+                  "ERROR: identity audit is not VALID."
+              )
+
+          declaration = audit.get(
+              "declaration",
+              {},
+          )
+
+          if (
+              declaration.get("system_id")
+              !=
+              "campi_flegrei_seismic_system"
+          ):
+              raise SystemExit(
+                  "ERROR: unexpected system identifier."
+              )
+
+          if (
+              declaration.get("protocol_version")
+              != "CGIE3_ID_01_v1.0"
+          ):
+              raise SystemExit(
+                  "ERROR: unexpected protocol version."
+              )
+
+          claims = audit.get(
+              "scientific_claims",
+              {},
+          )
+
+          expected_claims = {
+              "structural_contract_validated":
+                  True,
+              "physical_identity_validated":
+                  False,
+              "indispensable_relations_identified":
+                  False,
+              "predictive_capability_established":
+                  False,
+          }
+
+          if claims != expected_claims:
+              raise SystemExit(
+                  "ERROR: scientific-claim boundary "
+                  "does not match the frozen audit."
+              )
+
+          for hash_field in (
+              "identity_declaration_sha256",
+              "validator_script_sha256",
+          ):
+              digest = str(
+                  audit.get(hash_field, "")
+              )
+
+              if len(digest) != 64:
+                  raise SystemExit(
+                      "ERROR: invalid SHA-256 field: "
+                      f"{hash_field}"
+                  )
+
+          print(
+              "Generated identity audit "
+              "validation passed."
+          )
+          print(
+              "Status:",
+              audit["status"],
+          )
+          print(
+              "System:",
+              declaration["system_name"],
+          )
+          print(
+              "Physical identity validated:",
+              claims[
+                  "physical_identity_validated"
+              ],
+          )
+          print(
+              "Predictive capability established:",
+              claims[
+                  "predictive_capability_established"
+              ],
+          )
+          PY
+
+      - name: Create workflow provenance
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          def sha256_file(path: Path) -> str:
+              digest = hashlib.sha256()
+
+              with path.open("rb") as handle:
+                  for block in iter(
+                      lambda: handle.read(
+                          1024 * 1024
+                      ),
+                      b"",
+                  ):
+                      digest.update(block)
+
+              return digest.hexdigest()
+
+          tracked_files = {
+              "identity_models":
+                  Path(
+                      "congruity/identity/models.py"
+                  ),
+              "identity_loader":
+                  Path(
+                      "congruity/identity/declaration.py"
+                  ),
+              "identity_package":
+                  Path(
+                      "congruity/identity/__init__.py"
+                  ),
+              "identity_declaration":
+                  Path(
+                      "engines/cgie3/config/"
+                      "campi_flegrei_identity.yaml"
+                  ),
+              "validator_script":
+                  Path(
+                      "engines/cgie3/src/"
+                      "validate_identity_declaration.py"
+                  ),
+              "audit_json":
+                  Path(
+                      "outputs/"
+                      "CGIE3_ID_01_identity_declaration_audit.json"
+                  ),
+              "audit_markdown":
+                  Path(
+                      "outputs/"
+                      "CGIE3_ID_01_identity_declaration_audit.md"
+                  ),
+          }
+
+          provenance = {
+              "audit_id":
+                  "CGIE3_ID_01_IDENTITY_DECLARATION_AUDIT",
+              "stage":
+                  "identity_declaration_validation",
+              "workflow_name":
+                  os.environ.get(
+                      "GITHUB_WORKFLOW"
+                  ),
+              "workflow_run_id":
+                  os.environ.get(
+                      "GITHUB_RUN_ID"
+                  ),
+              "workflow_run_number":
+                  os.environ.get(
+                      "GITHUB_RUN_NUMBER"
+                  ),
+              "workflow_run_attempt":
+                  os.environ.get(
+                      "GITHUB_RUN_ATTEMPT"
+                  ),
+              "repository":
+                  os.environ.get(
+                      "GITHUB_REPOSITORY"
+                  ),
+              "branch":
+                  os.environ.get(
+                      "GITHUB_REF_NAME"
+                  ),
+              "source_commit":
+                  os.environ.get(
+                      "GITHUB_SHA"
+                  ),
+              "actor":
+                  os.environ.get(
+                      "GITHUB_ACTOR"
+                  ),
+              "runner_operating_system":
+                  os.environ.get(
+                      "RUNNER_OS"
+                  ),
+              "execution_timestamp_utc": (
+                  datetime.now(timezone.utc)
+                  .isoformat()
+                  .replace("+00:00", "Z")
+              ),
+              "file_hashes": {
+                  name: sha256_file(path)
+                  for name, path
+                  in tracked_files.items()
+              },
+          }
+
+          output_path = Path(
+              "outputs/"
+              "CGIE3_ID_01_identity_audit_provenance.json"
+          )
+
+          output_path.write_text(
+              json.dumps(
+                  provenance,
+                  indent=2,
+                  ensure_ascii=False,
+                  sort_keys=True,
+              )
+              + "\n",
+              encoding="utf-8",
+          )
+
+          print(
+              f"Generated: {output_path}"
+          )
+          PY
+
+      - name: Upload CGIE3 identity audit artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: CGIE3-ID-01-identity-declaration-audit
+          path: |
+            outputs/CGIE3_ID_01_identity_declaration_audit.json
+            outputs/CGIE3_ID_01_identity_declaration_audit.md
+            outputs/CGIE3_ID_01_identity_audit_provenance.json
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 6
+
+      - name: Commit generated identity audit outputs
+        run: |
+          git config \
+            user.name \
+            "github-actions[bot]"
+
+          git config \
+            user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add \
+            outputs/CGIE3_ID_01_identity_declaration_audit.json \
+            outputs/CGIE3_ID_01_identity_declaration_audit.md \
+            outputs/CGIE3_ID_01_identity_audit_provenance.json
+
+          if git diff --cached --quiet; then
+            echo "No generated identity-audit changes to commit."
+            exit 0
+          fi
+
+          git commit \
+            -m "Add CGIE3 identity declaration audit" \
+            -m "Generated automatically from the domain-independent Congruity Core and the frozen Campi Flegrei identity declaration. Confirms structural validity only and does not establish physical identity, indispensable relations or predictive capability."
+
+          git pull \
+            --rebase \
+            origin \
+            "$GITHUB_REF_NAME"
+
+          git push \
+            origin \
+            "HEAD:$GITHUB_REF_NAME"
