@@ -212,3 +212,85 @@ Every relation stored by the experiment must record:
 - protocol version.
 
 Every result must therefore be fully reproducible.
+
+---
+
+# 19. Relation Continuity
+
+Each eligible relation is evaluated throughout the observation
+period.
+
+The objective is to determine whether the relation preserves its
+baseline behavior or progressively degrades.
+
+Continuity is assessed relative to the frozen baseline only.
+
+---
+
+# 20. Relation States
+
+Each relation may occupy one of the following states:
+
+- preserved
+- weakened
+- degraded
+- lost
+- non_estimable
+
+Transitions between states must be explicitly recorded.
+
+---
+
+# 21. Persistence
+
+A temporary fluctuation shall not automatically be interpreted as
+structural degradation.
+
+A state transition should persist across the required confirmation
+windows before becoming part of the structural interpretation.
+
+Persistence requirements are defined separately by protocol.
+
+---
+
+# 22. Recovery
+
+A degraded relation may recover.
+
+Recovery must be recorded independently from degradation.
+
+Recovered relations shall preserve their historical transition
+record.
+
+The identity network therefore retains both degradation and
+recovery history.
+
+---
+
+# 23. Network Continuity
+
+The structural condition of the candidate identity is determined by
+the collective behavior of eligible relations.
+
+The experiment evaluates whether degradation is:
+
+- isolated;
+- localized;
+- distributed;
+- persistent;
+- recovering.
+
+Network interpretation must never rely upon a single relation.
+
+---
+
+# 24. Experimental Boundary
+
+The experiment detects structural transitions only.
+
+No transition shall be interpreted as deterministic evidence that
+an earthquake will occur.
+
+Observed degradation represents evidence of changing structural
+organization and must remain within the interpretation boundaries
+defined by the framework.
