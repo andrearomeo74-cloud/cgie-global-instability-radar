@@ -1,0 +1,23 @@
+{
+  "actor": "andrearomeo74-cloud",
+  "audit_id": "CGIE3_ID_01_IDENTITY_DECLARATION_AUDIT",
+  "branch": "main",
+  "execution_timestamp_utc": "2026-08-04T15:36:05.475819Z",
+  "file_hashes": {
+    "audit_json": "45c6566f97da6b798e58c74f258b8d55baccadcfde0734c614ac688439f79ae0",
+    "audit_markdown": "2726ce961dd2405d6a75b9d9d8eb3a61ba673124572b1eb5cd0ddd3c66f53c9c",
+    "identity_declaration": "4c68d1d701238f3d96aaa9a3e1bc7a5a4556437a72390d9c0750eabc4ac7e180",
+    "identity_loader": "40ed991b5cb2f70d4afbf91efbf98c7e63087ca5166c566f38d67f7fd7cea3ed",
+    "identity_models": "b0f919cbe54736cefbc8fe7632138262ba8d67a98e3dba827713e2790d225d04",
+    "identity_package": "9b2c57963be8e0dbe3a18f8751df6a4de2501cd465c883a1bcd78a37c09221f0",
+    "validator_script": "e3239500d6bc87359caf8a2d3cdc739e6798aedc52bdcd4f09e2abcf9ac4991e"
+  },
+  "repository": "andrearomeo74-cloud/cgie-global-instability-radar",
+  "runner_operating_system": "Linux",
+  "source_commit": "7d668067bda7ecb8e9210f8e5c85d74c4ed35bf8",
+  "stage": "identity_declaration_validation",
+  "workflow_name": "CGIE3-ID-01 Identity Declaration Audit",
+  "workflow_run_attempt": "1",
+  "workflow_run_id": "30924943243",
+  "workflow_run_number": "4"
+}

@@ -1,0 +1,54 @@
+{
+  "audit_id": "CGIE3_ID_01_IDENTITY_DECLARATION_AUDIT",
+  "declaration": {
+    "component_ids": [
+      "event_count",
+      "maximum_magnitude",
+      "log10_cumulative_energy_joule",
+      "median_depth_km",
+      "depth_mad_km",
+      "spatial_dispersion_km",
+      "median_interevent_time_hours",
+      "interevent_time_mad_hours",
+      "temporal_burstiness"
+    ],
+    "domain": "geophysical_seismic_monitoring",
+    "excluded_interpretations": [
+      "deterministic_earthquake_prediction",
+      "exact_event_time_prediction",
+      "exact_event_magnitude_prediction",
+      "exact_event_location_prediction",
+      "causal_precursor_claim",
+      "operational_public_warning",
+      "evacuation_advice",
+      "replacement_of_official_authorities",
+      "retrospective_result_presented_as_prospective",
+      "non_estimable_state_interpreted_as_normal"
+    ],
+    "functional_purpose": "Represent and evaluate the continuity of the multiscale spatiotemporal organization of seismic activity within the declared Campi Flegrei observation boundary.",
+    "observation_context": "Retrospective experimental evaluation using the frozen CF_RETRO_01 lineage. The baseline interval is 2025-01-01 through 2025-12-31. The evaluation interval is 2026-01-01 through 2026-07-31T17:46:42Z. All estimates at time t must use only information available at or before t.",
+    "protocol_version": "CGIE3_ID_01_v1.0",
+    "system_boundary": "The system includes seismic events retained by the frozen CF_RETRO_01 Campi Flegrei catalogue and the features derived from those events under the frozen geographical, temporal and quality-control rules. The individual target earthquake is not itself the system identity.",
+    "system_id": "campi_flegrei_seismic_system",
+    "system_name": "Campi Flegrei Seismic System",
+    "temporal_scales": [
+      "1d",
+      "3d",
+      "7d",
+      "30d"
+    ]
+  },
+  "generated_at_utc": "2026-08-04T15:36:05.355595Z",
+  "identity_declaration_file": "engines/cgie3/config/campi_flegrei_identity.yaml",
+  "identity_declaration_sha256": "4c68d1d701238f3d96aaa9a3e1bc7a5a4556437a72390d9c0750eabc4ac7e180",
+  "scientific_claims": {
+    "indispensable_relations_identified": false,
+    "physical_identity_validated": false,
+    "predictive_capability_established": false,
+    "structural_contract_validated": true
+  },
+  "source_commit": "7d668067bda7ecb8e9210f8e5c85d74c4ed35bf8",
+  "status": "VALID",
+  "validator_script_file": "engines/cgie3/src/validate_identity_declaration.py",
+  "validator_script_sha256": "e3239500d6bc87359caf8a2d3cdc739e6798aedc52bdcd4f09e2abcf9ac4991e"
+}
