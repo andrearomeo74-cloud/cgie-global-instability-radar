@@ -17,9 +17,16 @@ __all__ = [
     "preprocess",
     "DiscoveryStageError",
     "discover",
+    "PersistenceStageError",
+    "evaluate_persistence",
 ]
 
 from .discovery import (
     DiscoveryStageError,
     discover,
+)
+
+from .persistence import (
+    PersistenceStageError,
+    evaluate_persistence,
 )
