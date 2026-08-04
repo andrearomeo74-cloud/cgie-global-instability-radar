@@ -23,6 +23,8 @@ __all__ = [
     "evaluate_bootstrap",
     "MissingnessStageError",
     "evaluate_missingness",
+    "ClassificationStageError",
+    "classify_relations",
 ]
 
 from .discovery import (
@@ -43,4 +45,9 @@ from .bootstrap import (
 from .missingness import (
     MissingnessStageError,
     evaluate_missingness,
+)
+
+from .classification import (
+    ClassificationStageError,
+    classify_relations,
 )
