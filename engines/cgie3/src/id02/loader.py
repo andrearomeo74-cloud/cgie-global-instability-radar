@@ -460,3 +460,123 @@ def load_identity(
         configuration["_loader"] = mutable_loader
 
     return identity
+
+def load_feature_table(
+    configuration: Mapping[str, Any],
+) -> pd.DataFrame:
+    """
+    Load the frozen feature table used by CGIE3-ID-02.
+
+    Only structural validation is performed here.
+    Scientific interpretation belongs to later stages.
+    """
+
+    inputs = require_mapping(
+        configuration.get("inputs"),
+        "inputs",
+    )
+
+    feature_path = resolve_repository_path(
+        inputs.get("features_file"),
+        "inputs.features_file",
+    )
+
+    if not feature_path.exists():
+        fail(
+            f"Feature table not found: {feature_path}"
+        )
+
+    try:
+        feature_table = pd.read_csv(
+            feature_path
+        )
+    except Exception as exc:
+        raise ExperimentLoaderError(
+            f"Unable to read feature table: {exc}"
+        ) from exc
+
+    if feature_table.empty:
+        fail(
+            "Feature table is empty."
+        )
+
+    required_columns = [
+        "window_end_utc",
+        "window",
+    ]
+
+    missing = [
+        column
+        for column in required_columns
+        if column not in feature_table.columns
+    ]
+
+    if missing:
+        fail(
+            "Feature table is missing required columns: "
+            + ", ".join(missing)
+        )
+
+    feature_table["window_end_utc"] = pd.to_datetime(
+        feature_table["window_end_utc"],
+        utc=True,
+        errors="coerce",
+    )
+
+    if feature_table["window_end_utc"].isna().any():
+        fail(
+            "Invalid timestamps detected in window_end_utc."
+        )
+
+    feature_table = feature_table.sort_values(
+        "window_end_utc"
+    ).reset_index(drop=True)
+
+    expected_windows = {
+        "1d",
+        "3d",
+        "7d",
+        "30d",
+    }
+
+    observed_windows = set(
+        feature_table["window"]
+        .astype(str)
+        .unique()
+    )
+
+    missing_windows = sorted(
+        expected_windows - observed_windows
+    )
+
+    if missing_windows:
+        fail(
+            "Missing feature windows: "
+            + ", ".join(missing_windows)
+        )
+
+    loader = dict(
+        configuration["_loader"]
+    )
+
+    loader["feature_table_file"] = str(
+        feature_path.relative_to(
+            REPOSITORY_ROOT
+        )
+    )
+
+    loader["feature_table_sha256"] = sha256_file(
+        feature_path
+    )
+
+    loader["feature_rows"] = len(
+        feature_table
+    )
+
+    loader["feature_columns"] = len(
+        feature_table.columns
+    )
+
+    configuration["_loader"] = loader
+
+    return feature_table
