@@ -1,0 +1,363 @@
+experiment:
+  id: CGIE3_ID_02
+  name: Eligible Relation Discovery
+  engine: CGIE-3
+  framework_version: "1.0-draft"
+  protocol_version: "CGIE3_ID_02_v1.0"
+  configuration_version: "1.0"
+  status: FROZEN
+  random_seed: 20260804
+
+interpretation_boundary:
+  discovers_candidate_relations: true
+  establishes_eligibility: true
+  establishes_primary_relations: false
+  establishes_indispensability: false
+  establishes_causality: false
+  establishes_predictive_capability: false
+  establishes_earthquake_prediction: false
+  allows_target_informed_selection: false
+  allows_post_result_threshold_tuning: false
+
+identity_declaration:
+  file: engines/cgie3/config/campi_flegrei_identity.yaml
+  expected_system_id: campi_flegrei_seismic_system
+  expected_protocol_version: CGIE3_ID_01_v1.0
+
+inputs:
+  frozen_features:
+    file: outputs/CF_RETRO_01_features.csv
+
+  frozen_catalogue:
+    file: outputs/CF_RETRO_01_catalog_frozen.csv
+    hash_file: outputs/CF_RETRO_01_catalog_frozen.csv.sha256
+
+  cgie2_metrics:
+    file: outputs/CF_RETRO_01_metrics.csv
+
+analysis_period:
+  baseline:
+    start_utc: "2025-01-01T00:00:00Z"
+    end_utc: "2025-12-31T23:59:59Z"
+
+  evaluation:
+    start_utc: "2026-01-01T00:00:00Z"
+    end_utc: "2026-07-31T17:46:42Z"
+
+  use_evaluation_for_relation_selection: false
+  use_target_event_for_relation_selection: false
+  future_observations_allowed: false
+
+feature_table:
+  timestamp_column: endpoint_utc
+  window_column: window_id
+
+  required_windows:
+    - 1d
+    - 3d
+    - 7d
+    - 30d
+
+  primary_window: 7d
+
+  required_components:
+    - event_count
+    - maximum_magnitude
+    - log10_cumulative_energy_joule
+    - median_depth_km
+    - depth_mad_km
+    - spatial_dispersion_km
+    - median_interevent_time_hours
+    - interevent_time_mad_hours
+    - temporal_burstiness
+
+  excluded_columns:
+    - row_id
+    - episode_id
+    - alert_level
+    - global_alert_level
+    - target_label
+    - target_event
+    - future_event
+    - event_association
+    - lead_time_hours
+
+  window_specific_exclusions:
+    1d:
+      - temporal_burstiness
+
+    3d: []
+
+    7d: []
+
+    30d: []
+
+candidate_generation:
+  relation_type: undirected_pairwise
+  estimator: spearman
+  generate_all_unique_pairs: true
+  deterministic_lexicographic_order: true
+  allow_self_relations: false
+  preserve_signed_strength: true
+  preserve_absolute_strength: true
+  p_value_is_descriptive_only: true
+
+estimability:
+  minimum_paired_observations: 20
+  minimum_unique_values_per_component: 3
+  reject_constant_component: true
+  reject_non_finite_estimate: true
+  allow_infinite_inputs: false
+  convert_infinite_inputs_to_missing: true
+
+  missingness:
+    maximum_pairwise_missing_fraction: 0.30
+    non_estimable_is_not_zero: true
+    non_estimable_is_not_normal: true
+    preserve_reason: true
+
+baseline_partition:
+  method: contiguous_calendar_blocks
+  block_count: 12
+  expected_block_unit: month
+  preserve_temporal_order: true
+  allow_random_block_order: false
+  minimum_valid_blocks: 9
+
+relation_reproducibility:
+  reference_estimate:
+    use_full_baseline: true
+
+  block_estimates:
+    enabled: true
+    estimator: spearman
+    minimum_paired_observations_per_block: 20
+
+  bootstrap:
+    enabled: true
+    method: moving_block_bootstrap
+    repetitions: 500
+    block_length_observations: 24
+    confidence_level: 0.95
+    random_seed: 20260804
+
+persistence:
+  definition: >
+    Fraction of valid baseline blocks in which the relation is estimable,
+    preserves the full-baseline sign and has absolute Spearman strength
+    greater than or equal to the frozen minimum block strength.
+
+  minimum_block_absolute_strength: 0.20
+  minimum_sign_preservation_fraction: 0.75
+  minimum_estimable_block_fraction: 0.75
+  minimum_persistence_for_eligible: 0.70
+  minimum_persistence_for_candidate: 0.50
+
+strength:
+  minimum_full_baseline_absolute_strength_for_eligible: 0.30
+  minimum_full_baseline_absolute_strength_for_candidate: 0.20
+
+uncertainty:
+  measure: bootstrap_confidence_interval_width
+  maximum_confidence_interval_width_for_eligible: 0.50
+  maximum_confidence_interval_width_for_candidate: 0.70
+  confidence_interval_must_exclude_opposite_sign_for_eligible: true
+
+robustness:
+  leave_one_block_out:
+    enabled: true
+    minimum_sign_preservation_fraction: 0.75
+    maximum_median_absolute_strength_change: 0.20
+
+  missingness_stress:
+    enabled: true
+    simulated_missing_fraction: 0.10
+    repetitions: 100
+    random_seed: 20260804
+    minimum_sign_preservation_fraction: 0.75
+
+  estimator_sensitivity:
+    enabled: true
+    secondary_estimator: pearson
+    descriptive_only: true
+    not_used_for_primary_eligibility: true
+
+equivalence_checks:
+  duplicate_component_detection:
+    enabled: true
+    absolute_spearman_threshold: 0.995
+
+  deterministic_transformation_detection:
+    enabled: true
+
+  redundant_relation_flagging:
+    enabled: true
+    does_not_automatically_reject: true
+
+classification:
+  allowed_statuses:
+    - eligible
+    - candidate
+    - rejected
+    - non_estimable
+
+  essential_status_allowed: false
+  primary_status_allowed: false
+  secondary_status_allowed: false
+
+  precedence:
+    - non_estimable
+    - eligible
+    - candidate
+    - rejected
+
+  eligible:
+    all_conditions_required: true
+    conditions:
+      - estimable_on_full_baseline
+      - full_baseline_absolute_strength_at_least_0_30
+      - estimable_block_fraction_at_least_0_75
+      - sign_preservation_fraction_at_least_0_75
+      - persistence_at_least_0_70
+      - bootstrap_interval_width_at_most_0_50
+      - bootstrap_interval_does_not_cross_opposite_sign
+      - leave_one_block_out_robust
+      - missingness_stress_robust
+
+  candidate:
+    all_conditions_required: true
+    conditions:
+      - estimable_on_full_baseline
+      - full_baseline_absolute_strength_at_least_0_20
+      - persistence_at_least_0_50
+      - bootstrap_interval_width_at_most_0_70
+
+  rejected:
+    definition: >
+      Estimable relation that satisfies neither the frozen eligible
+      conditions nor the frozen candidate conditions.
+
+  non_estimable:
+    reasons:
+      - insufficient_observations
+      - excessive_missingness
+      - constant_component
+      - insufficient_unique_values
+      - numerical_failure
+      - excluded_by_protocol
+
+window_rules:
+  evaluate_each_window_independently: true
+  do_not_pool_windows: true
+  cross_window_eligibility_not_required_in_id_02: true
+
+  expected_component_counts:
+    1d: 8
+    3d: 9
+    7d: 9
+    30d: 9
+
+  expected_candidate_relation_counts:
+    1d: 28
+    3d: 36
+    7d: 36
+    30d: 36
+
+  expected_total_candidate_relations: 136
+
+scientific_outputs:
+  required:
+    - outputs/CGIE3_ID_02_candidate_relations.csv
+    - outputs/CGIE3_ID_02_block_relations.csv
+    - outputs/CGIE3_ID_02_bootstrap_relations.csv
+    - outputs/CGIE3_ID_02_relation_classification.csv
+    - outputs/CGIE3_ID_02_equivalence_flags.csv
+    - outputs/CGIE3_ID_02_summary.json
+    - outputs/CGIE3_ID_02_report.md
+    - outputs/CGIE3_ID_02_manifest.json
+    - outputs/CGIE3_ID_02_workflow_provenance.json
+
+summary_requirements:
+  report_total_relations: true
+  report_by_window: true
+  report_estimable_count: true
+  report_non_estimable_count: true
+  report_eligible_count: true
+  report_candidate_count: true
+  report_rejected_count: true
+  report_non_estimable_reasons: true
+  report_equivalence_flags: true
+  report_no_eligible_relations_as_valid_outcome: true
+
+reproducibility:
+  csv_encoding: utf-8
+  csv_line_terminator: LF
+  float_precision: 10
+  deterministic_sorting: true
+
+  sort_keys:
+    - window_id
+    - source_id
+    - target_id
+    - relation_id
+
+  record_git_commit: true
+  record_configuration_hash: true
+  record_identity_declaration_hash: true
+  record_input_hashes: true
+  record_script_hashes: true
+  record_dependency_versions: true
+  record_execution_timestamp_utc: true
+
+safety_rules:
+  modify_cgie2_files: false
+  modify_frozen_inputs: false
+  delete_rejected_relations: false
+  delete_non_estimable_relations: false
+  change_thresholds_after_results: false
+  select_relations_using_target_events: false
+  select_relations_using_evaluation_outcomes: false
+  describe_eligible_as_indispensable: false
+  describe_association_as_causality: false
+  describe_relation_discovery_as_earthquake_prediction: false
+
+prohibited_practices:
+  - use_evaluation_interval_for_relation_selection
+  - use_target_event_labels_for_relation_selection
+  - change_minimum_samples_after_results
+  - change_strength_thresholds_after_results
+  - change_persistence_thresholds_after_results
+  - change_bootstrap_seed_after_results
+  - remove_rejected_relations_from_report
+  - remove_non_estimable_relations_from_report
+  - promote_candidate_relation_after_outcome_inspection
+  - call_eligible_relation_essential
+  - call_eligible_relation_indispensable
+  - infer_causality_from_spearman_association
+  - interpret_relation_discovery_as_earthquake_prediction
+
+decision_boundary:
+  success_definition: >
+    The experiment succeeds technically when all deterministic candidate
+    relations are evaluated, every relation receives exactly one allowed
+    status and complete provenance is produced.
+
+  scientific_positive_result: >
+    At least one eligible relation is identified under the frozen
+    configuration.
+
+  scientifically_valid_negative_results:
+    - no_eligible_relations
+    - all_relations_non_estimable
+    - only_candidate_relations
+    - excessive_instability_across_blocks
+    - excessive_uncertainty
+    - relation_equivalence_or_redundancy
+
+  permitted_claim: >
+    One or more relations satisfy the frozen eligibility protocol within
+    the CF_RETRO_01 baseline.
+
+  prohibited_claim: >
+    The discovered relations are causal, indispensable or predictive of
+    a specific earthquake.
