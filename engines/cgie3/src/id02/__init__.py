@@ -25,6 +25,8 @@ __all__ = [
     "evaluate_missingness",
     "ClassificationStageError",
     "classify_relations",
+    "EquivalenceStageError",
+    "evaluate_equivalence",
 ]
 
 from .discovery import (
@@ -50,4 +52,9 @@ from .missingness import (
 from .classification import (
     ClassificationStageError,
     classify_relations,
+)
+
+from .equivalence import (
+    EquivalenceStageError,
+    evaluate_equivalence,
 )
