@@ -1,0 +1,55 @@
+system_id: campi_flegrei_seismic_system
+
+system_name: Campi Flegrei Seismic System
+
+domain: geophysical_seismic_monitoring
+
+functional_purpose: >
+  Represent and evaluate the continuity of the multiscale
+  spatiotemporal organization of seismic activity within the
+  declared Campi Flegrei observation boundary.
+
+system_boundary: >
+  The system includes seismic events retained by the frozen
+  CF_RETRO_01 Campi Flegrei catalogue and the features derived from
+  those events under the frozen geographical, temporal and
+  quality-control rules. The individual target earthquake is not
+  itself the system identity.
+
+observation_context: >
+  Retrospective experimental evaluation using the frozen
+  CF_RETRO_01 lineage. The baseline interval is 2025-01-01 through
+  2025-12-31. The evaluation interval is 2026-01-01 through
+  2026-07-31T17:46:42Z. All estimates at time t must use only
+  information available at or before t.
+
+temporal_scales:
+  - 1d
+  - 3d
+  - 7d
+  - 30d
+
+component_ids:
+  - event_count
+  - maximum_magnitude
+  - log10_cumulative_energy_joule
+  - median_depth_km
+  - depth_mad_km
+  - spatial_dispersion_km
+  - median_interevent_time_hours
+  - interevent_time_mad_hours
+  - temporal_burstiness
+
+excluded_interpretations:
+  - deterministic_earthquake_prediction
+  - exact_event_time_prediction
+  - exact_event_magnitude_prediction
+  - exact_event_location_prediction
+  - causal_precursor_claim
+  - operational_public_warning
+  - evacuation_advice
+  - replacement_of_official_authorities
+  - retrospective_result_presented_as_prospective
+  - non_estimable_state_interpreted_as_normal
+
+protocol_version: CGIE3_ID_01_v1.0
