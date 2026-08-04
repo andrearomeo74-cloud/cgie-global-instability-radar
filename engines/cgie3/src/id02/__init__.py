@@ -31,6 +31,8 @@ __all__ = [
     "generate_reports",
     "ProvenanceStageError",
     "generate_provenance",
+    "PipelineExecutionError",
+    "run_pipeline",
 ]
 
 from .discovery import (
@@ -71,4 +73,9 @@ from .reporting import (
 from .provenance import (
     ProvenanceStageError,
     generate_provenance,
+)
+
+from .main import (
+    PipelineExecutionError,
+    run_pipeline,
 )
