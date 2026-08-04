@@ -21,6 +21,8 @@ __all__ = [
     "evaluate_persistence",
     "BootstrapStageError",
     "evaluate_bootstrap",
+    "MissingnessStageError",
+    "evaluate_missingness",
 ]
 
 from .discovery import (
@@ -36,4 +38,9 @@ from .persistence import (
 from .bootstrap import (
     BootstrapStageError,
     evaluate_bootstrap,
+)
+
+from .missingness import (
+    MissingnessStageError,
+    evaluate_missingness,
 )
