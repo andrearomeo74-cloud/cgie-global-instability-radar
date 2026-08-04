@@ -1,0 +1,60 @@
+experiment:
+  id: CGIE3_ID_01
+  engine: CGIE-3
+  protocol_version: "1.0"
+  frozen: true
+  random_seed: 42
+
+dataset:
+  source: CF_RETRO_01
+  use_frozen_catalog: true
+  use_frozen_features: true
+  use_frozen_thresholds: false
+
+baseline:
+  mode: fixed
+  duration_days: 365
+
+windows:
+  - 1d
+  - 3d
+  - 7d
+  - 14d
+  - 30d
+
+relations:
+  estimator: spearman
+  min_samples: 20
+  min_abs_corr: 0.30
+  min_persistence: 0.70
+
+network:
+  primary_edge_fraction: 0.30
+  secondary_edge_fraction: 0.70
+
+identity:
+  metric: IEC
+  aggregation: weighted_mean
+  weakest_rule: minimum
+
+alerts:
+  identity_watch: 0.85
+  identity_degradation: 0.70
+  identity_transition: 0.50
+
+placebo:
+  enabled: true
+  circular_shifts: 500
+  random_shifts: 500
+
+outputs:
+  save_edges: true
+  save_metrics: true
+  save_alerts: true
+  save_summary: true
+  save_report: true
+
+reproducibility:
+  save_git_hash: true
+  save_hashes: true
+  save_manifest: true
