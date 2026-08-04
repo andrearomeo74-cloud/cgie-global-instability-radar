@@ -1,0 +1,25 @@
+{
+  "case_id": "CF_CASE_01",
+  "location": "Campi Flegrei",
+  "analysis_start_utc": "2026-06-14T00:00:00+00:00",
+  "analysis_end_utc": "2026-07-31T17:46:43+00:00",
+  "target_event": {
+    "time_utc": "2026-07-31T17:46:43+00:00",
+    "magnitude": 4.7
+  },
+  "alert_rows": 1147,
+  "non_normal_rows": 260,
+  "non_normal_fraction": 0.22667829119442023,
+  "episode_count": 12,
+  "catalogue_events_above_threshold": 5,
+  "minimum_catalogue_magnitude": 2.0,
+  "last_non_normal_episode": {
+    "start_utc": "2026-07-30T02:00:00+00:00",
+    "end_utc": "2026-07-31T01:00:00+00:00",
+    "maximum_state": "anomaly",
+    "duration_hours": 24.0
+  },
+  "lead_time_from_episode_start_hours": 39.77861111111111,
+  "lead_time_from_episode_end_hours": 16.77861111111111,
+  "interpretation": "Temporal pre-event association only. No deterministic earthquake prediction or physical causality is claimed."
+}

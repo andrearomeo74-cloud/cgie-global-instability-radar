@@ -1,0 +1,17 @@
+{
+  "case_id": "CF_CASE_01",
+  "generated_at_utc": "2026-08-04T08:21:34.026037+00:00",
+  "git_commit": "c54c3ac5e67508211119860c1c84d665b4b579d2",
+  "github_run_id": "30891582839",
+  "github_run_attempt": "1",
+  "workflow": "CF-CASE-01 Build Campi Flegrei Timeline",
+  "file_sha256": {
+    "cgie2/src/build_cf_campi_flegrei_timeline.py": "61c30861fc3d6e423a70b56aae18c823bd71b0fae56df40906de5c8fa0231b30",
+    "outputs/CF_RETRO_01_global_alerts.csv": "fe0b6ad2fff33f7e13c85cfc10f0ae429931ee95fcb19dc2d3b08eccde504127",
+    "outputs/CF_RETRO_01_catalog_frozen.csv": "9778fddde1c30d6130fa3b2431b924b8417ed00fa1faf89677bf3fb0c765c17a",
+    "outputs/CF_CASE_01_campi_flegrei_timeline.csv": "738f4f715e9464ce286f79ea39533a985b073ffd2f5ce374b2b3a08d16ab137b",
+    "outputs/CF_CASE_01_campi_flegrei_timeline.png": "0e1b44f995d06c38dcf5c4b6c900cb20048c816a843b9a6817d1626df51973b9",
+    "outputs/CF_CASE_01_non_normal_episodes.csv": "8efc4ea18fb9a9e08f6f3715e29281f0d3a82f1d8a07e7af06d044331ab0556f",
+    "outputs/CF_CASE_01_summary.json": "5b345c07e39a5be997b1727e6b9588d0fa5b9c97e15ba76d5504396048e1f032"
+  }
+}
