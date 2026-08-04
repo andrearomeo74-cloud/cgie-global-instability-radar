@@ -580,3 +580,97 @@ def load_feature_table(
     configuration["_loader"] = loader
 
     return feature_table
+
+def collect_runtime_information() -> dict[str, Any]:
+    """
+    Collect deterministic runtime information.
+
+    This information is descriptive only and never influences
+    scientific calculations.
+    """
+    return {
+        "generated_at_utc": utc_now_iso(),
+        "python_version": platform.python_version(),
+        "platform": platform.platform(),
+        "numpy_version": np.__version__,
+        "pandas_version": pd.__version__,
+        "git_commit": get_git_commit(),
+    }
+
+
+def build_context(
+    configuration: dict[str, Any],
+    identity: IdentityDeclaration,
+    feature_table: pd.DataFrame,
+) -> ExperimentContext:
+    """
+    Build the ExperimentContext shared by the whole pipeline.
+    """
+
+    experiment = require_mapping(
+        configuration["experiment"],
+        "experiment",
+    )
+
+    context = ExperimentContext(
+        experiment_id=experiment["id"],
+        configuration=configuration,
+        identity=identity,
+        feature_table=feature_table,
+    )
+
+    context.register_runtime(
+        "environment",
+        collect_runtime_information(),
+    )
+
+    context.register_provenance(
+        "loader",
+        configuration["_loader"],
+    )
+
+    context.register_metadata(
+        "row_count",
+        len(feature_table),
+    )
+
+    context.register_metadata(
+        "column_count",
+        len(feature_table.columns),
+    )
+
+    context.register_metadata(
+        "windows",
+        sorted(
+            feature_table["window"]
+            .astype(str)
+            .unique()
+            .tolist()
+        ),
+    )
+
+    return context
+
+
+def load_experiment() -> ExperimentContext:
+    """
+    Complete deterministic loader for CGIE3-ID-02.
+    """
+
+    configuration = load_configuration()
+
+    identity = load_identity(
+        configuration
+    )
+
+    feature_table = load_feature_table(
+        configuration
+    )
+
+    context = build_context(
+        configuration,
+        identity,
+        feature_table,
+    )
+
+    return context
