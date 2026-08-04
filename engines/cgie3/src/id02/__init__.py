@@ -15,4 +15,11 @@ __all__ = [
     "PreprocessingError",
     "load_experiment",
     "preprocess",
+    "DiscoveryStageError",
+    "discover",
 ]
+
+from .discovery import (
+    DiscoveryStageError,
+    discover,
+)
