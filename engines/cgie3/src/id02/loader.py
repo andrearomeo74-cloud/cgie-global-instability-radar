@@ -355,3 +355,108 @@ def load_configuration(
     }
 
     return configuration
+
+def load_identity(
+    configuration: Mapping[str, Any],
+) -> IdentityDeclaration:
+    """
+    Load and validate the frozen identity declaration.
+
+    The declaration must match the system ID and protocol version
+    frozen inside the CGIE3-ID-02 configuration.
+    """
+    identity_section = require_mapping(
+        configuration.get("identity_declaration"),
+        "identity_declaration",
+    )
+
+    declaration_path = resolve_repository_path(
+        identity_section.get("file"),
+        "identity_declaration.file",
+    )
+
+    expected_system_id = require_non_empty_string(
+        identity_section.get("expected_system_id"),
+        "identity_declaration.expected_system_id",
+    )
+
+    expected_protocol_version = require_non_empty_string(
+        identity_section.get("expected_protocol_version"),
+        "identity_declaration.expected_protocol_version",
+    )
+
+    if not declaration_path.exists():
+        fail(
+            "Identity declaration not found: "
+            f"{declaration_path}"
+        )
+
+    if not declaration_path.is_file():
+        fail(
+            "Identity declaration path is not a file: "
+            f"{declaration_path}"
+        )
+
+    try:
+        identity = load_identity_declaration(
+            declaration_path,
+            reject_unknown_fields=True,
+        )
+    except IdentityDeclarationError as exc:
+        raise ExperimentLoaderError(
+            "Identity declaration validation failed: "
+            f"{exc}"
+        ) from exc
+
+    if identity.system_id != expected_system_id:
+        fail(
+            "Identity declaration system ID mismatch. "
+            f"Expected {expected_system_id}, "
+            f"observed {identity.system_id}."
+        )
+
+    if (
+        identity.protocol_version
+        != expected_protocol_version
+    ):
+        fail(
+            "Identity declaration protocol mismatch. "
+            f"Expected {expected_protocol_version}, "
+            f"observed {identity.protocol_version}."
+        )
+
+    declared_components = tuple(
+        identity.component_ids
+    )
+
+    if len(declared_components) < 2:
+        fail(
+            "Identity declaration must contain "
+            "at least two components."
+        )
+
+    configuration_loader = require_mapping(
+        configuration.get("_loader"),
+        "_loader",
+    )
+
+    mutable_loader = dict(
+        configuration_loader
+    )
+
+    mutable_loader["identity_declaration_file"] = str(
+        declaration_path.relative_to(
+            REPOSITORY_ROOT
+        )
+    )
+
+    mutable_loader["identity_declaration_sha256"] = (
+        sha256_file(
+            declaration_path
+        )
+    )
+
+    if isinstance(configuration, dict):
+        configuration["_loader"] = mutable_loader
+
+    return identity
