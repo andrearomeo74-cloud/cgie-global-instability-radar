@@ -27,6 +27,8 @@ __all__ = [
     "classify_relations",
     "EquivalenceStageError",
     "evaluate_equivalence",
+    "ReportingStageError",
+    "generate_reports",
 ]
 
 from .discovery import (
@@ -57,4 +59,9 @@ from .classification import (
 from .equivalence import (
     EquivalenceStageError,
     evaluate_equivalence,
+)
+
+from .reporting import (
+    ReportingStageError,
+    generate_reports,
 )
