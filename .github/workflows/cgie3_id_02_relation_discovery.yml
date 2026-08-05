@@ -1,0 +1,395 @@
+name: CGIE3-ID-02 Eligible Relation Discovery
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cgie3-id-02-relation-discovery
+  cancel-in-progress: false
+
+jobs:
+  relation-discovery:
+    name: Run frozen CGIE3-ID-02 experiment
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Display execution context
+        run: |
+          echo "Repository: $GITHUB_REPOSITORY"
+          echo "Branch: $GITHUB_REF_NAME"
+          echo "Commit: $GITHUB_SHA"
+          echo "Run ID: $GITHUB_RUN_ID"
+          echo "Run attempt: $GITHUB_RUN_ATTEMPT"
+          python --version
+          python -m pip --version
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install \
+            numpy \
+            pandas \
+            scipy \
+            PyYAML
+
+      - name: Validate frozen inputs and source files
+        run: |
+          required_files=(
+            "congruity/__init__.py"
+            "congruity/core/__init__.py"
+            "congruity/core/context.py"
+            "congruity/core/result.py"
+            "congruity/identity/__init__.py"
+            "congruity/identity/models.py"
+            "congruity/identity/declaration.py"
+            "congruity/relations/__init__.py"
+            "congruity/relations/discovery.py"
+
+            "engines/cgie3/config/campi_flegrei_identity.yaml"
+            "engines/cgie3/config/cgie3_id_02_relation_discovery.yaml"
+
+            "engines/cgie3/src/id02/__init__.py"
+            "engines/cgie3/src/id02/loader.py"
+            "engines/cgie3/src/id02/preprocessing.py"
+            "engines/cgie3/src/id02/discovery.py"
+            "engines/cgie3/src/id02/persistence.py"
+            "engines/cgie3/src/id02/bootstrap.py"
+            "engines/cgie3/src/id02/missingness.py"
+            "engines/cgie3/src/id02/classification.py"
+            "engines/cgie3/src/id02/equivalence.py"
+            "engines/cgie3/src/id02/reporting.py"
+            "engines/cgie3/src/id02/provenance.py"
+            "engines/cgie3/src/id02/main.py"
+
+            "outputs/CF_RETRO_01_features.csv"
+            "outputs/CF_RETRO_01_catalog_frozen.csv"
+            "outputs/CF_RETRO_01_catalog_frozen.csv.sha256"
+            "outputs/CF_RETRO_01_metrics.csv"
+          )
+
+          for file in "${required_files[@]}"; do
+            if [ ! -s "$file" ]; then
+              echo "ERROR: required file is absent or empty: $file"
+              exit 1
+            fi
+
+            echo "FOUND: $file"
+          done
+
+      - name: Check Python syntax
+        run: |
+          python -m py_compile \
+            congruity/core/context.py \
+            congruity/core/result.py \
+            congruity/identity/models.py \
+            congruity/identity/declaration.py \
+            congruity/relations/discovery.py \
+            engines/cgie3/src/id02/loader.py \
+            engines/cgie3/src/id02/preprocessing.py \
+            engines/cgie3/src/id02/discovery.py \
+            engines/cgie3/src/id02/persistence.py \
+            engines/cgie3/src/id02/bootstrap.py \
+            engines/cgie3/src/id02/missingness.py \
+            engines/cgie3/src/id02/classification.py \
+            engines/cgie3/src/id02/equivalence.py \
+            engines/cgie3/src/id02/reporting.py \
+            engines/cgie3/src/id02/provenance.py \
+            engines/cgie3/src/id02/main.py
+
+          echo "Python syntax validation passed."
+
+      - name: Test package imports
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          python - <<'PY'
+          from congruity.core import (
+              ExperimentContext,
+              ExperimentResult,
+          )
+          from congruity.identity import (
+              IdentityDeclaration,
+              load_identity_declaration,
+          )
+          from congruity.relations import (
+              discover_spearman_relations,
+          )
+          from engines.cgie3.src.id02.loader import (
+              load_experiment,
+          )
+          from engines.cgie3.src.id02.preprocessing import (
+              preprocess,
+          )
+          from engines.cgie3.src.id02.discovery import (
+              discover,
+          )
+
+          print("Core and CGIE3-ID-02 imports passed.")
+          print(ExperimentContext.__name__)
+          print(ExperimentResult.__name__)
+          print(IdentityDeclaration.__name__)
+          print(load_identity_declaration.__name__)
+          print(discover_spearman_relations.__name__)
+          print(load_experiment.__name__)
+          print(preprocess.__name__)
+          print(discover.__name__)
+          PY
+
+      - name: Validate frozen configuration
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          python - <<'PY'
+          from engines.cgie3.src.id02.loader import (
+              load_configuration,
+              load_identity,
+              load_feature_table,
+          )
+
+          configuration = load_configuration()
+          identity = load_identity(configuration)
+          features = load_feature_table(configuration)
+
+          if configuration["experiment"]["status"] != "FROZEN":
+              raise SystemExit(
+                  "ERROR: configuration is not FROZEN."
+              )
+
+          if configuration["experiment"]["id"] != "CGIE3_ID_02":
+              raise SystemExit(
+                  "ERROR: unexpected experiment ID."
+              )
+
+          if identity.system_id != "campi_flegrei_seismic_system":
+              raise SystemExit(
+                  "ERROR: unexpected identity system ID."
+              )
+
+          if features.empty:
+              raise SystemExit(
+                  "ERROR: frozen feature table is empty."
+              )
+
+          print("Frozen input validation passed.")
+          print("Feature rows:", len(features))
+          print("Feature columns:", len(features.columns))
+          PY
+
+      - name: Run CGIE3-ID-02 pipeline
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+          PYTHONUNBUFFERED: "1"
+        run: |
+          python -m engines.cgie3.src.id02.main
+
+      - name: Verify official outputs
+        run: |
+          generated_files=(
+            "outputs/CGIE3_ID_02_candidate_relations.csv"
+            "outputs/CGIE3_ID_02_block_relations.csv"
+            "outputs/CGIE3_ID_02_bootstrap_relations.csv"
+            "outputs/CGIE3_ID_02_relation_classification.csv"
+            "outputs/CGIE3_ID_02_equivalence_flags.csv"
+            "outputs/CGIE3_ID_02_summary.json"
+            "outputs/CGIE3_ID_02_report.md"
+            "outputs/CGIE3_ID_02_manifest.json"
+            "outputs/CGIE3_ID_02_workflow_provenance.json"
+            "outputs/CGIE3_ID_02_execution_status.json"
+          )
+
+          for file in "${generated_files[@]}"; do
+            if [ ! -s "$file" ]; then
+              echo "ERROR: generated output is absent or empty: $file"
+              exit 1
+            fi
+
+            echo "GENERATED: $file"
+            ls -lh "$file"
+          done
+
+      - name: Validate scientific outputs
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          import pandas as pd
+
+          outputs = Path("outputs")
+
+          candidates = pd.read_csv(
+              outputs / "CGIE3_ID_02_candidate_relations.csv"
+          )
+
+          classification = pd.read_csv(
+              outputs / "CGIE3_ID_02_relation_classification.csv"
+          )
+
+          equivalence = pd.read_csv(
+              outputs / "CGIE3_ID_02_equivalence_flags.csv"
+          )
+
+          bootstrap = pd.read_csv(
+              outputs / "CGIE3_ID_02_bootstrap_relations.csv"
+          )
+
+          summary = json.loads(
+              (
+                  outputs / "CGIE3_ID_02_summary.json"
+              ).read_text(encoding="utf-8")
+          )
+
+          execution = json.loads(
+              (
+                  outputs / "CGIE3_ID_02_execution_status.json"
+              ).read_text(encoding="utf-8")
+          )
+
+          if len(candidates) != 136:
+              raise SystemExit(
+                  f"ERROR: expected 136 candidates, found {len(candidates)}."
+              )
+
+          if len(classification) != 136:
+              raise SystemExit(
+                  "ERROR: classification must contain 136 rows."
+              )
+
+          if len(equivalence) != 136:
+              raise SystemExit(
+                  "ERROR: equivalence audit must contain 136 rows."
+              )
+
+          if len(bootstrap) != 68000:
+              raise SystemExit(
+                  f"ERROR: expected 68000 bootstrap rows, found {len(bootstrap)}."
+              )
+
+          allowed_statuses = {
+              "eligible",
+              "candidate",
+              "rejected",
+              "non_estimable",
+          }
+
+          observed_statuses = set(
+              classification["classification_status"]
+              .dropna()
+              .astype(str)
+          )
+
+          if not observed_statuses.issubset(allowed_statuses):
+              raise SystemExit(
+                  "ERROR: unexpected classification status."
+              )
+
+          if summary.get("experiment_id") != "CGIE3_ID_02":
+              raise SystemExit(
+                  "ERROR: unexpected summary experiment ID."
+              )
+
+          if summary.get("technical_status") != "COMPLETED":
+              raise SystemExit(
+                  "ERROR: experiment did not complete."
+              )
+
+          claims = summary.get("scientific_claims", {})
+
+          prohibited_true_claims = (
+              "primary_relations_established",
+              "indispensable_relations_established",
+              "causality_established",
+              "predictive_capability_established",
+              "earthquake_prediction_established",
+          )
+
+          invalid_claims = [
+              claim
+              for claim in prohibited_true_claims
+              if claims.get(claim) is True
+          ]
+
+          if invalid_claims:
+              raise SystemExit(
+                  "ERROR: scientific boundary violated: "
+                  + ", ".join(invalid_claims)
+              )
+
+          if execution.get("technical_status") != "COMPLETED":
+              raise SystemExit(
+                  "ERROR: execution status is not COMPLETED."
+              )
+
+          print("Scientific output validation passed.")
+          print("Scientific outcome:", summary["scientific_outcome"])
+          print("Status counts:", summary["status_counts"])
+          PY
+
+      - name: Upload CGIE3-ID-02 artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: CGIE3-ID-02-eligible-relation-discovery
+          path: |
+            outputs/CGIE3_ID_02_candidate_relations.csv
+            outputs/CGIE3_ID_02_block_relations.csv
+            outputs/CGIE3_ID_02_bootstrap_relations.csv
+            outputs/CGIE3_ID_02_relation_classification.csv
+            outputs/CGIE3_ID_02_equivalence_flags.csv
+            outputs/CGIE3_ID_02_summary.json
+            outputs/CGIE3_ID_02_report.md
+            outputs/CGIE3_ID_02_manifest.json
+            outputs/CGIE3_ID_02_workflow_provenance.json
+            outputs/CGIE3_ID_02_execution_status.json
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 6
+
+      - name: Commit generated outputs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add \
+            outputs/CGIE3_ID_02_candidate_relations.csv \
+            outputs/CGIE3_ID_02_block_relations.csv \
+            outputs/CGIE3_ID_02_bootstrap_relations.csv \
+            outputs/CGIE3_ID_02_relation_classification.csv \
+            outputs/CGIE3_ID_02_equivalence_flags.csv \
+            outputs/CGIE3_ID_02_summary.json \
+            outputs/CGIE3_ID_02_report.md \
+            outputs/CGIE3_ID_02_manifest.json \
+            outputs/CGIE3_ID_02_workflow_provenance.json \
+            outputs/CGIE3_ID_02_execution_status.json
+
+          if git diff --cached --quiet; then
+            echo "No generated changes to commit."
+            exit 0
+          fi
+
+          git commit \
+            -m "Add CGIE3-ID-02 relation discovery results" \
+            -m "Generated under the frozen baseline protocol. Eligibility does not establish causality, indispensability, primary identity status or earthquake prediction."
+
+          git pull \
+            --rebase \
+            origin \
+            "$GITHUB_REF_NAME"
+
+          git push \
+            origin \
+            "HEAD:$GITHUB_REF_NAME"
