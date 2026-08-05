@@ -16,6 +16,11 @@ from .multiscale import (
     audit_multiscale,
 )
 
+from .overlap import (
+    OverlapAuditError,
+    audit_overlap,
+)
+
 __all__ = [
     "ID03ExperimentContext",
     "ID03LoaderError",
@@ -24,4 +29,6 @@ __all__ = [
     "audit_dependencies",
     "MultiscaleAuditError",
     "audit_multiscale",
+    "OverlapAuditError",
+    "audit_overlap",
 ]
