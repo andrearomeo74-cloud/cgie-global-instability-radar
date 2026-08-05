@@ -650,16 +650,17 @@ window_column = require_non_empty_string(
 )
 
 context.register_metadata(
-    "windows",
-    sorted(
-        feature_table[window_column]
-        .astype(str)
-        .unique()
-        .tolist()
-    ),
-)
+        "windows",
+        sorted(
+            feature_table[window_column]
+            .astype(str)
+            .unique()
+            .tolist()
+        ),
+    )
 
     return context
+
 
 def load_experiment() -> ExperimentContext:
     """
