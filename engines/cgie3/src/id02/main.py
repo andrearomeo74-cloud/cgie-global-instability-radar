@@ -464,6 +464,64 @@ def print_final_summary(
 
     print("=" * 78)
 
+def execute_context_stage(
+    context: ExperimentContext,
+    *,
+    stage_number: int,
+    stage_name: str,
+    function: Callable[
+        [ExperimentContext],
+        ExperimentContext,
+    ],
+    timing: dict[str, float],
+) -> ExperimentContext:
+    """
+    Execute one stage that receives and returns ExperimentContext.
+    """
+    print_stage_start(
+        stage_number,
+        stage_name,
+    )
+
+    started = time.perf_counter()
+
+    updated_context = function(
+        context
+    )
+
+    duration = (
+        time.perf_counter()
+        - started
+    )
+
+    if not isinstance(
+        updated_context,
+        ExperimentContext,
+    ):
+        raise PipelineExecutionError(
+            f"Stage {stage_name} did not return "
+            "an ExperimentContext."
+        )
+
+    if updated_context is not context:
+        raise PipelineExecutionError(
+            f"Stage {stage_name} replaced the shared "
+            "ExperimentContext instead of returning "
+            "the original context."
+        )
+
+    timing[stage_name] = float(
+        duration
+    )
+
+    print_stage_complete(
+        stage_number,
+        stage_name,
+        duration,
+    )
+
+    return updated_context
+
 
 def run_pipeline() -> ExperimentResult:
     """Run the complete frozen CGIE3-ID-02 pipeline."""
