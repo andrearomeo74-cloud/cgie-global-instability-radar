@@ -21,6 +21,11 @@ from .overlap import (
     audit_overlap,
 )
 
+from .null_controls import (
+    NullControlAuditError,
+    audit_null_controls,
+)
+
 __all__ = [
     "ID03ExperimentContext",
     "ID03LoaderError",
@@ -31,4 +36,6 @@ __all__ = [
     "audit_multiscale",
     "OverlapAuditError",
     "audit_overlap",
+    "NullControlAuditError",
+    "audit_null_controls",
 ]
