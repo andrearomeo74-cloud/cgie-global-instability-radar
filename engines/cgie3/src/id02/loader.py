@@ -462,23 +462,27 @@ def load_identity(
     return identity
 
 def load_feature_table(
-    configuration: Mapping[str, Any],
+    configuration: dict[str, Any],
 ) -> pd.DataFrame:
     """
-    Load the frozen feature table used by CGIE3-ID-02.
+    Load the frozen CGIE3-ID-02 feature table.
 
-    Only structural validation is performed here.
-    Scientific interpretation belongs to later stages.
+    File path and structural column names are read exclusively from
+    the frozen configuration. No scientific transformation occurs here.
     """
-
     inputs = require_mapping(
         configuration.get("inputs"),
         "inputs",
     )
 
+    frozen_features = require_mapping(
+        inputs.get("frozen_features"),
+        "inputs.frozen_features",
+    )
+
     feature_path = resolve_repository_path(
-        inputs.get("features_file"),
-        "inputs.features_file",
+        frozen_features.get("file"),
+        "inputs.frozen_features.file",
     )
 
     if not feature_path.exists():
@@ -500,9 +504,14 @@ def load_feature_table(
             "Feature table is empty."
         )
 
+    feature_config = require_mapping(
+        configuration["feature_table"],
+        "feature_table",
+    )
+
     required_columns = [
-        "window_end_utc",
-        "window",
+        feature_config["timestamp_column"],
+        feature_config["window_column"],
     ]
 
     missing = [
@@ -517,36 +526,57 @@ def load_feature_table(
             + ", ".join(missing)
         )
 
-    feature_table["window_end_utc"] = pd.to_datetime(
-        feature_table["window_end_utc"],
+    timestamp_column = feature_config[
+        "timestamp_column"
+    ]
+
+    window_column = feature_config[
+        "window_column"
+    ]
+
+    feature_table[timestamp_column] = pd.to_datetime(
+        feature_table[timestamp_column],
         utc=True,
         errors="coerce",
+        format="mixed",
     )
 
-    if feature_table["window_end_utc"].isna().any():
+    if feature_table[timestamp_column].isna().any():
         fail(
-            "Invalid timestamps detected in window_end_utc."
+            "Invalid timestamps detected in "
+            f"{timestamp_column}."
         )
 
-    feature_table = feature_table.sort_values(
-        "window_end_utc"
-    ).reset_index(drop=True)
+    feature_table[window_column] = (
+        feature_table[window_column]
+        .astype(str)
+        .str.strip()
+    )
 
-    expected_windows = {
-        "1d",
-        "3d",
-        "7d",
-        "30d",
-    }
+    feature_table = feature_table.sort_values(
+        by=[
+            window_column,
+            timestamp_column,
+        ],
+        kind="stable",
+    ).reset_index(
+        drop=True
+    )
+
+    expected_windows = set(
+        feature_config[
+            "required_windows"
+        ]
+    )
 
     observed_windows = set(
-        feature_table["window"]
-        .astype(str)
+        feature_table[window_column]
         .unique()
     )
 
     missing_windows = sorted(
-        expected_windows - observed_windows
+        expected_windows
+        - observed_windows
     )
 
     if missing_windows:
