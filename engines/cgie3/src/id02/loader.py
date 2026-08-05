@@ -642,14 +642,14 @@ def build_context(
     feature_config = require_mapping(
     configuration["feature_table"],
     "feature_table",
-)
+    )
 
-window_column = require_non_empty_string(
+    window_column = require_non_empty_string(
     feature_config["window_column"],
     "feature_table.window_column",
-)
+    )
 
-context.register_metadata(
+    context.register_metadata(
         "windows",
         sorted(
             feature_table[window_column]
