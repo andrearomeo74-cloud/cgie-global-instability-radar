@@ -6,8 +6,15 @@ from .loader import (
     load_experiment,
 )
 
+from .dependencies import (
+    DependencyAuditError,
+    audit_dependencies,
+)
+
 __all__ = [
     "ID03ExperimentContext",
     "ID03LoaderError",
     "load_experiment",
+    "DependencyAuditError",
+    "audit_dependencies",
 ]
