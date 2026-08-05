@@ -1,0 +1,818 @@
+experiment:
+  id: CGIE3_ID_03
+  name: Relational Dependency and Family Audit
+  engine: CGIE-3
+  framework_version: "1.0-draft"
+  protocol_version: "CGIE3_ID_03_v1.0"
+  configuration_version: "1.0"
+  status: FROZEN
+  random_seed: 20260805
+
+interpretation_boundary:
+  audits_feature_dependencies: true
+  audits_multiscale_consistency: true
+  audits_overlap_sensitivity: true
+  audits_null_controls: true
+  audits_conditional_redundancy: true
+  identifies_relational_families: true
+  selects_family_representative_candidates: true
+
+  modifies_id02_statuses: false
+  establishes_primary_relations: false
+  establishes_indispensability: false
+  establishes_minimum_identity_core: false
+  establishes_causality: false
+  establishes_predictive_capability: false
+  establishes_earthquake_prediction: false
+  establishes_universal_transferability: false
+
+inputs:
+  identity_declaration:
+    file: engines/cgie3/config/campi_flegrei_identity.yaml
+    expected_system_id: campi_flegrei_seismic_system
+    expected_protocol_version: CGIE3_ID_01_v1.0
+
+  id02_configuration:
+    file: engines/cgie3/config/cgie3_id_02_relation_discovery.yaml
+    expected_experiment_id: CGIE3_ID_02
+    expected_protocol_version: CGIE3_ID_02_v1.0
+    expected_status: FROZEN
+
+  frozen_features:
+    file: outputs/CF_RETRO_01_features.csv
+
+  id02_candidate_relations:
+    file: outputs/CGIE3_ID_02_candidate_relations.csv
+
+  id02_block_relations:
+    file: outputs/CGIE3_ID_02_block_relations.csv
+
+  id02_bootstrap_relations:
+    file: outputs/CGIE3_ID_02_bootstrap_relations.csv
+
+  id02_relation_classification:
+    file: outputs/CGIE3_ID_02_relation_classification.csv
+
+  id02_equivalence_flags:
+    file: outputs/CGIE3_ID_02_equivalence_flags.csv
+
+  id02_summary:
+    file: outputs/CGIE3_ID_02_summary.json
+
+analysis_population:
+  primary_statuses:
+    - eligible
+    - candidate
+
+  negative_reference_statuses:
+    - rejected
+
+  expected_counts:
+    eligible: 45
+    candidate: 29
+    rejected: 62
+    non_estimable: 0
+    primary_audit_population: 74
+    total_relations: 136
+
+  preserve_all_id02_relations: true
+  preserve_original_id02_status: true
+  allow_retrospective_reclassification: false
+
+analysis_period:
+  baseline:
+    start_utc: "2025-01-01T00:00:00Z"
+    end_utc: "2025-12-31T23:59:59Z"
+
+  use_evaluation_interval: false
+  use_target_event_labels: false
+  future_observations_allowed: false
+
+feature_table:
+  timestamp_column: endpoint_utc
+  window_column: window_id
+
+  required_windows:
+    - 1d
+    - 3d
+    - 7d
+    - 30d
+
+  required_components:
+    - event_count
+    - maximum_magnitude
+    - log10_cumulative_energy_joule
+    - median_depth_km
+    - depth_mad_km
+    - spatial_dispersion_km
+    - median_interevent_time_hours
+    - interevent_time_mad_hours
+    - temporal_burstiness
+
+  window_specific_exclusions:
+    1d:
+      - temporal_burstiness
+
+    3d: []
+    7d: []
+    30d: []
+
+feature_dependency_registry:
+  status: FROZEN
+
+  allowed_provenance_classes:
+    - primitive_observation
+    - aggregate_observation
+    - distribution_summary
+    - derived_physical_quantity
+    - derived_temporal_quantity
+    - derived_spatial_quantity
+    - unknown_provenance
+
+  allowed_pair_dependency_classes:
+    - independent_source
+    - shared_event_source
+    - shared_temporal_source
+    - shared_spatial_source
+    - partially_derived
+    - directly_derived
+    - unknown_dependency
+
+  feature_lineage:
+    event_count:
+      provenance_class: aggregate_observation
+      source_family: event_membership
+      source_variables:
+        - retained_event_records
+      transformation: count
+      directly_derived_from:
+        - retained_event_records
+
+    maximum_magnitude:
+      provenance_class: distribution_summary
+      source_family: magnitude
+      source_variables:
+        - event_magnitude
+      transformation: maximum
+      directly_derived_from:
+        - event_magnitude
+
+    log10_cumulative_energy_joule:
+      provenance_class: derived_physical_quantity
+      source_family: magnitude_energy
+      source_variables:
+        - event_magnitude
+      transformation: magnitude_to_energy_then_sum_then_log10
+      directly_derived_from:
+        - event_magnitude
+      potential_direct_dependency_with:
+        - maximum_magnitude
+
+    median_depth_km:
+      provenance_class: distribution_summary
+      source_family: depth
+      source_variables:
+        - event_depth_km
+      transformation: median
+      directly_derived_from:
+        - event_depth_km
+
+    depth_mad_km:
+      provenance_class: distribution_summary
+      source_family: depth
+      source_variables:
+        - event_depth_km
+      transformation: median_absolute_deviation
+      directly_derived_from:
+        - event_depth_km
+
+    spatial_dispersion_km:
+      provenance_class: derived_spatial_quantity
+      source_family: spatial_location
+      source_variables:
+        - event_latitude
+        - event_longitude
+      transformation: frozen_spatial_dispersion
+      directly_derived_from:
+        - event_latitude
+        - event_longitude
+
+    median_interevent_time_hours:
+      provenance_class: derived_temporal_quantity
+      source_family: event_timing
+      source_variables:
+        - ordered_event_timestamp
+      transformation: median_interarrival_time
+      directly_derived_from:
+        - ordered_event_timestamp
+
+    interevent_time_mad_hours:
+      provenance_class: derived_temporal_quantity
+      source_family: event_timing
+      source_variables:
+        - ordered_event_timestamp
+      transformation: interarrival_time_mad
+      directly_derived_from:
+        - ordered_event_timestamp
+
+    temporal_burstiness:
+      provenance_class: derived_temporal_quantity
+      source_family: event_timing
+      source_variables:
+        - ordered_event_timestamp
+      transformation: frozen_burstiness_formula
+      directly_derived_from:
+        - ordered_event_timestamp
+
+  pair_dependency_rules:
+    same_direct_source:
+      status: shared_event_source
+
+    same_temporal_source_family:
+      status: shared_temporal_source
+
+    same_spatial_source_family:
+      status: shared_spatial_source
+
+    explicit_potential_direct_dependency:
+      status: partially_derived
+
+    one_feature_explicitly_derived_from_other:
+      status: directly_derived
+
+    different_declared_source_families:
+      status: independent_source
+
+    unresolved:
+      status: unknown_dependency
+
+multiscale_audit:
+  enabled: true
+
+  pair_alignment:
+    relation_type: undirected
+    canonical_order: lexicographic
+    align_by_component_pair: true
+
+  supported_id02_statuses:
+    - eligible
+    - candidate
+
+  strength_source: strength
+  persistence_source: persistence
+  sign_source: sign
+
+  minimum_supported_scales:
+    family_representative_candidate: 2
+
+  classes:
+    - single_scale
+    - multi_scale_2
+    - multi_scale_3
+    - multi_scale_4
+    - scale_inconsistent
+    - insufficient_scale_support
+
+  sign_consistency:
+    require_same_sign_across_supported_scales: true
+    zero_sign_is_neutral: false
+
+  strong_scale_definition:
+    minimum_absolute_strength: 0.30
+    minimum_persistence: 0.50
+
+  scale_inconsistency:
+    opposite_sign_in_two_supported_scales: true
+    strong_scale_contradicts_dominant_sign: true
+
+  scale_specific_exception:
+    enabled: false
+    allowed_relations: []
+
+overlap_audit:
+  enabled: true
+
+  sampling_schemes:
+    - rolling_full
+    - half_window_stride
+    - non_overlapping
+
+  timestamp_spacing:
+    infer_from_data: true
+    expected_nominal_frequency: 1h
+    maximum_irregular_spacing_fraction: 0.05
+
+  stride_hours:
+    1d:
+      rolling_full: 1
+      half_window_stride: 12
+      non_overlapping: 24
+
+    3d:
+      rolling_full: 1
+      half_window_stride: 36
+      non_overlapping: 72
+
+    7d:
+      rolling_full: 1
+      half_window_stride: 84
+      non_overlapping: 168
+
+    30d:
+      rolling_full: 1
+      half_window_stride: 360
+      non_overlapping: 720
+
+  estimability:
+    minimum_paired_observations: 12
+    minimum_unique_values_per_component: 3
+    reject_constant_component: true
+    reject_non_finite_estimate: true
+
+  estimator:
+    primary: spearman
+    preserve_signed_strength: true
+
+  uncertainty:
+    method: moving_block_bootstrap
+    repetitions: 300
+    confidence_level: 0.95
+    random_seed: 20260805
+
+  comparison:
+    maximum_absolute_strength_change_for_robust: 0.15
+    maximum_absolute_strength_change_for_moderate: 0.30
+    minimum_rank_correlation_for_robust: 0.75
+    minimum_rank_correlation_for_moderate: 0.50
+    require_sign_preservation_for_robust: true
+    require_sign_preservation_for_moderate: true
+
+  classes:
+    overlap_robust:
+      sign_preserved_nonoverlap: true
+      maximum_absolute_strength_change: 0.15
+
+    moderately_overlap_sensitive:
+      sign_preserved_nonoverlap: true
+      maximum_absolute_strength_change: 0.30
+
+    strongly_overlap_sensitive:
+      definition: >
+        The non-overlapping estimate changes sign or differs from the
+        rolling-full absolute strength by more than 0.30.
+
+    non_estimable_non_overlapping:
+      definition: >
+        The relation cannot be estimated under the full-window stride.
+
+    inconclusive_overlap_audit:
+      definition: >
+        The audit completes but evidence is insufficient for another
+        overlap-sensitivity class.
+
+effective_temporal_support:
+  enabled: true
+
+  report:
+    - nominal_sample_count
+    - half_stride_sample_count
+    - nonoverlap_sample_count
+    - lag1_autocorrelation_source
+    - lag1_autocorrelation_target
+    - effective_support_diagnostic
+
+  effective_support_diagnostic:
+    method: minimum_nonoverlap_and_autocorrelation_adjusted
+    canonical_metric_claim: false
+    descriptive_only: true
+
+  lag1_autocorrelation:
+    minimum_observations: 12
+    non_estimable_value: null
+
+null_controls:
+  enabled: true
+  random_seed: 20260805
+
+  repetitions:
+    circular_temporal_shift: 300
+    independent_block_permutation: 300
+    within_window_value_permutation: 300
+    component_label_permutation: 300
+    strength_matched_random_edge: 300
+
+  primary_nulls:
+    - circular_temporal_shift
+    - independent_block_permutation
+    - within_window_value_permutation
+
+  secondary_nulls:
+    - component_label_permutation
+    - strength_matched_random_edge
+
+  circular_temporal_shift:
+    minimum_shift_fraction: 0.10
+    maximum_shift_fraction: 0.90
+    preserve_internal_order: true
+    preserve_marginal_distribution: true
+
+  independent_block_permutation:
+    block_unit: calendar_month
+    preserve_within_block_order: true
+    permute_one_component_only: true
+
+  within_window_value_permutation:
+    preserve_marginal_distribution: true
+    preserve_autocorrelation: false
+
+  component_label_permutation:
+    apply_within_temporal_scale: true
+    preserve_relation_count: true
+
+  strength_matched_random_edge:
+    absolute_strength_tolerance: 0.05
+    maximum_matching_attempts: 1000
+
+  phase_randomized_surrogate:
+    enabled: false
+    reason: >
+      Not activated in v1.0 because admissibility for bounded,
+      missing and non-Gaussian feature series has not yet been frozen.
+
+  test_statistic:
+    primary: absolute_spearman_strength
+    secondary:
+      - signed_spearman_strength
+      - persistence
+
+  empirical_significance:
+    alpha: 0.05
+    correction: benjamini_hochberg
+    correction_scope: within_null_and_scale
+
+  outcome_classes:
+    exceeds_null:
+      minimum_primary_nulls_passed: 2
+      corrected_p_value_maximum: 0.05
+
+    partially_exceeds_null:
+      minimum_primary_nulls_passed: 1
+      corrected_p_value_maximum: 0.10
+
+    equivalent_to_null:
+      primary_nulls_passed: 0
+
+    null_test_inconclusive:
+      definition: >
+        Null controls were completed but produced conflicting or
+        insufficient evidence.
+
+    null_test_not_admissible:
+      definition: >
+        The required transformation could not be applied without
+        violating the frozen data contract.
+
+conditional_redundancy:
+  enabled: true
+
+  dominant_activity_features:
+    - event_count
+    - maximum_magnitude
+    - log10_cumulative_energy_joule
+
+  methods:
+    partial_spearman:
+      enabled: true
+      minimum_complete_observations: 20
+
+    residual_spearman:
+      enabled: true
+      residual_model: rank_linear
+      minimum_complete_observations: 20
+
+    deterministic_transformation:
+      enabled: true
+      numerical_tolerance: 1.0e-10
+
+    decision_equivalence:
+      enabled: true
+      compare_id02_status: true
+      compare_multiscale_support: true
+
+  conditional_controls:
+    - event_count
+    - maximum_magnitude
+    - log10_cumulative_energy_joule
+    - dominant_feature_family
+
+  residual_information:
+    minimum_absolute_partial_spearman: 0.15
+    minimum_absolute_residual_spearman: 0.15
+    minimum_methods_supporting_residual_information: 1
+
+  redundancy_classes:
+    retains_residual_information:
+      minimum_supported_methods: 1
+
+    partially_redundant:
+      definition: >
+        Some conditional methods retain information while others do not.
+
+    fully_redundant:
+      definition: >
+        No admissible conditional method retains the frozen minimum
+        residual association.
+
+    conditional_test_inconclusive:
+      definition: >
+        Conditional analyses are non-estimable or mutually inconsistent.
+
+family_audit:
+  enabled: true
+
+  population_statuses:
+    - eligible
+    - candidate
+
+  graph:
+    node_type: feature
+    edge_type: relation
+    undirected: true
+
+  edge_weight:
+    components:
+      absolute_strength:
+        weight: 0.20
+
+      persistence:
+        weight: 0.20
+
+      multiscale_support_fraction:
+        weight: 0.20
+
+      overlap_robustness:
+        weight: 0.15
+
+      null_support:
+        weight: 0.15
+
+      residual_information:
+        weight: 0.10
+
+    normalize_components_to_unit_interval: true
+    missing_component_value: 0.0
+
+  community_detection:
+    primary_method: greedy_modularity
+    secondary_method: label_propagation
+    deterministic_seed: 20260805
+
+  stability:
+    bootstrap_repetitions: 300
+    minimum_pairwise_coassignment_fraction: 0.70
+    minimum_family_stability: 0.65
+
+  minimum_family_size:
+    nodes: 2
+    relations: 1
+
+  preliminary_labels:
+    use_only_after_data_driven_detection: true
+
+    candidates:
+      energy:
+        components:
+          - maximum_magnitude
+          - log10_cumulative_energy_joule
+
+      frequency_rhythm:
+        components:
+          - event_count
+          - median_interevent_time_hours
+
+      temporal_organization:
+        components:
+          - median_interevent_time_hours
+          - interevent_time_mad_hours
+          - temporal_burstiness
+
+      depth_structure:
+        components:
+          - median_depth_km
+          - depth_mad_km
+
+      spatial_geometry:
+        components:
+          - spatial_dispersion_km
+          - median_depth_km
+          - depth_mad_km
+
+  family_id_format: CGIE3_ID_03_FAMILY_{index:02d}
+
+representative_selection:
+  enabled: true
+
+  mandatory_conditions:
+    id02_status_in:
+      - eligible
+      - candidate
+
+    family_membership_required: true
+    directly_derived_prohibited: true
+    strongly_overlap_sensitive_prohibited: true
+    sign_preserved_under_reduced_overlap: true
+    minimum_supported_scales: 2
+    minimum_primary_nulls_exceeded: 1
+    residual_information_required: true
+    fully_redundant_prohibited: true
+
+  unresolved_residual_information:
+    allow_representative_selection: false
+
+  tie_break_order:
+    - supported_scale_count_descending
+    - overlap_robustness_descending
+    - primary_null_margin_descending
+    - residual_information_descending
+    - id02_persistence_descending
+    - bootstrap_ci_width_ascending
+    - relation_id_lexicographic
+
+  maximum_representatives_per_family: 1
+
+id03_states:
+  allowed:
+    - family_representative_candidate
+    - supporting_relation
+    - definitionally_constrained
+    - redundant_relation
+    - overlap_sensitive
+    - scale_inconsistent
+    - insufficient_evidence
+
+  precedence:
+    - scale_inconsistent
+    - overlap_sensitive
+    - definitionally_constrained
+    - redundant_relation
+    - family_representative_candidate
+    - supporting_relation
+    - insufficient_evidence
+
+  definitionally_constrained:
+    dependency_statuses:
+      - directly_derived
+
+  redundant_relation:
+    conditional_redundancy_statuses:
+      - fully_redundant
+
+  overlap_sensitive:
+    overlap_classes:
+      - strongly_overlap_sensitive
+
+  scale_inconsistent:
+    multiscale_classes:
+      - scale_inconsistent
+
+  family_representative_candidate:
+    require_all_representative_conditions: true
+
+  supporting_relation:
+    require_family_membership: true
+    require_not_higher_precedence_state: true
+
+  insufficient_evidence:
+    default_when_no_other_state_applies: true
+
+scientific_success:
+  technical_success_requires:
+    - all_74_primary_relations_audited
+    - all_62_rejected_relations_preserved_as_reference
+    - feature_dependency_audit_completed
+    - multiscale_audit_completed
+    - overlap_audit_completed_where_estimable
+    - null_controls_completed_where_admissible
+    - conditional_redundancy_completed_where_estimable
+    - family_audit_completed
+    - one_id03_state_per_primary_relation
+    - complete_provenance
+
+  positive_result_requires:
+    minimum_reproducible_families: 1
+    minimum_family_representative_candidates: 1
+
+  valid_negative_outcomes:
+    - no_reproducible_families
+    - all_relations_definitionally_constrained
+    - all_relations_overlap_sensitive
+    - no_relation_exceeds_null
+    - families_identified_without_representatives
+    - insufficient_nonoverlap_power
+    - multiscale_structure_inconsistent
+
+required_outputs:
+  - outputs/CGIE3_ID_03_feature_dependencies.csv
+  - outputs/CGIE3_ID_03_multiscale_relations.csv
+  - outputs/CGIE3_ID_03_overlap_sensitivity.csv
+  - outputs/CGIE3_ID_03_null_controls.csv
+  - outputs/CGIE3_ID_03_conditional_redundancy.csv
+  - outputs/CGIE3_ID_03_relation_families.csv
+  - outputs/CGIE3_ID_03_family_membership.csv
+  - outputs/CGIE3_ID_03_representative_candidates.csv
+  - outputs/CGIE3_ID_03_summary.json
+  - outputs/CGIE3_ID_03_report.md
+  - outputs/CGIE3_ID_03_manifest.json
+  - outputs/CGIE3_ID_03_workflow_provenance.json
+  - outputs/CGIE3_ID_03_execution_status.json
+
+reproducibility:
+  csv_encoding: utf-8
+  csv_line_terminator: LF
+  float_precision: 10
+  deterministic_sorting: true
+
+  relation_sort_keys:
+    - source_id
+    - target_id
+    - relation_id
+
+  multiscale_sort_keys:
+    - source_id
+    - target_id
+
+  family_sort_keys:
+    - family_id
+    - relation_id
+
+  record_git_commit: true
+  record_configuration_hash: true
+  record_input_hashes: true
+  record_source_hashes: true
+  record_dependency_versions: true
+  record_random_seeds: true
+  record_execution_timestamp_utc: true
+
+safety_rules:
+  modify_id01_outputs: false
+  modify_id02_outputs: false
+  modify_cgie2_files: false
+  modify_frozen_features: false
+  modify_id02_classifications: false
+  modify_id02_thresholds: false
+  remove_rejected_relations: false
+  remove_inconclusive_results: false
+  change_thresholds_after_results: false
+  use_target_events: false
+  use_evaluation_interval: false
+  call_representative_primary: false
+  call_representative_essential: false
+  call_representative_indispensable: false
+  infer_causality: false
+  infer_earthquake_prediction: false
+
+prohibited_practices:
+  - modify_id02_status
+  - tune_family_count_after_results
+  - rename_families_to_fit_expected_interpretation
+  - remove_definitionally_constrained_relations
+  - remove_overlap_sensitive_relations
+  - remove_null_equivalent_relations
+  - use_target_event_labels
+  - use_evaluation_interval
+  - select_representative_by_human_preference
+  - select_representative_by_raw_strength_only
+  - call_representative_candidate_primary
+  - call_representative_candidate_indispensable
+  - infer_physical_causality_from_family_membership
+  - interpret_id03_as_earthquake_prediction
+
+decision_boundary:
+  technical_success: >
+    Every ID-02 eligible and candidate relation is processed by all
+    admissible ID-03 audits, receives one final ID-03 state and is
+    preserved with complete provenance.
+
+  scientific_positive_result: >
+    At least one reproducible relational family and at least one
+    family-representative candidate satisfy the frozen protocol.
+
+  permitted_claim: >
+    CGIE3-ID-03 identified one or more relational families and
+    representative candidates that survived the frozen dependency,
+    multiscale, overlap, null and redundancy audits.
+
+  prohibited_claim: >
+    The identified relations are primary, indispensable, causal,
+    predictive of a specific earthquake or universally transferable.
+
+advancement_to_id04:
+  allowed_only_if:
+    - minimum_reproducible_families_is_1
+    - minimum_representative_candidates_is_1
+    - no_unresolved_workflow_failure
+    - no_unresolved_provenance_failure
+    - negative_and_inconclusive_outcomes_reported
+
+  id04_may_assume_indispensability: false
+  id04_may_test_structural_importance: true
