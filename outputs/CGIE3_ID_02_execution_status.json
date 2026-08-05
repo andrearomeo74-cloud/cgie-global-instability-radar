@@ -1,0 +1,57 @@
+{
+  "experiment_id": "CGIE3_ID_02",
+  "output_paths": {
+    "block_relations": "outputs/CGIE3_ID_02_block_relations.csv",
+    "bootstrap_relations": "outputs/CGIE3_ID_02_bootstrap_relations.csv",
+    "candidate_relations": "outputs/CGIE3_ID_02_candidate_relations.csv",
+    "equivalence_flags": "outputs/CGIE3_ID_02_equivalence_flags.csv",
+    "manifest": "outputs/CGIE3_ID_02_manifest.json",
+    "relation_classification": "outputs/CGIE3_ID_02_relation_classification.csv",
+    "report": "outputs/CGIE3_ID_02_report.md",
+    "summary": "outputs/CGIE3_ID_02_summary.json",
+    "workflow_provenance": "outputs/CGIE3_ID_02_workflow_provenance.json"
+  },
+  "relation_count": 136,
+  "scientific_claims": {
+    "candidate_relations_evaluated": true,
+    "causality_established": false,
+    "earthquake_prediction_established": false,
+    "eligibility_protocol_applied": true,
+    "indispensable_relations_established": false,
+    "predictive_capability_established": false,
+    "primary_relations_established": false
+  },
+  "scientific_outcome": "eligible_relations_identified",
+  "stage_duration_seconds": {
+    "bootstrap": 129.864759947,
+    "classification": 0.024398340000004737,
+    "discover": 0.3632618600000015,
+    "equivalence": 0.5287696800000106,
+    "load": 0.17475954500000057,
+    "missingness": 14.923192276999998,
+    "persistence": 8.068826616000003,
+    "preprocess": 0.04714015099999358,
+    "provenance": 0.2561339910000129,
+    "reporting": 0.5644338410000103
+  },
+  "stage_order": [
+    "load",
+    "preprocess",
+    "discover",
+    "persistence",
+    "bootstrap",
+    "missingness",
+    "classification",
+    "equivalence",
+    "reporting",
+    "provenance"
+  ],
+  "status_counts": {
+    "candidate": 29,
+    "eligible": 45,
+    "non_estimable": 0,
+    "rejected": 62
+  },
+  "technical_status": "COMPLETED",
+  "total_execution_seconds": 154.816075646
+}

@@ -1,0 +1,730 @@
+{
+  "configuration": {
+    "analysis_period": {
+      "baseline": {
+        "end_utc": "2025-12-31T23:59:59Z",
+        "start_utc": "2025-01-01T00:00:00Z"
+      },
+      "evaluation": {
+        "end_utc": "2026-07-31T17:46:42Z",
+        "start_utc": "2026-01-01T00:00:00Z"
+      },
+      "future_observations_allowed": false,
+      "use_evaluation_for_relation_selection": false,
+      "use_target_event_for_relation_selection": false
+    },
+    "decision_boundary": {
+      "permitted_claim": "One or more relations satisfy the frozen eligibility protocol within the CF_RETRO_01 baseline.\n",
+      "prohibited_claim": "The discovered relations are causal, indispensable or predictive of a specific earthquake.\n",
+      "scientific_positive_result": "At least one eligible relation is identified under the frozen configuration.\n",
+      "scientifically_valid_negative_results": [
+        "no_eligible_relations",
+        "all_relations_non_estimable",
+        "only_candidate_relations",
+        "excessive_instability_across_blocks",
+        "excessive_uncertainty",
+        "relation_equivalence_or_redundancy"
+      ],
+      "success_definition": "The experiment succeeds technically when all deterministic candidate relations are evaluated, every relation receives exactly one allowed status and complete provenance is produced.\n"
+    },
+    "experiment": {
+      "configuration_version": "1.0",
+      "engine": "CGIE-3",
+      "framework_version": "1.0-draft",
+      "id": "CGIE3_ID_02",
+      "name": "Eligible Relation Discovery",
+      "protocol_version": "CGIE3_ID_02_v1.0",
+      "random_seed": 20260804,
+      "status": "FROZEN"
+    },
+    "safety_rules": {
+      "change_thresholds_after_results": false,
+      "delete_non_estimable_relations": false,
+      "delete_rejected_relations": false,
+      "describe_association_as_causality": false,
+      "describe_eligible_as_indispensable": false,
+      "describe_relation_discovery_as_earthquake_prediction": false,
+      "modify_cgie2_files": false,
+      "modify_frozen_inputs": false,
+      "select_relations_using_evaluation_outcomes": false,
+      "select_relations_using_target_events": false
+    }
+  },
+  "execution_environment": {
+    "github_actions": {
+      "actor": "andrearomeo74-cloud",
+      "ref_name": "main",
+      "repository": "andrearomeo74-cloud/cgie-global-instability-radar",
+      "run_attempt": "1",
+      "run_id": "31009405704",
+      "run_number": "10",
+      "runner_os": "Linux",
+      "sha": "3c30a832841f5410e93165178b9eb03839e00161",
+      "workflow": "CGIE3-ID-02 Eligible Relation Discovery"
+    },
+    "machine": "x86_64",
+    "numpy_version": "2.4.6",
+    "operating_system": "Linux",
+    "pandas_version": "3.0.5",
+    "platform": "Linux-6.17.0-1020-azure-x86_64-with-glibc2.39",
+    "processor": "x86_64",
+    "python_executable": "/opt/hostedtoolcache/Python/3.11.15/x64/bin/python",
+    "python_implementation": "CPython",
+    "python_version": "3.11.15"
+  },
+  "experiment_id": "CGIE3_ID_02",
+  "experiment_metadata": {
+    "baseline_row_count": 35040,
+    "column_count": 19,
+    "row_count": 55372,
+    "windows": [
+      "1d",
+      "30d",
+      "3d",
+      "7d"
+    ]
+  },
+  "experiment_result": {
+    "scientific_claims": {
+      "candidate_relations_evaluated": true,
+      "causality_established": false,
+      "earthquake_prediction_established": false,
+      "eligibility_protocol_applied": true,
+      "indispensable_relations_established": false,
+      "predictive_capability_established": false,
+      "primary_relations_established": false
+    },
+    "statistics": {
+      "relation_count": 136,
+      "status_counts": {
+        "candidate": 29,
+        "eligible": 45,
+        "non_estimable": 0,
+        "rejected": 62
+      }
+    },
+    "status": "eligible_relations_identified",
+    "summary": {
+      "bootstrap": {
+        "by_window": {
+          "1d": {
+            "fully_estimable_count": 28,
+            "interval_supports_full_sign_count": 22,
+            "median_confidence_interval_width": 0.1932731986641435,
+            "relation_count": 28
+          },
+          "30d": {
+            "fully_estimable_count": 36,
+            "interval_supports_full_sign_count": 30,
+            "median_confidence_interval_width": 0.1903628843062546,
+            "relation_count": 36
+          },
+          "3d": {
+            "fully_estimable_count": 36,
+            "interval_supports_full_sign_count": 28,
+            "median_confidence_interval_width": 0.18266369176869143,
+            "relation_count": 36
+          },
+          "7d": {
+            "fully_estimable_count": 36,
+            "interval_supports_full_sign_count": 29,
+            "median_confidence_interval_width": 0.175865782186523,
+            "relation_count": 36
+          }
+        },
+        "expected_replication_count": 68000,
+        "relation_count": 136,
+        "repetitions_per_relation": 500,
+        "status": "COMPLETED"
+      },
+      "claim_boundary": "Eligible relations satisfy only the frozen CGIE3-ID-02 baseline eligibility protocol. Eligibility does not establish causality, indispensability, primary identity status or prediction of a specific earthquake.",
+      "classification_by_window": {
+        "1d": {
+          "candidate": 3,
+          "eligible": 9,
+          "non_estimable": 0,
+          "rejected": 16
+        },
+        "30d": {
+          "candidate": 14,
+          "eligible": 10,
+          "non_estimable": 0,
+          "rejected": 12
+        },
+        "3d": {
+          "candidate": 6,
+          "eligible": 11,
+          "non_estimable": 0,
+          "rejected": 19
+        },
+        "7d": {
+          "candidate": 6,
+          "eligible": 15,
+          "non_estimable": 0,
+          "rejected": 15
+        }
+      },
+      "engine": "CGIE-3",
+      "equivalence": {
+        "automatic_rejections": 0,
+        "by_window": {
+          "1d": {
+            "affine_transformation_count": 0,
+            "near_duplicate_component_count": 0,
+            "non_estimable_audit_count": 0,
+            "redundant_relation_flag_count": 0,
+            "relation_count": 28
+          },
+          "30d": {
+            "affine_transformation_count": 0,
+            "near_duplicate_component_count": 0,
+            "non_estimable_audit_count": 0,
+            "redundant_relation_flag_count": 0,
+            "relation_count": 36
+          },
+          "3d": {
+            "affine_transformation_count": 0,
+            "near_duplicate_component_count": 0,
+            "non_estimable_audit_count": 0,
+            "redundant_relation_flag_count": 0,
+            "relation_count": 36
+          },
+          "7d": {
+            "affine_transformation_count": 0,
+            "near_duplicate_component_count": 0,
+            "non_estimable_audit_count": 0,
+            "redundant_relation_flag_count": 0,
+            "relation_count": 36
+          }
+        },
+        "classification_modified": false,
+        "redundant_relation_flag_count": 0,
+        "relation_count": 136,
+        "status": "COMPLETED"
+      },
+      "experiment_id": "CGIE3_ID_02",
+      "experiment_name": "Eligible Relation Discovery",
+      "framework": "Congruity Framework",
+      "generated_at_utc": "2026-08-05T13:19:12.181838Z",
+      "interpretation_boundary": {
+        "allows_post_result_threshold_tuning": false,
+        "allows_target_informed_selection": false,
+        "discovers_candidate_relations": true,
+        "establishes_causality": false,
+        "establishes_earthquake_prediction": false,
+        "establishes_eligibility": true,
+        "establishes_indispensability": false,
+        "establishes_predictive_capability": false,
+        "establishes_primary_relations": false
+      },
+      "missingness": {
+        "by_window": {
+          "1d": {
+            "fully_estimable_count": 28,
+            "median_absolute_strength_change": 0.0034790358312878217,
+            "relation_count": 28,
+            "robust_count": 28
+          },
+          "30d": {
+            "fully_estimable_count": 36,
+            "median_absolute_strength_change": 0.0021685895124023066,
+            "relation_count": 36,
+            "robust_count": 36
+          },
+          "3d": {
+            "fully_estimable_count": 36,
+            "median_absolute_strength_change": 0.0025104829274150697,
+            "relation_count": 36,
+            "robust_count": 35
+          },
+          "7d": {
+            "fully_estimable_count": 36,
+            "median_absolute_strength_change": 0.0021282619142456577,
+            "relation_count": 36,
+            "robust_count": 36
+          }
+        },
+        "expected_replication_count": 13600,
+        "relation_count": 136,
+        "repetitions_per_relation": 100,
+        "status": "COMPLETED"
+      },
+      "negative_result_is_valid": true,
+      "persistence": {
+        "by_window": {
+          "1d": {
+            "leave_one_block_out_robust_count": 28,
+            "median_persistence": 0.4166666666666667,
+            "minimum_valid_blocks_met_count": 28,
+            "relation_count": 28
+          },
+          "30d": {
+            "leave_one_block_out_robust_count": 35,
+            "median_persistence": 0.625,
+            "minimum_valid_blocks_met_count": 36,
+            "relation_count": 36
+          },
+          "3d": {
+            "leave_one_block_out_robust_count": 34,
+            "median_persistence": 0.5416666666666667,
+            "minimum_valid_blocks_met_count": 36,
+            "relation_count": 36
+          },
+          "7d": {
+            "leave_one_block_out_robust_count": 35,
+            "median_persistence": 0.6666666666666666,
+            "minimum_valid_blocks_met_count": 36,
+            "relation_count": 36
+          }
+        },
+        "relation_count": 136,
+        "status": "COMPLETED"
+      },
+      "preprocessing": {
+        "status": "VALID",
+        "windows": {
+          "1d": {
+            "candidate_relation_count": 28,
+            "component_count": 8,
+            "end_utc": "2025-12-31T23:00:00+00:00",
+            "missing_fraction": {
+              "depth_mad_km": 0.5601598173515981,
+              "event_count": 0.0,
+              "interevent_time_mad_hours": 0.5601598173515981,
+              "log10_cumulative_energy_joule": 0.30639269406392694,
+              "maximum_magnitude": 0.30639269406392694,
+              "median_depth_km": 0.30639269406392694,
+              "median_interevent_time_hours": 0.5601598173515981,
+              "spatial_dispersion_km": 0.5601598173515981
+            },
+            "row_count": 8760,
+            "start_utc": "2025-01-01T00:00:00+00:00",
+            "unique_value_count": {
+              "depth_mad_km": 35,
+              "event_count": 68,
+              "interevent_time_mad_hours": 630,
+              "log10_cumulative_energy_joule": 774,
+              "maximum_magnitude": 31,
+              "median_depth_km": 77,
+              "median_interevent_time_hours": 706,
+              "spatial_dispersion_km": 907
+            }
+          },
+          "30d": {
+            "candidate_relation_count": 36,
+            "component_count": 9,
+            "end_utc": "2025-12-31T23:00:00+00:00",
+            "missing_fraction": {
+              "depth_mad_km": 0.006050228310502283,
+              "event_count": 0.0,
+              "interevent_time_mad_hours": 0.006050228310502283,
+              "log10_cumulative_energy_joule": 0.0046803652968036525,
+              "maximum_magnitude": 0.0046803652968036525,
+              "median_depth_km": 0.0046803652968036525,
+              "median_interevent_time_hours": 0.006050228310502283,
+              "spatial_dispersion_km": 0.006050228310502283,
+              "temporal_burstiness": 0.010159817351598174
+            },
+            "row_count": 8760,
+            "start_utc": "2025-01-01T00:00:00+00:00",
+            "unique_value_count": {
+              "depth_mad_km": 18,
+              "event_count": 215,
+              "interevent_time_mad_hours": 761,
+              "log10_cumulative_energy_joule": 1209,
+              "maximum_magnitude": 17,
+              "median_depth_km": 32,
+              "median_interevent_time_hours": 410,
+              "spatial_dispersion_km": 1241,
+              "temporal_burstiness": 1240
+            }
+          },
+          "3d": {
+            "candidate_relation_count": 36,
+            "component_count": 9,
+            "end_utc": "2025-12-31T23:00:00+00:00",
+            "missing_fraction": {
+              "depth_mad_km": 0.1519406392694064,
+              "event_count": 0.0,
+              "interevent_time_mad_hours": 0.1519406392694064,
+              "log10_cumulative_energy_joule": 0.04497716894977169,
+              "maximum_magnitude": 0.04497716894977169,
+              "median_depth_km": 0.04497716894977169,
+              "median_interevent_time_hours": 0.1519406392694064,
+              "spatial_dispersion_km": 0.1519406392694064,
+              "temporal_burstiness": 0.26815068493150684
+            },
+            "row_count": 8760,
+            "start_utc": "2025-01-01T00:00:00+00:00",
+            "unique_value_count": {
+              "depth_mad_km": 27,
+              "event_count": 102,
+              "interevent_time_mad_hours": 862,
+              "log10_cumulative_energy_joule": 1092,
+              "maximum_magnitude": 30,
+              "median_depth_km": 66,
+              "median_interevent_time_hours": 731,
+              "spatial_dispersion_km": 1179,
+              "temporal_burstiness": 1097
+            }
+          },
+          "7d": {
+            "candidate_relation_count": 36,
+            "component_count": 9,
+            "end_utc": "2025-12-31T23:00:00+00:00",
+            "missing_fraction": {
+              "depth_mad_km": 0.009589041095890411,
+              "event_count": 0.0,
+              "interevent_time_mad_hours": 0.009589041095890411,
+              "log10_cumulative_energy_joule": 0.0046803652968036525,
+              "maximum_magnitude": 0.0046803652968036525,
+              "median_depth_km": 0.0046803652968036525,
+              "median_interevent_time_hours": 0.009589041095890411,
+              "spatial_dispersion_km": 0.009589041095890411,
+              "temporal_burstiness": 0.020776255707762557
+            },
+            "row_count": 8760,
+            "start_utc": "2025-01-01T00:00:00+00:00",
+            "unique_value_count": {
+              "depth_mad_km": 24,
+              "event_count": 136,
+              "interevent_time_mad_hours": 858,
+              "log10_cumulative_energy_joule": 1202,
+              "maximum_magnitude": 29,
+              "median_depth_km": 53,
+              "median_interevent_time_hours": 586,
+              "spatial_dispersion_km": 1245,
+              "temporal_burstiness": 1237
+            }
+          }
+        }
+      },
+      "relation_count": 136,
+      "relation_discovery": {
+        "by_window": {
+          "1d": {
+            "candidate_relation_count": 28,
+            "estimable_count": 28,
+            "non_estimable_count": 0,
+            "non_estimable_reasons": {}
+          },
+          "30d": {
+            "candidate_relation_count": 36,
+            "estimable_count": 36,
+            "non_estimable_count": 0,
+            "non_estimable_reasons": {}
+          },
+          "3d": {
+            "candidate_relation_count": 36,
+            "estimable_count": 36,
+            "non_estimable_count": 0,
+            "non_estimable_reasons": {}
+          },
+          "7d": {
+            "candidate_relation_count": 36,
+            "estimable_count": 36,
+            "non_estimable_count": 0,
+            "non_estimable_reasons": {}
+          }
+        },
+        "status": "COMPLETED",
+        "total_candidate_relations": 136,
+        "total_estimable": 136,
+        "total_non_estimable": 0
+      },
+      "scientific_claims": {
+        "candidate_relations_evaluated": true,
+        "causality_established": false,
+        "earthquake_prediction_established": false,
+        "eligibility_protocol_applied": true,
+        "indispensable_relations_established": false,
+        "predictive_capability_established": false,
+        "primary_relations_established": false
+      },
+      "scientific_outcome": "eligible_relations_identified",
+      "scientific_positive_result": true,
+      "status_counts": {
+        "candidate": 29,
+        "eligible": 45,
+        "non_estimable": 0,
+        "rejected": 62
+      },
+      "technical_status": "COMPLETED",
+      "technical_success": true
+    },
+    "warnings": [
+      "Eligibility does not establish causality or indispensability.",
+      "CGIE3-ID-02 does not establish earthquake prediction."
+    ]
+  },
+  "generated_at_utc": "2026-08-05T13:19:12.783591Z",
+  "git": {
+    "branch": "main",
+    "commit": "3c30a832841f5410e93165178b9eb03839e00161",
+    "repository_root": "/home/runner/work/cgie-global-instability-radar/cgie-global-instability-radar",
+    "working_tree_clean": false
+  },
+  "identity": {
+    "component_ids": [
+      "event_count",
+      "maximum_magnitude",
+      "log10_cumulative_energy_joule",
+      "median_depth_km",
+      "depth_mad_km",
+      "spatial_dispersion_km",
+      "median_interevent_time_hours",
+      "interevent_time_mad_hours",
+      "temporal_burstiness"
+    ],
+    "domain": "geophysical_seismic_monitoring",
+    "excluded_interpretations": [
+      "deterministic_earthquake_prediction",
+      "exact_event_time_prediction",
+      "exact_event_magnitude_prediction",
+      "exact_event_location_prediction",
+      "causal_precursor_claim",
+      "operational_public_warning",
+      "evacuation_advice",
+      "replacement_of_official_authorities",
+      "retrospective_result_presented_as_prospective",
+      "non_estimable_state_interpreted_as_normal"
+    ],
+    "protocol_version": "CGIE3_ID_01_v1.0",
+    "system_id": "campi_flegrei_seismic_system",
+    "system_name": "Campi Flegrei Seismic System",
+    "temporal_scales": [
+      "1d",
+      "3d",
+      "7d",
+      "30d"
+    ]
+  },
+  "input_files": {
+    "cgie2_metrics": {
+      "exists": true,
+      "path": "outputs/CF_RETRO_01_metrics.csv",
+      "sha256": "6b9cedb6d8ee1dd3b5cdbf14483067cc6e102a0a0756ecc6344a9b474c7dd01e",
+      "size_bytes": 26285793
+    },
+    "frozen_catalogue": {
+      "exists": true,
+      "path": "outputs/CF_RETRO_01_catalog_frozen.csv",
+      "sha256": "9778fddde1c30d6130fa3b2431b924b8417ed00fa1faf89677bf3fb0c765c17a",
+      "size_bytes": 173919
+    },
+    "frozen_catalogue_hash_file": {
+      "exists": true,
+      "path": "outputs/CF_RETRO_01_catalog_frozen.csv.sha256",
+      "sha256": "e968b408b95e96e1fc828dfcdc8b9e6e98e2e9db23461aa7eeb4cf8504c34e3c",
+      "size_bytes": 97
+    },
+    "frozen_configuration": {
+      "exists": true,
+      "path": "engines/cgie3/config/cgie3_id_02_relation_discovery.yaml",
+      "sha256": "4a03d24d63720f413d0a262f0c3020953c84902e0ef97ad836bc7f1468833202",
+      "size_bytes": 9707
+    },
+    "frozen_features": {
+      "exists": true,
+      "path": "outputs/CF_RETRO_01_features.csv",
+      "sha256": "61d726ee920437e0798337e9a2d4c0f2f7d29b6f717fa37e871901f448cfb067",
+      "size_bytes": 9979120
+    },
+    "identity_declaration": {
+      "exists": true,
+      "path": "engines/cgie3/config/campi_flegrei_identity.yaml",
+      "sha256": "4c68d1d701238f3d96aaa9a3e1bc7a5a4556437a72390d9c0750eabc4ac7e180",
+      "size_bytes": 1633
+    }
+  },
+  "official_output_files": {
+    "block_relations": {
+      "exists": true,
+      "path": "outputs/CGIE3_ID_02_block_relations.csv",
+      "sha256": "6afca8c59a78bec8562db4996c18e44916ef6fd1c4c07141a24e9dce0c3063ca",
+      "size_bytes": 382268
+    },
+    "bootstrap_relations": {
+      "exists": true,
+      "path": "outputs/CGIE3_ID_02_bootstrap_relations.csv",
+      "sha256": "4b6c7771d255312ade28424552533fafc0c4e9cb356e181b301a83150ba43f63",
+      "size_bytes": 10578189
+    },
+    "candidate_relations": {
+      "exists": true,
+      "path": "outputs/CGIE3_ID_02_candidate_relations.csv",
+      "sha256": "ee6d8f7a486e9a50f4d1ba3571e64232de95cf2c8e7e161f8bb846fd64304da0",
+      "size_bytes": 30573
+    },
+    "equivalence_flags": {
+      "exists": true,
+      "path": "outputs/CGIE3_ID_02_equivalence_flags.csv",
+      "sha256": "680b24ea4ccd2b76fa127c3f03865fb38d4528cee241c0182efb4e92141a082a",
+      "size_bytes": 28203
+    },
+    "manifest": {
+      "exists": true,
+      "path": "outputs/CGIE3_ID_02_manifest.json",
+      "sha256": "5a60d602c6faf1bd0152f1413df91b00f98cb768aeba79eb5744f1521cb2b661",
+      "size_bytes": 4329
+    },
+    "relation_classification": {
+      "exists": true,
+      "path": "outputs/CGIE3_ID_02_relation_classification.csv",
+      "sha256": "592e357d62ea9c53819042717c6d155923f14a9c8599a0dedea9846db1ce66fd",
+      "size_bytes": 75093
+    },
+    "report": {
+      "exists": true,
+      "path": "outputs/CGIE3_ID_02_report.md",
+      "sha256": "701998130718e82d92964eb1bc7f0bb513b1310f02f9aa338bf0dee9da47eee3",
+      "size_bytes": 7442
+    },
+    "summary": {
+      "exists": true,
+      "path": "outputs/CGIE3_ID_02_summary.json",
+      "sha256": "89482fcdf635c243d1c4f0d112e6daef8cb805c177a784ee1566c5949b64e46e",
+      "size_bytes": 11208
+    }
+  },
+  "official_output_hashes_from_reporting": {
+    "block_relations": "6afca8c59a78bec8562db4996c18e44916ef6fd1c4c07141a24e9dce0c3063ca",
+    "bootstrap_relations": "4b6c7771d255312ade28424552533fafc0c4e9cb356e181b301a83150ba43f63",
+    "candidate_relations": "ee6d8f7a486e9a50f4d1ba3571e64232de95cf2c8e7e161f8bb846fd64304da0",
+    "equivalence_flags": "680b24ea4ccd2b76fa127c3f03865fb38d4528cee241c0182efb4e92141a082a",
+    "manifest": "5a60d602c6faf1bd0152f1413df91b00f98cb768aeba79eb5744f1521cb2b661",
+    "relation_classification": "592e357d62ea9c53819042717c6d155923f14a9c8599a0dedea9846db1ce66fd",
+    "report": "701998130718e82d92964eb1bc7f0bb513b1310f02f9aa338bf0dee9da47eee3",
+    "summary": "89482fcdf635c243d1c4f0d112e6daef8cb805c177a784ee1566c5949b64e46e"
+  },
+  "provenance_id": "CGIE3_ID_02_WORKFLOW_PROVENANCE",
+  "runtime_stages": {
+    "bootstrap_status": "COMPLETED",
+    "classification_status": "COMPLETED",
+    "environment": {
+      "generated_at_utc": "2026-08-05T13:16:38.356651Z",
+      "git_commit": "3c30a832841f5410e93165178b9eb03839e00161",
+      "numpy_version": "2.4.6",
+      "pandas_version": "3.0.5",
+      "platform": "Linux-6.17.0-1020-azure-x86_64-with-glibc2.39",
+      "python_version": "3.11.15"
+    },
+    "equivalence_status": "COMPLETED",
+    "missingness_status": "COMPLETED",
+    "persistence_status": "COMPLETED",
+    "preprocessing_status": "COMPLETED",
+    "relation_discovery_status": "COMPLETED",
+    "reporting_status": "COMPLETED"
+  },
+  "scientific_claim_boundary": {
+    "causality_established": false,
+    "earthquake_prediction_established": false,
+    "indispensable_relations_established": false,
+    "predictive_capability_established": false,
+    "primary_relations_established": false
+  },
+  "source_files": {
+    "experiment_context": {
+      "exists": true,
+      "path": "congruity/core/context.py",
+      "sha256": "ae6a494a75af078a20ad46a6d6fff58d54a80f525f4aaaf2ba2c259ab76cc71e",
+      "size_bytes": 1837
+    },
+    "experiment_result": {
+      "exists": true,
+      "path": "congruity/core/result.py",
+      "sha256": "e5c4a6b3853ee09e5a369b24c40678a604dd91cddd494c6997211a5f24751a68",
+      "size_bytes": 857
+    },
+    "id02_bootstrap": {
+      "exists": true,
+      "path": "engines/cgie3/src/id02/bootstrap.py",
+      "sha256": "930618e42f467b6551507108bf8c59101753e9b24cb7601aa6245363a63df742",
+      "size_bytes": 26101
+    },
+    "id02_classification": {
+      "exists": true,
+      "path": "engines/cgie3/src/id02/classification.py",
+      "sha256": "a758673f3dd9783575a555f9641c53d433bfd27d6659d82a24d28a572de9ef1d",
+      "size_bytes": 26602
+    },
+    "id02_discovery": {
+      "exists": true,
+      "path": "engines/cgie3/src/id02/discovery.py",
+      "sha256": "17b3ddb3141f81538634ad1b0c7734b59ab97bd1c7ffe6fbc727ee0316ab43fb",
+      "size_bytes": 11628
+    },
+    "id02_equivalence": {
+      "exists": true,
+      "path": "engines/cgie3/src/id02/equivalence.py",
+      "sha256": "d03a3f0426874a1a60465a00caaed0990890a48a4cb3edfa9ed8b5a80b27ea94",
+      "size_bytes": 16193
+    },
+    "id02_loader": {
+      "exists": true,
+      "path": "engines/cgie3/src/id02/loader.py",
+      "sha256": "f967f12ef5f07913f8857f6c446c35d720472486391a4894028e18dffadbde7d",
+      "size_bytes": 16374
+    },
+    "id02_main": {
+      "exists": true,
+      "path": "engines/cgie3/src/id02/main.py",
+      "sha256": "d508a190a8e02da781b13ba3d3e27b9e474486e9b508eaaf8d2ccd5862271b48",
+      "size_bytes": 17899
+    },
+    "id02_missingness": {
+      "exists": true,
+      "path": "engines/cgie3/src/id02/missingness.py",
+      "sha256": "2e1ff21cf0d4b443dcd19bfde5be366b1e7242da3cb52c29c585a2f27baed743",
+      "size_bytes": 23217
+    },
+    "id02_package": {
+      "exists": true,
+      "path": "engines/cgie3/src/id02/__init__.py",
+      "sha256": "fc4c9d31f648d83625c376004cb1600f7047047fde756357c1ff1900ef92088d",
+      "size_bytes": 1370
+    },
+    "id02_persistence": {
+      "exists": true,
+      "path": "engines/cgie3/src/id02/persistence.py",
+      "sha256": "b0479f395baf025885ac1afdc1224b906d7026f24fd61edbe7547416bc421e1b",
+      "size_bytes": 25658
+    },
+    "id02_preprocessing": {
+      "exists": true,
+      "path": "engines/cgie3/src/id02/preprocessing.py",
+      "sha256": "e4e6d92e15926ca73ac9b84b2d4e09ad21036fdea25786f9b73484e1df4f548b",
+      "size_bytes": 16342
+    },
+    "id02_provenance": {
+      "exists": true,
+      "path": "engines/cgie3/src/id02/provenance.py",
+      "sha256": "1978e07210e72b19f888b8a8f7b6e78f1d4885428a5fcf17fc9b0d30fea2788e",
+      "size_bytes": 19288
+    },
+    "id02_reporting": {
+      "exists": true,
+      "path": "engines/cgie3/src/id02/reporting.py",
+      "sha256": "0131b13ca4c83b5f3a1b401b4d182ffcf8a1a43952a7c7951806cf15d9baa3cf",
+      "size_bytes": 25932
+    },
+    "identity_loader": {
+      "exists": true,
+      "path": "congruity/identity/declaration.py",
+      "sha256": "40ed991b5cb2f70d4afbf91efbf98c7e63087ca5166c566f38d67f7fd7cea3ed",
+      "size_bytes": 7820
+    },
+    "identity_models": {
+      "exists": true,
+      "path": "congruity/identity/models.py",
+      "sha256": "b0f919cbe54736cefbc8fe7632138262ba8d67a98e3dba827713e2790d225d04",
+      "size_bytes": 14471
+    },
+    "relation_discovery_core": {
+      "exists": true,
+      "path": "congruity/relations/discovery.py",
+      "sha256": "44f686bbbd4442bc8102b9a92f6e4b50e5cecb817464044eb82e4190e2368f43",
+      "size_bytes": 14141
+    }
+  }
+}

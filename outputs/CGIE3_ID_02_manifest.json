@@ -1,0 +1,110 @@
+{
+  "configuration_status": "FROZEN",
+  "configuration_version": "1.0",
+  "engine": "CGIE-3",
+  "experiment_id": "CGIE3_ID_02",
+  "experiment_name": "Eligible Relation Discovery",
+  "framework_version": "1.0-draft",
+  "generated_at_utc": "2026-08-05T13:19:12.181838Z",
+  "identity": {
+    "component_ids": [
+      "event_count",
+      "maximum_magnitude",
+      "log10_cumulative_energy_joule",
+      "median_depth_km",
+      "depth_mad_km",
+      "spatial_dispersion_km",
+      "median_interevent_time_hours",
+      "interevent_time_mad_hours",
+      "temporal_burstiness"
+    ],
+    "domain": "geophysical_seismic_monitoring",
+    "protocol_version": "CGIE3_ID_01_v1.0",
+    "system_id": "campi_flegrei_seismic_system",
+    "system_name": "Campi Flegrei Seismic System",
+    "temporal_scales": [
+      "1d",
+      "3d",
+      "7d",
+      "30d"
+    ]
+  },
+  "loader_provenance": {
+    "configuration_file": "engines/cgie3/config/cgie3_id_02_relation_discovery.yaml",
+    "configuration_sha256": "4a03d24d63720f413d0a262f0c3020953c84902e0ef97ad836bc7f1468833202",
+    "feature_columns": 19,
+    "feature_rows": 55372,
+    "feature_table_file": "outputs/CF_RETRO_01_features.csv",
+    "feature_table_sha256": "61d726ee920437e0798337e9a2d4c0f2f7d29b6f717fa37e871901f448cfb067",
+    "identity_declaration_file": "engines/cgie3/config/campi_flegrei_identity.yaml",
+    "identity_declaration_sha256": "4c68d1d701238f3d96aaa9a3e1bc7a5a4556437a72390d9c0750eabc4ac7e180",
+    "loaded_at_utc": "2026-08-05T13:16:38.203273Z"
+  },
+  "metadata": {
+    "baseline_row_count": 35040,
+    "column_count": 19,
+    "row_count": 55372,
+    "windows": [
+      "1d",
+      "30d",
+      "3d",
+      "7d"
+    ]
+  },
+  "output_files": {
+    "block_relations": "outputs/CGIE3_ID_02_block_relations.csv",
+    "bootstrap_relations": "outputs/CGIE3_ID_02_bootstrap_relations.csv",
+    "candidate_relations": "outputs/CGIE3_ID_02_candidate_relations.csv",
+    "equivalence_flags": "outputs/CGIE3_ID_02_equivalence_flags.csv",
+    "manifest": "outputs/CGIE3_ID_02_manifest.json",
+    "relation_classification": "outputs/CGIE3_ID_02_relation_classification.csv",
+    "report": "outputs/CGIE3_ID_02_report.md",
+    "summary": "outputs/CGIE3_ID_02_summary.json"
+  },
+  "output_sha256": {
+    "block_relations": "6afca8c59a78bec8562db4996c18e44916ef6fd1c4c07141a24e9dce0c3063ca",
+    "bootstrap_relations": "4b6c7771d255312ade28424552533fafc0c4e9cb356e181b301a83150ba43f63",
+    "candidate_relations": "ee6d8f7a486e9a50f4d1ba3571e64232de95cf2c8e7e161f8bb846fd64304da0",
+    "equivalence_flags": "680b24ea4ccd2b76fa127c3f03865fb38d4528cee241c0182efb4e92141a082a",
+    "manifest": "e6897bc5f629d968c82dcc25ea749609d565d9beaf4896837e7c5d6362283902",
+    "relation_classification": "592e357d62ea9c53819042717c6d155923f14a9c8599a0dedea9846db1ce66fd",
+    "report": "701998130718e82d92964eb1bc7f0bb513b1310f02f9aa338bf0dee9da47eee3",
+    "summary": "89482fcdf635c243d1c4f0d112e6daef8cb805c177a784ee1566c5949b64e46e"
+  },
+  "protocol_version": "CGIE3_ID_02_v1.0",
+  "runtime": {
+    "bootstrap_status": "COMPLETED",
+    "classification_status": "COMPLETED",
+    "environment": {
+      "generated_at_utc": "2026-08-05T13:16:38.356651Z",
+      "git_commit": "3c30a832841f5410e93165178b9eb03839e00161",
+      "numpy_version": "2.4.6",
+      "pandas_version": "3.0.5",
+      "platform": "Linux-6.17.0-1020-azure-x86_64-with-glibc2.39",
+      "python_version": "3.11.15"
+    },
+    "equivalence_status": "COMPLETED",
+    "missingness_status": "COMPLETED",
+    "persistence_status": "COMPLETED",
+    "preprocessing_status": "COMPLETED",
+    "relation_discovery_status": "COMPLETED"
+  },
+  "scientific_claims": {
+    "candidate_relations_evaluated": true,
+    "causality_established": false,
+    "earthquake_prediction_established": false,
+    "eligibility_protocol_applied": true,
+    "indispensable_relations_established": false,
+    "predictive_capability_established": false,
+    "primary_relations_established": false
+  },
+  "scientific_outcome": "eligible_relations_identified",
+  "software": {
+    "executable": "/opt/hostedtoolcache/Python/3.11.15/x64/bin/python",
+    "numpy_version": "2.4.6",
+    "pandas_version": "3.0.5",
+    "platform": "Linux-6.17.0-1020-azure-x86_64-with-glibc2.39",
+    "python_implementation": "CPython",
+    "python_version": "3.11.15"
+  }
+}

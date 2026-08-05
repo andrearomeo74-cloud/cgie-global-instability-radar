@@ -1,0 +1,348 @@
+{
+  "bootstrap": {
+    "by_window": {
+      "1d": {
+        "fully_estimable_count": 28,
+        "interval_supports_full_sign_count": 22,
+        "median_confidence_interval_width": 0.1932731986641435,
+        "relation_count": 28
+      },
+      "30d": {
+        "fully_estimable_count": 36,
+        "interval_supports_full_sign_count": 30,
+        "median_confidence_interval_width": 0.1903628843062546,
+        "relation_count": 36
+      },
+      "3d": {
+        "fully_estimable_count": 36,
+        "interval_supports_full_sign_count": 28,
+        "median_confidence_interval_width": 0.18266369176869143,
+        "relation_count": 36
+      },
+      "7d": {
+        "fully_estimable_count": 36,
+        "interval_supports_full_sign_count": 29,
+        "median_confidence_interval_width": 0.175865782186523,
+        "relation_count": 36
+      }
+    },
+    "expected_replication_count": 68000,
+    "relation_count": 136,
+    "repetitions_per_relation": 500,
+    "status": "COMPLETED"
+  },
+  "claim_boundary": "Eligible relations satisfy only the frozen CGIE3-ID-02 baseline eligibility protocol. Eligibility does not establish causality, indispensability, primary identity status or prediction of a specific earthquake.",
+  "classification_by_window": {
+    "1d": {
+      "candidate": 3,
+      "eligible": 9,
+      "non_estimable": 0,
+      "rejected": 16
+    },
+    "30d": {
+      "candidate": 14,
+      "eligible": 10,
+      "non_estimable": 0,
+      "rejected": 12
+    },
+    "3d": {
+      "candidate": 6,
+      "eligible": 11,
+      "non_estimable": 0,
+      "rejected": 19
+    },
+    "7d": {
+      "candidate": 6,
+      "eligible": 15,
+      "non_estimable": 0,
+      "rejected": 15
+    }
+  },
+  "engine": "CGIE-3",
+  "equivalence": {
+    "automatic_rejections": 0,
+    "by_window": {
+      "1d": {
+        "affine_transformation_count": 0,
+        "near_duplicate_component_count": 0,
+        "non_estimable_audit_count": 0,
+        "redundant_relation_flag_count": 0,
+        "relation_count": 28
+      },
+      "30d": {
+        "affine_transformation_count": 0,
+        "near_duplicate_component_count": 0,
+        "non_estimable_audit_count": 0,
+        "redundant_relation_flag_count": 0,
+        "relation_count": 36
+      },
+      "3d": {
+        "affine_transformation_count": 0,
+        "near_duplicate_component_count": 0,
+        "non_estimable_audit_count": 0,
+        "redundant_relation_flag_count": 0,
+        "relation_count": 36
+      },
+      "7d": {
+        "affine_transformation_count": 0,
+        "near_duplicate_component_count": 0,
+        "non_estimable_audit_count": 0,
+        "redundant_relation_flag_count": 0,
+        "relation_count": 36
+      }
+    },
+    "classification_modified": false,
+    "redundant_relation_flag_count": 0,
+    "relation_count": 136,
+    "status": "COMPLETED"
+  },
+  "experiment_id": "CGIE3_ID_02",
+  "experiment_name": "Eligible Relation Discovery",
+  "framework": "Congruity Framework",
+  "generated_at_utc": "2026-08-05T13:19:12.181838Z",
+  "interpretation_boundary": {
+    "allows_post_result_threshold_tuning": false,
+    "allows_target_informed_selection": false,
+    "discovers_candidate_relations": true,
+    "establishes_causality": false,
+    "establishes_earthquake_prediction": false,
+    "establishes_eligibility": true,
+    "establishes_indispensability": false,
+    "establishes_predictive_capability": false,
+    "establishes_primary_relations": false
+  },
+  "missingness": {
+    "by_window": {
+      "1d": {
+        "fully_estimable_count": 28,
+        "median_absolute_strength_change": 0.0034790358312878217,
+        "relation_count": 28,
+        "robust_count": 28
+      },
+      "30d": {
+        "fully_estimable_count": 36,
+        "median_absolute_strength_change": 0.0021685895124023066,
+        "relation_count": 36,
+        "robust_count": 36
+      },
+      "3d": {
+        "fully_estimable_count": 36,
+        "median_absolute_strength_change": 0.0025104829274150697,
+        "relation_count": 36,
+        "robust_count": 35
+      },
+      "7d": {
+        "fully_estimable_count": 36,
+        "median_absolute_strength_change": 0.0021282619142456577,
+        "relation_count": 36,
+        "robust_count": 36
+      }
+    },
+    "expected_replication_count": 13600,
+    "relation_count": 136,
+    "repetitions_per_relation": 100,
+    "status": "COMPLETED"
+  },
+  "negative_result_is_valid": true,
+  "persistence": {
+    "by_window": {
+      "1d": {
+        "leave_one_block_out_robust_count": 28,
+        "median_persistence": 0.4166666666666667,
+        "minimum_valid_blocks_met_count": 28,
+        "relation_count": 28
+      },
+      "30d": {
+        "leave_one_block_out_robust_count": 35,
+        "median_persistence": 0.625,
+        "minimum_valid_blocks_met_count": 36,
+        "relation_count": 36
+      },
+      "3d": {
+        "leave_one_block_out_robust_count": 34,
+        "median_persistence": 0.5416666666666667,
+        "minimum_valid_blocks_met_count": 36,
+        "relation_count": 36
+      },
+      "7d": {
+        "leave_one_block_out_robust_count": 35,
+        "median_persistence": 0.6666666666666666,
+        "minimum_valid_blocks_met_count": 36,
+        "relation_count": 36
+      }
+    },
+    "relation_count": 136,
+    "status": "COMPLETED"
+  },
+  "preprocessing": {
+    "status": "VALID",
+    "windows": {
+      "1d": {
+        "candidate_relation_count": 28,
+        "component_count": 8,
+        "end_utc": "2025-12-31T23:00:00+00:00",
+        "missing_fraction": {
+          "depth_mad_km": 0.5601598173515981,
+          "event_count": 0.0,
+          "interevent_time_mad_hours": 0.5601598173515981,
+          "log10_cumulative_energy_joule": 0.30639269406392694,
+          "maximum_magnitude": 0.30639269406392694,
+          "median_depth_km": 0.30639269406392694,
+          "median_interevent_time_hours": 0.5601598173515981,
+          "spatial_dispersion_km": 0.5601598173515981
+        },
+        "row_count": 8760,
+        "start_utc": "2025-01-01T00:00:00+00:00",
+        "unique_value_count": {
+          "depth_mad_km": 35,
+          "event_count": 68,
+          "interevent_time_mad_hours": 630,
+          "log10_cumulative_energy_joule": 774,
+          "maximum_magnitude": 31,
+          "median_depth_km": 77,
+          "median_interevent_time_hours": 706,
+          "spatial_dispersion_km": 907
+        }
+      },
+      "30d": {
+        "candidate_relation_count": 36,
+        "component_count": 9,
+        "end_utc": "2025-12-31T23:00:00+00:00",
+        "missing_fraction": {
+          "depth_mad_km": 0.006050228310502283,
+          "event_count": 0.0,
+          "interevent_time_mad_hours": 0.006050228310502283,
+          "log10_cumulative_energy_joule": 0.0046803652968036525,
+          "maximum_magnitude": 0.0046803652968036525,
+          "median_depth_km": 0.0046803652968036525,
+          "median_interevent_time_hours": 0.006050228310502283,
+          "spatial_dispersion_km": 0.006050228310502283,
+          "temporal_burstiness": 0.010159817351598174
+        },
+        "row_count": 8760,
+        "start_utc": "2025-01-01T00:00:00+00:00",
+        "unique_value_count": {
+          "depth_mad_km": 18,
+          "event_count": 215,
+          "interevent_time_mad_hours": 761,
+          "log10_cumulative_energy_joule": 1209,
+          "maximum_magnitude": 17,
+          "median_depth_km": 32,
+          "median_interevent_time_hours": 410,
+          "spatial_dispersion_km": 1241,
+          "temporal_burstiness": 1240
+        }
+      },
+      "3d": {
+        "candidate_relation_count": 36,
+        "component_count": 9,
+        "end_utc": "2025-12-31T23:00:00+00:00",
+        "missing_fraction": {
+          "depth_mad_km": 0.1519406392694064,
+          "event_count": 0.0,
+          "interevent_time_mad_hours": 0.1519406392694064,
+          "log10_cumulative_energy_joule": 0.04497716894977169,
+          "maximum_magnitude": 0.04497716894977169,
+          "median_depth_km": 0.04497716894977169,
+          "median_interevent_time_hours": 0.1519406392694064,
+          "spatial_dispersion_km": 0.1519406392694064,
+          "temporal_burstiness": 0.26815068493150684
+        },
+        "row_count": 8760,
+        "start_utc": "2025-01-01T00:00:00+00:00",
+        "unique_value_count": {
+          "depth_mad_km": 27,
+          "event_count": 102,
+          "interevent_time_mad_hours": 862,
+          "log10_cumulative_energy_joule": 1092,
+          "maximum_magnitude": 30,
+          "median_depth_km": 66,
+          "median_interevent_time_hours": 731,
+          "spatial_dispersion_km": 1179,
+          "temporal_burstiness": 1097
+        }
+      },
+      "7d": {
+        "candidate_relation_count": 36,
+        "component_count": 9,
+        "end_utc": "2025-12-31T23:00:00+00:00",
+        "missing_fraction": {
+          "depth_mad_km": 0.009589041095890411,
+          "event_count": 0.0,
+          "interevent_time_mad_hours": 0.009589041095890411,
+          "log10_cumulative_energy_joule": 0.0046803652968036525,
+          "maximum_magnitude": 0.0046803652968036525,
+          "median_depth_km": 0.0046803652968036525,
+          "median_interevent_time_hours": 0.009589041095890411,
+          "spatial_dispersion_km": 0.009589041095890411,
+          "temporal_burstiness": 0.020776255707762557
+        },
+        "row_count": 8760,
+        "start_utc": "2025-01-01T00:00:00+00:00",
+        "unique_value_count": {
+          "depth_mad_km": 24,
+          "event_count": 136,
+          "interevent_time_mad_hours": 858,
+          "log10_cumulative_energy_joule": 1202,
+          "maximum_magnitude": 29,
+          "median_depth_km": 53,
+          "median_interevent_time_hours": 586,
+          "spatial_dispersion_km": 1245,
+          "temporal_burstiness": 1237
+        }
+      }
+    }
+  },
+  "relation_count": 136,
+  "relation_discovery": {
+    "by_window": {
+      "1d": {
+        "candidate_relation_count": 28,
+        "estimable_count": 28,
+        "non_estimable_count": 0,
+        "non_estimable_reasons": {}
+      },
+      "30d": {
+        "candidate_relation_count": 36,
+        "estimable_count": 36,
+        "non_estimable_count": 0,
+        "non_estimable_reasons": {}
+      },
+      "3d": {
+        "candidate_relation_count": 36,
+        "estimable_count": 36,
+        "non_estimable_count": 0,
+        "non_estimable_reasons": {}
+      },
+      "7d": {
+        "candidate_relation_count": 36,
+        "estimable_count": 36,
+        "non_estimable_count": 0,
+        "non_estimable_reasons": {}
+      }
+    },
+    "status": "COMPLETED",
+    "total_candidate_relations": 136,
+    "total_estimable": 136,
+    "total_non_estimable": 0
+  },
+  "scientific_claims": {
+    "candidate_relations_evaluated": true,
+    "causality_established": false,
+    "earthquake_prediction_established": false,
+    "eligibility_protocol_applied": true,
+    "indispensable_relations_established": false,
+    "predictive_capability_established": false,
+    "primary_relations_established": false
+  },
+  "scientific_outcome": "eligible_relations_identified",
+  "scientific_positive_result": true,
+  "status_counts": {
+    "candidate": 29,
+    "eligible": 45,
+    "non_estimable": 0,
+    "rejected": 62
+  },
+  "technical_status": "COMPLETED",
+  "technical_success": true
+}
