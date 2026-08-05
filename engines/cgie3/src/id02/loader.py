@@ -661,7 +661,6 @@ context.register_metadata(
 
     return context
 
-
 def load_experiment() -> ExperimentContext:
     """
     Complete deterministic loader for CGIE3-ID-02.
