@@ -659,7 +659,7 @@ context.register_metadata(
     ),
 )
 
-    return context
+return context
 
 
 def load_experiment() -> ExperimentContext:
