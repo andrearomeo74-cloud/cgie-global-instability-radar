@@ -96,6 +96,9 @@ SOURCE_FILES = {
 
     "id02_package":
         "engines/cgie3/src/id02/__init__.py",
+    
+    "id02_main":
+    "engines/cgie3/src/id02/main.py",
 }
 
 
