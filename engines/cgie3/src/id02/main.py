@@ -522,6 +522,100 @@ def execute_context_stage(
 
     return updated_context
 
+def execute_reporting_stage(
+    context: ExperimentContext,
+    *,
+    stage_number: int,
+    timing: dict[str, float],
+) -> ExperimentResult:
+    """Execute the reporting stage."""
+    stage_name = "reporting"
+
+    print_stage_start(
+        stage_number,
+        stage_name,
+    )
+
+    started = time.perf_counter()
+
+    result = generate_reports(
+        context
+    )
+
+    duration = (
+        time.perf_counter()
+        - started
+    )
+
+    if not isinstance(
+        result,
+        ExperimentResult,
+    ):
+        raise PipelineExecutionError(
+            "Reporting did not return "
+            "an ExperimentResult."
+        )
+
+    timing[stage_name] = float(
+        duration
+    )
+
+    print_stage_complete(
+        stage_number,
+        stage_name,
+        duration,
+    )
+
+    return result
+
+def execute_provenance_stage(
+    context: ExperimentContext,
+    result: ExperimentResult,
+    *,
+    stage_number: int,
+    timing: dict[str, float],
+) -> ExperimentResult:
+    """Execute the provenance stage."""
+    stage_name = "provenance"
+
+    print_stage_start(
+        stage_number,
+        stage_name,
+    )
+
+    started = time.perf_counter()
+
+    final_result = generate_provenance(
+        context,
+        result,
+    )
+
+    duration = (
+        time.perf_counter()
+        - started
+    )
+
+    if not isinstance(
+        final_result,
+        ExperimentResult,
+    ):
+        raise PipelineExecutionError(
+            "Provenance did not return "
+            "an ExperimentResult."
+        )
+
+    timing[stage_name] = float(
+        duration
+    )
+
+    print_stage_complete(
+        stage_number,
+        stage_name,
+        duration,
+    )
+
+    return final_result
+
 
 def run_pipeline() -> ExperimentResult:
     """Run the complete frozen CGIE3-ID-02 pipeline."""
