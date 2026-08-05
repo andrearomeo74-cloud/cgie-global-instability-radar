@@ -11,10 +11,17 @@ from .dependencies import (
     audit_dependencies,
 )
 
+from .multiscale import (
+    MultiscaleAuditError,
+    audit_multiscale,
+)
+
 __all__ = [
     "ID03ExperimentContext",
     "ID03LoaderError",
     "load_experiment",
     "DependencyAuditError",
     "audit_dependencies",
+    "MultiscaleAuditError",
+    "audit_multiscale",
 ]
