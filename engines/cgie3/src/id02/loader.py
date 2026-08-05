@@ -132,7 +132,7 @@ def resolve_repository_path(
     return resolved
 
 
-  def sha256_file(path: Path) -> str:
+def sha256_file(path: Path) -> str:
     """Calculate the SHA-256 digest of one file."""
     if not path.exists():
         fail(
