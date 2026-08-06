@@ -2185,6 +2185,648 @@ def build_family_outputs(
             ],
             kind="stable",
         ).reset_index(
+def build_family_outputs(
+    context: ID03ExperimentContext,
+    evidence: pd.DataFrame,
+    pair_edges: pd.DataFrame,
+    primary_communities: tuple[
+        tuple[str, ...],
+        ...,
+    ],
+    secondary_communities: tuple[
+        tuple[str, ...],
+        ...,
+    ],
+    coassignment: pd.DataFrame,
+    contract: Mapping[str, Any],
+) -> tuple[
+    pd.DataFrame,
+    pd.DataFrame,
+]:
+    """Build family and relation-membership tables."""
+    secondary_membership = partition_map(
+        secondary_communities
+    )
+
+    family_records: list[
+        dict[str, Any]
+    ] = []
+
+    membership_records: list[
+        dict[str, Any]
+    ] = []
+
+    for family_index, members in enumerate(
+        primary_communities,
+        start=1,
+    ):
+        family_id = contract[
+            "family_id_format"
+        ].format(
+            index=family_index
+        )
+
+        member_set = set(
+            members
+        )
+
+        family_edges = pair_edges.loc[
+            pair_edges[
+                "source_id"
+            ].isin(
+                member_set
+            )
+            & pair_edges[
+                "target_id"
+            ].isin(
+                member_set
+            )
+        ].copy()
+
+        family_pair_ids = set(
+            family_edges[
+                "pair_id"
+            ].astype(str)
+        )
+
+        scale_relations = evidence.loc[
+            evidence[
+                "pair_id"
+            ]
+            .astype(str)
+            .isin(
+                family_pair_ids
+            )
+        ].copy()
+
+        stability = family_stability_score(
+            members,
+            coassignment,
+        )
+
+        secondary_labels = {
+            secondary_membership.get(
+                member
+            )
+            for member in members
+        }
+
+        secondary_agreement = bool(
+            len(
+                secondary_labels
+            )
+            == 1
+        )
+
+        reproducible = bool(
+            len(
+                members
+            )
+            >= contract[
+                "minimum_family_nodes"
+            ]
+            and len(
+                family_edges
+            )
+            >= contract[
+                "minimum_family_relations"
+            ]
+            and stability
+            >= contract[
+                "minimum_family_stability"
+            ]
+        )
+
+        (
+            preliminary_label,
+            preliminary_overlap,
+        ) = suggest_preliminary_label(
+            members,
+            contract[
+                "preliminary_label_candidates"
+            ],
+        )
+
+        family_records.append(
+            {
+                "experiment_id":
+                    "CGIE3_ID_03",
+
+                "family_id":
+                    family_id,
+
+                "member_node_count":
+                    int(
+                        len(
+                            members
+                        )
+                    ),
+
+                "member_relation_pair_count":
+                    int(
+                        len(
+                            family_edges
+                        )
+                    ),
+
+                "member_scale_relation_count":
+                    int(
+                        len(
+                            scale_relations
+                        )
+                    ),
+
+                "member_components":
+                    "|".join(
+                        members
+                    ),
+
+                "member_pair_ids":
+                    "|".join(
+                        sorted(
+                            family_pair_ids
+                        )
+                    ),
+
+                "eligible_relation_count":
+                    int(
+                        (
+                            scale_relations[
+                                "classification_status"
+                            ]
+                            == "eligible"
+                        ).sum()
+                    ),
+
+                "candidate_relation_count":
+                    int(
+                        (
+                            scale_relations[
+                                "classification_status"
+                            ]
+                            == "candidate"
+                        ).sum()
+                    ),
+
+                "mean_graph_edge_weight":
+                    (
+                        float(
+                            family_edges[
+                                "graph_edge_weight"
+                            ].mean()
+                        )
+                        if not family_edges.empty
+                        else None
+                    ),
+
+                "maximum_supported_scale_count":
+                    (
+                        int(
+                            family_edges[
+                                "supported_scale_count"
+                            ].max()
+                        )
+                        if not family_edges.empty
+                        else 0
+                    ),
+
+                "overlap_robust_relation_count":
+                    int(
+                        (
+                            scale_relations[
+                                "overlap_class"
+                            ]
+                            == "overlap_robust"
+                        ).sum()
+                    ),
+
+                "null_exceeds_relation_count":
+                    int(
+                        (
+                            scale_relations[
+                                "null_outcome"
+                            ]
+                            == "exceeds_null"
+                        ).sum()
+                    ),
+
+                "residual_information_relation_count":
+                    int(
+                        scale_relations[
+                            "retains_residual_information"
+                        ]
+                        .fillna(
+                            False
+                        )
+                        .sum()
+                    ),
+
+                "dependency_statuses":
+                    "|".join(
+                        sorted(
+                            set(
+                                scale_relations[
+                                    "dependency_status"
+                                ].astype(str)
+                            )
+                        )
+                    ),
+
+                "family_stability":
+                    float(
+                        stability
+                    ),
+
+                "secondary_partition_agreement":
+                    secondary_agreement,
+
+                "reproducible_family":
+                    reproducible,
+
+                "preliminary_label_suggestion":
+                    preliminary_label,
+
+                "preliminary_label_jaccard_overlap":
+                    float(
+                        preliminary_overlap
+                    ),
+
+                "preliminary_label_used_for_detection":
+                    False,
+            }
+        )
+
+        for row in scale_relations.itertuples(
+            index=False
+        ):
+            membership_records.append(
+                {
+                    "experiment_id":
+                        "CGIE3_ID_03",
+
+                    "family_id":
+                        family_id,
+
+                    "window_id":
+                        str(
+                            row.window_id
+                        ),
+
+                    "relation_id":
+                        str(
+                            row.relation_id
+                        ),
+
+                    "pair_id":
+                        str(
+                            row.pair_id
+                        ),
+
+                    "source_id":
+                        str(
+                            row.source_id
+                        ),
+
+                    "target_id":
+                        str(
+                            row.target_id
+                        ),
+
+                    "id02_status":
+                        str(
+                            row.classification_status
+                        ),
+
+                    "edge_weight":
+                        float(
+                            row.edge_weight
+                        ),
+
+                    "dependency_status":
+                        str(
+                            row.dependency_status
+                        ),
+
+                    "overlap_class":
+                        str(
+                            row.overlap_class
+                        ),
+
+                    "null_outcome":
+                        str(
+                            row.null_outcome
+                        ),
+
+                    "redundancy_status":
+                        str(
+                            row.redundancy_status
+                        ),
+
+                    "supported_scale_count":
+                        int(
+                            row.supported_scale_count
+                        ),
+
+                    "family_reproducible":
+                        reproducible,
+
+                    "id02_status_modified":
+                        False,
+                }
+            )
+
+    families = pd.DataFrame.from_records(
+        family_records
+    )
+
+    membership = pd.DataFrame.from_records(
+        membership_records
+    )
+
+    assignment_columns = [
+        "window_id",
+        "relation_id",
+        "pair_id",
+        "source_id",
+        "target_id",
+    ]
+
+    if membership.empty:
+        assigned_keys: set[
+            tuple[str, ...]
+        ] = set()
+    else:
+        assigned_keys = set(
+            membership[
+                assignment_columns
+            ]
+            .astype(str)
+            .itertuples(
+                index=False,
+                name=None,
+            )
+        )
+
+    missing_mask = evidence.apply(
+        lambda row: (
+            str(
+                row["window_id"]
+            ),
+            str(
+                row["relation_id"]
+            ),
+            str(
+                row["pair_id"]
+            ),
+            str(
+                row["source_id"]
+            ),
+            str(
+                row["target_id"]
+            ),
+        )
+        not in assigned_keys,
+        axis=1,
+    )
+
+    missing = evidence.loc[
+        missing_mask
+    ].copy()
+
+    next_index = len(
+        families
+    ) + 1
+
+    for row in missing.itertuples(
+        index=False
+    ):
+        family_id = contract[
+            "family_id_format"
+        ].format(
+            index=next_index
+        )
+
+        next_index += 1
+
+        singleton_family = {
+            "experiment_id":
+                "CGIE3_ID_03",
+
+            "family_id":
+                family_id,
+
+            "member_node_count":
+                2,
+
+            "member_relation_pair_count":
+                1,
+
+            "member_scale_relation_count":
+                1,
+
+            "member_components":
+                f"{row.source_id}|{row.target_id}",
+
+            "member_pair_ids":
+                str(
+                    row.pair_id
+                ),
+
+            "eligible_relation_count":
+                int(
+                    row.classification_status
+                    == "eligible"
+                ),
+
+            "candidate_relation_count":
+                int(
+                    row.classification_status
+                    == "candidate"
+                ),
+
+            "mean_graph_edge_weight":
+                float(
+                    row.edge_weight
+                ),
+
+            "maximum_supported_scale_count":
+                int(
+                    row.supported_scale_count
+                ),
+
+            "overlap_robust_relation_count":
+                int(
+                    row.overlap_class
+                    == "overlap_robust"
+                ),
+
+            "null_exceeds_relation_count":
+                int(
+                    row.null_outcome
+                    == "exceeds_null"
+                ),
+
+            "residual_information_relation_count":
+                int(
+                    bool(
+                        row.retains_residual_information
+                    )
+                ),
+
+            "dependency_statuses":
+                str(
+                    row.dependency_status
+                ),
+
+            "family_stability":
+                0.0,
+
+            "secondary_partition_agreement":
+                True,
+
+            "reproducible_family":
+                False,
+
+            "preliminary_label_suggestion":
+                None,
+
+            "preliminary_label_jaccard_overlap":
+                0.0,
+
+            "preliminary_label_used_for_detection":
+                False,
+        }
+
+        singleton_membership = {
+            "experiment_id":
+                "CGIE3_ID_03",
+
+            "family_id":
+                family_id,
+
+            "window_id":
+                str(
+                    row.window_id
+                ),
+
+            "relation_id":
+                str(
+                    row.relation_id
+                ),
+
+            "pair_id":
+                str(
+                    row.pair_id
+                ),
+
+            "source_id":
+                str(
+                    row.source_id
+                ),
+
+            "target_id":
+                str(
+                    row.target_id
+                ),
+
+            "id02_status":
+                str(
+                    row.classification_status
+                ),
+
+            "edge_weight":
+                float(
+                    row.edge_weight
+                ),
+
+            "dependency_status":
+                str(
+                    row.dependency_status
+                ),
+
+            "overlap_class":
+                str(
+                    row.overlap_class
+                ),
+
+            "null_outcome":
+                str(
+                    row.null_outcome
+                ),
+
+            "redundancy_status":
+                str(
+                    row.redundancy_status
+                ),
+
+            "supported_scale_count":
+                int(
+                    row.supported_scale_count
+                ),
+
+            "family_reproducible":
+                False,
+
+            "id02_status_modified":
+                False,
+        }
+
+        families = pd.concat(
+            [
+                families,
+                pd.DataFrame(
+                    [
+                        singleton_family
+                    ]
+                ),
+            ],
+            ignore_index=True,
+        )
+
+        membership = pd.concat(
+            [
+                membership,
+                pd.DataFrame(
+                    [
+                        singleton_membership
+                    ]
+                ),
+            ],
+            ignore_index=True,
+        )
+
+    if families.empty:
+        fail(
+            "Family audit produced no family records."
+        )
+
+    if len(
+        membership
+    ) != len(
+        evidence
+    ):
+        fail(
+            "Family membership must preserve all "
+            f"{len(evidence)} primary relations; observed "
+            f"{len(membership)}."
+        )
+
+    if membership.duplicated(
+        subset=assignment_columns,
+        keep=False,
+    ).any():
+        fail(
+            "Family membership contains duplicate "
+            "primary-relation keys."
+        )
+
+    return (
+        families.sort_values(
+            by=[
+                "family_id",
+            ],
+            kind="stable",
+        ).reset_index(
             drop=True
         ),
         membership.sort_values(
