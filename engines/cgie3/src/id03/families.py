@@ -2052,8 +2052,8 @@ def build_family_outputs(
                 "relation_id",
         ],
         keep=False,
-    ).any():
-        fail(
+        ).any():
+            fail(
             "Family membership contains duplicate "
             "window-relation keys."
         )
