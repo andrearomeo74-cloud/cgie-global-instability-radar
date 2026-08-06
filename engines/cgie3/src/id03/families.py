@@ -1836,7 +1836,7 @@ def build_family_outputs(
 
     for row in missing.itertuples(index=False):
 
-    family_id = contract["family_id_format"].format(
+        family_id = contract["family_id_format"].format(
         index=next_index
     )
     next_index += 1
@@ -2031,25 +2031,6 @@ def build_family_outputs(
 
             "dependency_status":
                 str(row.dependency_status),
-
-            "overlap_class":
-                str(row.overlap_class),
-
-            "null_outcome":
-                str(row.null_outcome),
-
-            "redundancy_status":
-                str(row.redundancy_status),
-
-            "supported_scale_count":
-                int(row.supported_scale_count),
-
-            "family_reproducible":
-                False,
-
-            "id02_status_modified":
-                False,
-        }
 
         if families.empty:
         fail(
