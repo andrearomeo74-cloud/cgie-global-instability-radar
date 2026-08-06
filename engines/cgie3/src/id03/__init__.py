@@ -31,6 +31,11 @@ from .redundancy import (
     audit_redundancy,
 )
 
+from .representatives import (
+    RepresentativeSelectionError,
+    select_representatives,
+)
+
 __all__ = [
     "ID03ExperimentContext",
     "ID03LoaderError",
@@ -45,4 +50,6 @@ __all__ = [
     "audit_null_controls",
     "RedundancyAuditError",
     "audit_redundancy",
+    "RepresentativeSelectionError",
+    "select_representatives",
 ]
