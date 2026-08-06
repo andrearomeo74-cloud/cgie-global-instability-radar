@@ -1966,6 +1966,105 @@ def build_family_outputs(
 
             "null_exceeds_relation_count":
                 int(
+# Preserve every primary relation exactly once.
+    assignment_columns = [
+        "window_id",
+        "relation_id",
+        "pair_id",
+        "source_id",
+        "target_id",
+    ]
+
+    assigned_keys = set(
+        membership[
+            assignment_columns
+        ]
+        .astype(str)
+        .itertuples(
+            index=False,
+            name=None,
+        )
+    )
+
+    missing_mask = evidence.apply(
+        lambda row: (
+            str(row["window_id"]),
+            str(row["relation_id"]),
+            str(row["pair_id"]),
+            str(row["source_id"]),
+            str(row["target_id"]),
+        )
+        not in assigned_keys,
+        axis=1,
+    )
+
+    missing = evidence.loc[
+        missing_mask
+    ].copy()
+
+    next_index = len(families) + 1
+
+    for row in missing.itertuples(
+        index=False
+    ):
+        family_id = contract[
+            "family_id_format"
+        ].format(
+            index=next_index
+        )
+
+        next_index += 1
+
+        families.loc[
+            len(families)
+        ] = {
+            "experiment_id":
+                "CGIE3_ID_03",
+
+            "family_id":
+                family_id,
+
+            "member_node_count":
+                2,
+
+            "member_relation_pair_count":
+                1,
+
+            "member_scale_relation_count":
+                1,
+
+            "member_components":
+                f"{row.source_id}|{row.target_id}",
+
+            "member_pair_ids":
+                str(row.pair_id),
+
+            "eligible_relation_count":
+                int(
+                    row.classification_status
+                    == "eligible"
+                ),
+
+            "candidate_relation_count":
+                int(
+                    row.classification_status
+                    == "candidate"
+                ),
+
+            "mean_graph_edge_weight":
+                float(row.edge_weight),
+
+            "maximum_supported_scale_count":
+                int(row.supported_scale_count),
+
+            "overlap_robust_relation_count":
+                int(
+                    row.overlap_class
+                    == "overlap_robust"
+                ),
+
+            "null_exceeds_relation_count":
+                int(
                     row.null_outcome
                     == "exceeds_null"
                 ),
@@ -2032,6 +2131,23 @@ def build_family_outputs(
             "dependency_status":
                 str(row.dependency_status),
 
+            "overlap_class":
+                str(row.overlap_class),
+
+            "null_outcome":
+                str(row.null_outcome),
+
+            "redundancy_status":
+                str(row.redundancy_status),
+
+            "supported_scale_count":
+                int(row.supported_scale_count),
+
+            "family_reproducible":
+                False,
+
+            "id02_status_modified":
+                False,
         }
 
         if families.empty:
