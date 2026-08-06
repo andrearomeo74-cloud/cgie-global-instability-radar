@@ -26,6 +26,11 @@ from .null_controls import (
     audit_null_controls,
 )
 
+from .redundancy import (
+    RedundancyAuditError,
+    audit_redundancy,
+)
+
 __all__ = [
     "ID03ExperimentContext",
     "ID03LoaderError",
@@ -38,4 +43,6 @@ __all__ = [
     "audit_overlap",
     "NullControlAuditError",
     "audit_null_controls",
+    "RedundancyAuditError",
+    "audit_redundancy",
 ]
