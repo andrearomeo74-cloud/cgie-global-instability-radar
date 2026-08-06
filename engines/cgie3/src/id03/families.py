@@ -2047,7 +2047,7 @@ def build_family_outputs(
         )
 
         if membership.duplicated(
-        subset=[
+            subset=[
             "window_id",
             "relation_id",
         ],
