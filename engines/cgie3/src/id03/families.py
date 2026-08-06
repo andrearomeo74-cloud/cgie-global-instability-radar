@@ -2048,8 +2048,8 @@ def build_family_outputs(
 
         if membership.duplicated(
             subset=[
-            "window_id",
-            "relation_id",
+                "window_id",
+                "relation_id",
         ],
         keep=False,
     ).any():
