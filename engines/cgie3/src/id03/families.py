@@ -1966,6 +1966,10 @@ def build_family_outputs(
 
             "null_exceeds_relation_count":
                 int(
+        row.null_outcome
+        == "exceeds_null"
+    ),
+            
 # Preserve every primary relation exactly once.
     assignment_columns = [
         "window_id",
