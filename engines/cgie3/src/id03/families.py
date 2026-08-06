@@ -2035,12 +2035,12 @@ def build_family_outputs(
         }
 
         if families.empty:
-        fail(
+            fail(
             "Family audit produced no family records."
         )
 
         if len(membership) != 74:
-        fail(
+            fail(
             "Family membership must preserve all "
             f"74 primary relations; observed "
             f"{len(membership)}."
