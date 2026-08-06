@@ -36,6 +36,11 @@ from .representatives import (
     select_representatives,
 )
 
+from .reporting import (
+    ID03ReportingError,
+    generate_reports,
+)
+
 __all__ = [
     "ID03ExperimentContext",
     "ID03LoaderError",
@@ -52,4 +57,6 @@ __all__ = [
     "audit_redundancy",
     "RepresentativeSelectionError",
     "select_representatives",
+    "ID03ReportingError",
+    "generate_reports",
 ]
