@@ -1810,6 +1810,80 @@ def build_family_outputs(
         membership_records
     )
 
+    # ------------------------------------------------------------------
+# Ensure every primary relation belongs to one family.
+# Any unassigned relation becomes its own singleton family.
+# ------------------------------------------------------------------
+
+assigned = set(
+    zip(
+        membership["window_id"],
+        membership["relation_id"],
+    )
+)
+
+missing = evidence.loc[
+    ~evidence.apply(
+        lambda r: (
+            str(r["window_id"]),
+            str(r["relation_id"]),
+        ) in assigned,
+        axis=1,
+    )
+]
+
+next_index = len(families) + 1
+
+for row in missing.itertuples(index=False):
+
+    family_id = contract["family_id_format"].format(
+        index=next_index
+    )
+    next_index += 1
+
+    families.loc[len(families)] = {
+        "experiment_id": "CGIE3_ID_03",
+        "family_id": family_id,
+        "member_node_count": 2,
+        "member_relation_pair_count": 1,
+        "member_scale_relation_count": 1,
+        "member_components": f"{row.source_id}|{row.target_id}",
+        "member_pair_ids": row.pair_id,
+        "eligible_relation_count": int(row.classification_status == "eligible"),
+        "candidate_relation_count": int(row.classification_status == "candidate"),
+        "mean_graph_edge_weight": float(row.edge_weight),
+        "maximum_supported_scale_count": int(row.supported_scale_count),
+        "overlap_robust_relation_count": int(row.overlap_class == "overlap_robust"),
+        "null_exceeds_relation_count": int(row.null_outcome == "exceeds_null"),
+        "residual_information_relation_count": int(bool(row.retains_residual_information)),
+        "dependency_statuses": str(row.dependency_status),
+        "family_stability": 0.0,
+        "secondary_partition_agreement": True,
+        "reproducible_family": False,
+        "preliminary_label_suggestion": None,
+        "preliminary_label_jaccard_overlap": 0.0,
+        "preliminary_label_used_for_detection": False,
+    }
+
+    membership.loc[len(membership)] = {
+        "experiment_id": "CGIE3_ID_03",
+        "family_id": family_id,
+        "window_id": str(row.window_id),
+        "relation_id": str(row.relation_id),
+        "pair_id": str(row.pair_id),
+        "source_id": str(row.source_id),
+        "target_id": str(row.target_id),
+        "id02_status": str(row.classification_status),
+        "edge_weight": float(row.edge_weight),
+        "dependency_status": str(row.dependency_status),
+        "overlap_class": str(row.overlap_class),
+        "null_outcome": str(row.null_outcome),
+        "redundancy_status": str(row.redundancy_status),
+        "supported_scale_count": int(row.supported_scale_count),
+        "family_reproducible": False,
+        "id02_status_modified": False,
+    }
+
     if families.empty:
         fail(
             "Family audit produced no family records."
