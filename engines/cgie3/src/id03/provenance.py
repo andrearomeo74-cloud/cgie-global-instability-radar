@@ -93,6 +93,9 @@ SOURCE_FILES = {
 
     "identity_loader":
         "congruity/identity/declaration.py",
+    
+    "id03_main":
+        "engines/cgie3/src/id03/main.py",
 }
 
 
