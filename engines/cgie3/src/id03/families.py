@@ -1802,11 +1802,11 @@ def build_family_outputs(
                 }
             )
 
-    families = pd.DataFrame.from_records(
+        families = pd.DataFrame.from_records(
         family_records
     )
 
-    membership = pd.DataFrame.from_records(
+        membership = pd.DataFrame.from_records(
         membership_records
     )
 
@@ -1815,14 +1815,14 @@ def build_family_outputs(
 # Any unassigned relation becomes its own singleton family.
 # ------------------------------------------------------------------
 
-assigned = set(
+    assigned = set(
     zip(
         membership["window_id"],
         membership["relation_id"],
     )
 )
 
-missing = evidence.loc[
+    missing = evidence.loc[
     ~evidence.apply(
         lambda r: (
             str(r["window_id"]),
@@ -1832,9 +1832,9 @@ missing = evidence.loc[
     )
 ]
 
-next_index = len(families) + 1
+    next_index = len(families) + 1
 
-for row in missing.itertuples(index=False):
+    for row in missing.itertuples(index=False):
 
     family_id = contract["family_id_format"].format(
         index=next_index
@@ -2051,19 +2051,19 @@ for row in missing.itertuples(index=False):
                 False,
         }
 
-    if families.empty:
+        if families.empty:
         fail(
             "Family audit produced no family records."
         )
 
-    if len(membership) != 74:
+        if len(membership) != 74:
         fail(
             "Family membership must preserve all "
             f"74 primary relations; observed "
             f"{len(membership)}."
         )
 
-    if membership.duplicated(
+        if membership.duplicated(
         subset=[
             "window_id",
             "relation_id",
@@ -2075,7 +2075,7 @@ for row in missing.itertuples(index=False):
             "window-relation keys."
         )
 
-    return (
+        return (
         families.sort_values(
             by=[
                 "family_id",
