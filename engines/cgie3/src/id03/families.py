@@ -2032,6 +2032,8 @@ def build_family_outputs(
             "dependency_status":
                 str(row.dependency_status),
 
+        }
+
         if families.empty:
         fail(
             "Family audit produced no family records."
