@@ -1966,11 +1966,42 @@ def build_family_outputs(
 
             "null_exceeds_relation_count":
                 int(
-        row.null_outcome
-        == "exceeds_null"
-    ),
-            
-# Preserve every primary relation exactly once.
+                    row.null_outcome
+                    == "exceeds_null"
+                ),
+
+            "residual_information_relation_count":
+                int(
+                    bool(
+                        row.retains_residual_information
+                    )
+                ),
+
+            "dependency_statuses":
+                str(
+                    row.dependency_status
+                ),
+
+            "family_stability":
+                0.0,
+
+            "secondary_partition_agreement":
+                True,
+
+            "reproducible_family":
+                False,
+
+            "preliminary_label_suggestion":
+                None,
+
+            "preliminary_label_jaccard_overlap":
+                0.0,
+
+            "preliminary_label_used_for_detection":
+                False,
+        }
+
+    # Preserve every primary relation exactly once.
     assignment_columns = [
         "window_id",
         "relation_id",
