@@ -1,0 +1,648 @@
+name: CGIE3-ID-03 Relational Family Audit
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cgie3-id-03-family-audit
+  cancel-in-progress: false
+
+jobs:
+  family-audit:
+    name: Run frozen CGIE3-ID-03 experiment
+    runs-on: ubuntu-latest
+
+    # Null controls and graph bootstraps are computationally heavier
+    # than ID-02, so the frozen workflow allows up to three hours.
+    timeout-minutes: 180
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Display execution context
+        run: |
+          echo "Repository: $GITHUB_REPOSITORY"
+          echo "Branch: $GITHUB_REF_NAME"
+          echo "Commit: $GITHUB_SHA"
+          echo "Workflow: $GITHUB_WORKFLOW"
+          echo "Run ID: $GITHUB_RUN_ID"
+          echo "Run number: $GITHUB_RUN_NUMBER"
+          echo "Run attempt: $GITHUB_RUN_ATTEMPT"
+
+          python --version
+          python -m pip --version
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+
+          python -m pip install \
+            numpy \
+            pandas \
+            scipy \
+            PyYAML \
+            networkx
+
+      - name: Validate protocol, configuration, inputs and source files
+        run: |
+          required_files=(
+            "congruity/__init__.py"
+            "congruity/identity/__init__.py"
+            "congruity/identity/models.py"
+            "congruity/identity/declaration.py"
+
+            "docs/experiments/CGIE3_ID_03_PROTOCOL.md"
+
+            "engines/cgie3/config/campi_flegrei_identity.yaml"
+            "engines/cgie3/config/cgie3_id_02_relation_discovery.yaml"
+            "engines/cgie3/config/cgie3_id_03_family_audit.yaml"
+
+            "engines/cgie3/src/id03/__init__.py"
+            "engines/cgie3/src/id03/loader.py"
+            "engines/cgie3/src/id03/dependencies.py"
+            "engines/cgie3/src/id03/multiscale.py"
+            "engines/cgie3/src/id03/overlap.py"
+            "engines/cgie3/src/id03/null_controls.py"
+            "engines/cgie3/src/id03/redundancy.py"
+            "engines/cgie3/src/id03/families.py"
+            "engines/cgie3/src/id03/representatives.py"
+            "engines/cgie3/src/id03/reporting.py"
+            "engines/cgie3/src/id03/provenance.py"
+            "engines/cgie3/src/id03/main.py"
+
+            "outputs/CF_RETRO_01_features.csv"
+
+            "outputs/CGIE3_ID_02_candidate_relations.csv"
+            "outputs/CGIE3_ID_02_block_relations.csv"
+            "outputs/CGIE3_ID_02_bootstrap_relations.csv"
+            "outputs/CGIE3_ID_02_relation_classification.csv"
+            "outputs/CGIE3_ID_02_equivalence_flags.csv"
+            "outputs/CGIE3_ID_02_summary.json"
+          )
+
+          for file in "${required_files[@]}"; do
+            if [ ! -s "$file" ]; then
+              echo "ERROR: required file is absent or empty: $file"
+              exit 1
+            fi
+
+            echo "FOUND: $file"
+          done
+
+      - name: Check Python syntax
+        run: |
+          python -m py_compile \
+            congruity/identity/models.py \
+            congruity/identity/declaration.py \
+            engines/cgie3/src/id03/loader.py \
+            engines/cgie3/src/id03/dependencies.py \
+            engines/cgie3/src/id03/multiscale.py \
+            engines/cgie3/src/id03/overlap.py \
+            engines/cgie3/src/id03/null_controls.py \
+            engines/cgie3/src/id03/redundancy.py \
+            engines/cgie3/src/id03/families.py \
+            engines/cgie3/src/id03/representatives.py \
+            engines/cgie3/src/id03/reporting.py \
+            engines/cgie3/src/id03/provenance.py \
+            engines/cgie3/src/id03/main.py
+
+          echo "Python syntax validation passed."
+
+      - name: Test package imports
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          python - <<'PY'
+          from engines.cgie3.src.id03.loader import (
+              ID03ExperimentContext,
+              ID03LoaderError,
+              load_experiment,
+          )
+          from engines.cgie3.src.id03.dependencies import (
+              audit_dependencies,
+          )
+          from engines.cgie3.src.id03.multiscale import (
+              audit_multiscale,
+          )
+          from engines.cgie3.src.id03.overlap import (
+              audit_overlap,
+          )
+          from engines.cgie3.src.id03.null_controls import (
+              audit_null_controls,
+          )
+          from engines.cgie3.src.id03.redundancy import (
+              audit_redundancy,
+          )
+          from engines.cgie3.src.id03.families import (
+              audit_families,
+          )
+          from engines.cgie3.src.id03.representatives import (
+              select_representatives,
+          )
+          from engines.cgie3.src.id03.reporting import (
+              generate_reports,
+          )
+          from engines.cgie3.src.id03.provenance import (
+              generate_provenance,
+          )
+
+          print("CGIE3-ID-03 imports passed.")
+          print(ID03ExperimentContext.__name__)
+          print(ID03LoaderError.__name__)
+          print(load_experiment.__name__)
+          print(audit_dependencies.__name__)
+          print(audit_multiscale.__name__)
+          print(audit_overlap.__name__)
+          print(audit_null_controls.__name__)
+          print(audit_redundancy.__name__)
+          print(audit_families.__name__)
+          print(select_representatives.__name__)
+          print(generate_reports.__name__)
+          print(generate_provenance.__name__)
+          PY
+
+      - name: Validate frozen configuration
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          python - <<'PY'
+          from engines.cgie3.src.id03.loader import (
+              load_configuration,
+              load_identity,
+              load_id02_configuration,
+              load_id02_outputs,
+              load_frozen_features,
+          )
+
+          configuration = load_configuration()
+
+          experiment = configuration["experiment"]
+
+          if experiment["id"] != "CGIE3_ID_03":
+              raise SystemExit(
+                  "ERROR: unexpected ID-03 experiment identifier."
+              )
+
+          if experiment["protocol_version"] != "CGIE3_ID_03_v1.0":
+              raise SystemExit(
+                  "ERROR: unexpected ID-03 protocol version."
+              )
+
+          if experiment["status"] != "FROZEN":
+              raise SystemExit(
+                  "ERROR: ID-03 configuration is not FROZEN."
+              )
+
+          identity = load_identity(
+              configuration
+          )
+
+          id02_configuration = load_id02_configuration(
+              configuration
+          )
+
+          id02_outputs = load_id02_outputs(
+              configuration
+          )
+
+          features = load_frozen_features(
+              configuration
+          )
+
+          if identity.system_id != "campi_flegrei_seismic_system":
+              raise SystemExit(
+                  "ERROR: unexpected identity system ID."
+              )
+
+          if (
+              id02_configuration["experiment"]["id"]
+              != "CGIE3_ID_02"
+          ):
+              raise SystemExit(
+                  "ERROR: unexpected ID-02 configuration."
+              )
+
+          primary = id02_outputs["primary_population"]
+
+          if len(primary) != 74:
+              raise SystemExit(
+                  f"ERROR: expected 74 primary relations, found {len(primary)}."
+              )
+
+          if len(id02_outputs["relation_classification"]) != 136:
+              raise SystemExit(
+                  "ERROR: expected 136 preserved ID-02 relations."
+              )
+
+          if len(id02_outputs["bootstrap_relations"]) != 68000:
+              raise SystemExit(
+                  "ERROR: expected 68,000 ID-02 bootstrap rows."
+              )
+
+          if features.empty:
+              raise SystemExit(
+                  "ERROR: frozen feature table is empty."
+              )
+
+          print("Frozen ID-03 configuration validation passed.")
+          print("Primary audit relations:", len(primary))
+          print(
+              "Preserved ID-02 relations:",
+              len(id02_outputs["relation_classification"]),
+          )
+          print(
+              "ID-02 bootstrap rows:",
+              len(id02_outputs["bootstrap_relations"]),
+          )
+          print("Frozen feature rows:", len(features))
+          PY
+
+      - name: Run CGIE3-ID-03 pipeline
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+          PYTHONUNBUFFERED: "1"
+        run: |
+          python -m engines.cgie3.src.id03.main
+
+      - name: Verify official outputs
+        run: |
+          generated_files=(
+            "outputs/CGIE3_ID_03_feature_dependencies.csv"
+            "outputs/CGIE3_ID_03_relation_dependencies.csv"
+            "outputs/CGIE3_ID_03_multiscale_relations.csv"
+            "outputs/CGIE3_ID_03_overlap_sensitivity.csv"
+            "outputs/CGIE3_ID_03_overlap_estimates_long.csv"
+            "outputs/CGIE3_ID_03_null_controls.csv"
+            "outputs/CGIE3_ID_03_null_control_summaries.csv"
+            "outputs/CGIE3_ID_03_conditional_redundancy.csv"
+            "outputs/CGIE3_ID_03_relation_families.csv"
+            "outputs/CGIE3_ID_03_family_membership.csv"
+            "outputs/CGIE3_ID_03_family_coassignment.csv"
+            "outputs/CGIE3_ID_03_relation_states.csv"
+            "outputs/CGIE3_ID_03_representative_candidates.csv"
+            "outputs/CGIE3_ID_03_family_graph.graphml"
+            "outputs/CGIE3_ID_03_summary.json"
+            "outputs/CGIE3_ID_03_report.md"
+            "outputs/CGIE3_ID_03_manifest.json"
+            "outputs/CGIE3_ID_03_workflow_provenance.json"
+            "outputs/CGIE3_ID_03_execution_status.json"
+          )
+
+          for file in "${generated_files[@]}"; do
+            if [ ! -s "$file" ]; then
+              echo "ERROR: generated output is absent or empty: $file"
+              exit 1
+            fi
+
+            echo "GENERATED: $file"
+            ls -lh "$file"
+          done
+
+      - name: Validate scientific outputs
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          import pandas as pd
+
+          outputs = Path("outputs")
+
+          feature_dependencies = pd.read_csv(
+              outputs / "CGIE3_ID_03_feature_dependencies.csv"
+          )
+
+          relation_dependencies = pd.read_csv(
+              outputs / "CGIE3_ID_03_relation_dependencies.csv"
+          )
+
+          overlap = pd.read_csv(
+              outputs / "CGIE3_ID_03_overlap_sensitivity.csv"
+          )
+
+          overlap_long = pd.read_csv(
+              outputs / "CGIE3_ID_03_overlap_estimates_long.csv"
+          )
+
+          null_controls = pd.read_csv(
+              outputs / "CGIE3_ID_03_null_controls.csv"
+          )
+
+          null_summaries = pd.read_csv(
+              outputs / "CGIE3_ID_03_null_control_summaries.csv"
+          )
+
+          redundancy = pd.read_csv(
+              outputs / "CGIE3_ID_03_conditional_redundancy.csv"
+          )
+
+          families = pd.read_csv(
+              outputs / "CGIE3_ID_03_relation_families.csv"
+          )
+
+          membership = pd.read_csv(
+              outputs / "CGIE3_ID_03_family_membership.csv"
+          )
+
+          states = pd.read_csv(
+              outputs / "CGIE3_ID_03_relation_states.csv"
+          )
+
+          representatives = pd.read_csv(
+              outputs / "CGIE3_ID_03_representative_candidates.csv"
+          )
+
+          summary = json.loads(
+              (
+                  outputs / "CGIE3_ID_03_summary.json"
+              ).read_text(encoding="utf-8")
+          )
+
+          execution = json.loads(
+              (
+                  outputs / "CGIE3_ID_03_execution_status.json"
+              ).read_text(encoding="utf-8")
+          )
+
+          provenance = json.loads(
+              (
+                  outputs
+                  / "CGIE3_ID_03_workflow_provenance.json"
+              ).read_text(encoding="utf-8")
+          )
+
+          if len(feature_dependencies) != 9:
+              raise SystemExit(
+                  "ERROR: feature dependency table must contain 9 rows."
+              )
+
+          if len(relation_dependencies) != 136:
+              raise SystemExit(
+                  "ERROR: relation dependency table must contain 136 rows."
+              )
+
+          if len(overlap) != 74:
+              raise SystemExit(
+                  "ERROR: overlap table must contain 74 rows."
+              )
+
+          if len(overlap_long) != 222:
+              raise SystemExit(
+                  "ERROR: overlap long table must contain 222 rows."
+              )
+
+          if len(null_controls) != 74:
+              raise SystemExit(
+                  "ERROR: null-control table must contain 74 rows."
+              )
+
+          if len(null_summaries) != 222:
+              raise SystemExit(
+                  "ERROR: null summary table must contain 222 rows."
+              )
+
+          if len(redundancy) != 74:
+              raise SystemExit(
+                  "ERROR: conditional redundancy must contain 74 rows."
+              )
+
+          if len(membership) != 74:
+              raise SystemExit(
+                  "ERROR: family membership must contain 74 rows."
+              )
+
+          if len(states) != 74:
+              raise SystemExit(
+                  "ERROR: final ID-03 state table must contain 74 rows."
+              )
+
+          if families.empty:
+              raise SystemExit(
+                  "ERROR: family audit produced no family records."
+              )
+
+          allowed_states = {
+              "family_representative_candidate",
+              "supporting_relation",
+              "definitionally_constrained",
+              "redundant_relation",
+              "overlap_sensitive",
+              "scale_inconsistent",
+              "insufficient_evidence",
+          }
+
+          observed_states = set(
+              states["id03_state"]
+              .dropna()
+              .astype(str)
+          )
+
+          if not observed_states.issubset(allowed_states):
+              raise SystemExit(
+                  "ERROR: unexpected ID-03 state detected."
+              )
+
+          if (
+              states[
+                  ["window_id", "relation_id"]
+              ]
+              .duplicated()
+              .any()
+          ):
+              raise SystemExit(
+                  "ERROR: duplicate final relation-state keys."
+              )
+
+          representative_state_count = int(
+              (
+                  states["id03_state"]
+                  == "family_representative_candidate"
+              ).sum()
+          )
+
+          if representative_state_count != len(representatives):
+              raise SystemExit(
+                  "ERROR: representative table and final states disagree."
+              )
+
+          if not representatives.empty:
+              maximum_per_family = (
+                  representatives
+                  .groupby("family_id")
+                  .size()
+                  .max()
+              )
+
+              if maximum_per_family > 1:
+                  raise SystemExit(
+                      "ERROR: more than one representative exists in a family."
+                  )
+
+          if summary.get("experiment_id") != "CGIE3_ID_03":
+              raise SystemExit(
+                  "ERROR: unexpected summary experiment ID."
+              )
+
+          if summary.get("technical_status") != "COMPLETED":
+              raise SystemExit(
+                  "ERROR: summary technical status is not COMPLETED."
+              )
+
+          if execution.get("technical_status") != "COMPLETED":
+              raise SystemExit(
+                  "ERROR: execution status is not COMPLETED."
+              )
+
+          if (
+              provenance.get("experiment_id")
+              != "CGIE3_ID_03"
+          ):
+              raise SystemExit(
+                  "ERROR: unexpected provenance experiment ID."
+              )
+
+          replication_record = (
+              provenance
+              .get("non_exported_intermediate_outputs", {})
+              .get("null_control_replications", {})
+          )
+
+          if replication_record.get("row_count") != 66600:
+              raise SystemExit(
+                  "ERROR: provenance does not record 66,600 null replications."
+              )
+
+          claims = summary.get(
+              "scientific_claims",
+              {},
+          )
+
+          prohibited_true_claims = (
+              "id02_statuses_modified",
+              "primary_relations_established",
+              "indispensable_relations_established",
+              "minimum_identity_core_established",
+              "causality_established",
+              "predictive_capability_established",
+              "earthquake_prediction_established",
+              "universal_transferability_established",
+          )
+
+          invalid_claims = [
+              claim
+              for claim in prohibited_true_claims
+              if claims.get(claim) is True
+          ]
+
+          if invalid_claims:
+              raise SystemExit(
+                  "ERROR: scientific claim boundary violated: "
+                  + ", ".join(invalid_claims)
+              )
+
+          print("CGIE3-ID-03 scientific validation passed.")
+          print("Scientific outcome:", summary["scientific_outcome"])
+          print("ID-03 state counts:", summary["id03_state_counts"])
+          print(
+              "Reproducible families:",
+              summary["reproducible_family_count"],
+          )
+          print(
+              "Representative candidates:",
+              summary["representative_candidate_count"],
+          )
+          PY
+
+      - name: Upload CGIE3-ID-03 artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: CGIE3-ID-03-relational-family-audit
+          path: |
+            outputs/CGIE3_ID_03_feature_dependencies.csv
+            outputs/CGIE3_ID_03_relation_dependencies.csv
+            outputs/CGIE3_ID_03_multiscale_relations.csv
+            outputs/CGIE3_ID_03_overlap_sensitivity.csv
+            outputs/CGIE3_ID_03_overlap_estimates_long.csv
+            outputs/CGIE3_ID_03_null_controls.csv
+            outputs/CGIE3_ID_03_null_control_summaries.csv
+            outputs/CGIE3_ID_03_conditional_redundancy.csv
+            outputs/CGIE3_ID_03_relation_families.csv
+            outputs/CGIE3_ID_03_family_membership.csv
+            outputs/CGIE3_ID_03_family_coassignment.csv
+            outputs/CGIE3_ID_03_relation_states.csv
+            outputs/CGIE3_ID_03_representative_candidates.csv
+            outputs/CGIE3_ID_03_family_graph.graphml
+            outputs/CGIE3_ID_03_summary.json
+            outputs/CGIE3_ID_03_report.md
+            outputs/CGIE3_ID_03_manifest.json
+            outputs/CGIE3_ID_03_workflow_provenance.json
+            outputs/CGIE3_ID_03_execution_status.json
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 6
+
+      - name: Upload execution status on failure
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: CGIE3-ID-03-failure-status
+          path: |
+            outputs/CGIE3_ID_03_execution_status.json
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Commit generated outputs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add \
+            outputs/CGIE3_ID_03_feature_dependencies.csv \
+            outputs/CGIE3_ID_03_relation_dependencies.csv \
+            outputs/CGIE3_ID_03_multiscale_relations.csv \
+            outputs/CGIE3_ID_03_overlap_sensitivity.csv \
+            outputs/CGIE3_ID_03_overlap_estimates_long.csv \
+            outputs/CGIE3_ID_03_null_controls.csv \
+            outputs/CGIE3_ID_03_null_control_summaries.csv \
+            outputs/CGIE3_ID_03_conditional_redundancy.csv \
+            outputs/CGIE3_ID_03_relation_families.csv \
+            outputs/CGIE3_ID_03_family_membership.csv \
+            outputs/CGIE3_ID_03_family_coassignment.csv \
+            outputs/CGIE3_ID_03_relation_states.csv \
+            outputs/CGIE3_ID_03_representative_candidates.csv \
+            outputs/CGIE3_ID_03_family_graph.graphml \
+            outputs/CGIE3_ID_03_summary.json \
+            outputs/CGIE3_ID_03_report.md \
+            outputs/CGIE3_ID_03_manifest.json \
+            outputs/CGIE3_ID_03_workflow_provenance.json \
+            outputs/CGIE3_ID_03_execution_status.json
+
+          if git diff --cached --quiet; then
+            echo "No generated changes to commit."
+            exit 0
+          fi
+
+          git commit \
+            -m "Add CGIE3-ID-03 relational family audit results" \
+            -m "Generated under the frozen dependency, multiscale, overlap, null-control, redundancy and family-audit protocol. Representative candidacy does not establish primary identity status, indispensability, causality or earthquake prediction."
+
+          git pull \
+            --rebase \
+            origin \
+            "$GITHUB_REF_NAME"
+
+          git push \
+            origin \
+            "HEAD:$GITHUB_REF_NAME"
