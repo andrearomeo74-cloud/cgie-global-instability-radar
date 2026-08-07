@@ -1,0 +1,248 @@
+experiment:
+  id: CGIE3_ID_04
+  name: Relational Identity Continuity Audit
+  framework_version: CGIE-3
+  protocol_version: CGIE3_ID_04_v1.0
+  configuration_version: 1.0
+  status: FROZEN
+
+purpose:
+  primary_question: >
+    Does the observed relational organization preserve temporal
+    continuity beyond frozen null expectations even when no static
+    reproducible relational families were identified by ID-03?
+
+  interpretation_boundary:
+    continuity_is_not_minimum_identity_core: true
+    continuity_is_not_indispensability: true
+    continuity_is_not_causality: true
+    continuity_is_not_predictive_capability: true
+    continuity_is_not_earthquake_prediction: true
+    continuity_is_not_universal_transferability: true
+
+inputs:
+  identity_declaration:
+    file: engines/cgie3/config/campi_flegrei_identity.yaml
+
+  frozen_features:
+    file: outputs/CF_RETRO_01_features.csv
+
+  id02_relation_classification:
+    file: outputs/CGIE3_ID_02_relation_classification.csv
+
+  id03_relation_states:
+    file: outputs/CGIE3_ID_03_relation_states.csv
+
+  id03_family_membership:
+    file: outputs/CGIE3_ID_03_family_membership.csv
+
+  id03_relation_families:
+    file: outputs/CGIE3_ID_03_relation_families.csv
+
+  id03_summary:
+    file: outputs/CGIE3_ID_03_summary.json
+
+frozen_input_requirements:
+  id02_total_relation_count: 136
+  id03_primary_relation_count: 74
+
+  id03_required_outcome:
+    scientific_outcome: no_reproducible_families
+
+  id03_status_mutation_allowed: false
+
+analysis_population:
+  relation_source: id03_primary_population
+
+  accepted_id02_statuses:
+    - eligible
+    - candidate
+
+  expected_relation_count: 74
+
+  rejected_id02_relations:
+    retained_as_reference_only: true
+    included_in_primary_continuity_score: false
+
+snapshot_definition:
+  node_set:
+    source: identity_declaration
+    fixed_across_time: true
+
+  relation_set:
+    source: frozen_primary_relations
+    recompute_strength_per_snapshot: true
+
+  estimator:
+    primary: spearman
+
+  sign:
+    derive_from_strength: true
+
+  non_estimable_relations:
+    retain_explicitly: true
+    convert_to_zero: false
+
+temporal_scales:
+  source: identity_declaration
+  evaluate_separately: true
+  aggregate_before_primary_test: false
+
+continuity_components:
+  edge_continuity:
+    enabled: true
+    id: EC
+    estimator: jaccard
+    weight: 0.25
+
+  weight_continuity:
+    enabled: true
+    id: WC
+    estimator: spearman_rank
+    common_edges_only: true
+    minimum_common_edges: 3
+    weight: 0.25
+
+  sign_continuity:
+    enabled: true
+    id: SC
+    common_edges_only: true
+    minimum_common_signed_edges: 1
+    weight: 0.25
+
+  topological_continuity:
+    enabled: true
+    id: TC
+    node_role_metric: weighted_degree_strength
+    estimator: spearman_rank
+    minimum_common_nodes: 3
+    weight: 0.25
+
+relational_continuity_score:
+  id: RCS
+
+  combine_only_estimable_components: true
+
+  missing_component_policy: renormalize_available_weights
+
+  minimum_estimable_components: 2
+
+  weights_fixed: true
+
+  optimize_weights: false
+
+transition_definition:
+  ordering: chronological
+
+  comparison:
+    consecutive_snapshots_only: true
+
+  cross_scale_transition_mixing: false
+
+null_controls:
+  enabled: true
+
+  repetitions: 1000
+
+  random_seed: 17041974
+
+  primary_nulls:
+    - temporal_snapshot_permutation
+    - relation_label_permutation
+    - constrained_weight_sign_surrogate
+
+  temporal_snapshot_permutation:
+    preserve_snapshot_contents: true
+    destroy_observed_temporal_order: true
+
+  relation_label_permutation:
+    preserve_relation_weight_distribution: true
+    preserve_snapshot_density: true
+    destroy_relation_identity: true
+
+  constrained_weight_sign_surrogate:
+    preserve_edge_density: true
+    preserve_weight_marginal_distribution: true
+    preserve_sign_marginal_distribution: true
+    preserve_original_relation_identity: false
+
+empirical_significance:
+  upper_tail: true
+  finite_sample_correction: plus_one
+
+  multiple_testing:
+    method: benjamini_hochberg
+    scope: across_temporal_scales
+    fdr: 0.05
+
+primary_effect:
+  metric: observed_mean_rcs_minus_null_median_mean_rcs
+  require_positive_effect: true
+
+robustness:
+  leave_one_transition_out:
+    enabled: true
+
+  minimum_conclusion_retention_fraction: 0.80
+
+  single_transition_dependency_prohibited: true
+
+estimability:
+  minimum_estimable_transition_count_per_scale: 5
+
+  minimum_estimable_component_count_per_transition: 2
+
+  insufficient_scale_status: non_estimable
+
+  missing_values_are_zero: false
+
+outcomes:
+  allowed:
+    - CONTINUITY_SUPPORTED
+    - PARTIAL_OR_SCALE_SPECIFIC_EVIDENCE
+    - CONTINUITY_NOT_SUPPORTED
+    - NON_IDENTIFIABLE
+
+  continuity_supported:
+    minimum_significant_scales: 2
+    require_positive_effect_on_all_supporting_scales: true
+    require_robustness_fraction: 0.80
+
+  partial_or_scale_specific_evidence:
+    minimum_significant_scales: 1
+    maximum_significant_scales_below_full_support: true
+
+  continuity_not_supported:
+    minimum_estimable_scales: 1
+    no_scale_meets_corrected_significance: true
+
+  non_identifiable:
+    no_estimable_scales: true
+
+forbidden_analyses:
+  earthquake_event_alignment: true
+  earthquake_lead_time: true
+  target_event_threshold_optimization: true
+  post_hoc_weight_optimization: true
+  retrospective_scale_selection: true
+  causal_inference: true
+  minimum_identity_core_claim: true
+  indispensable_relation_claim: true
+  predictive_claim: true
+
+outputs:
+  directory: outputs
+
+  files:
+    snapshot_relations: CGIE3_ID_04_snapshot_relations.csv
+    transition_continuity: CGIE3_ID_04_transition_continuity.csv
+    multiscale_continuity: CGIE3_ID_04_multiscale_continuity.csv
+    null_controls: CGIE3_ID_04_null_controls.csv
+    null_summaries: CGIE3_ID_04_null_summaries.csv
+    leave_one_transition_out: CGIE3_ID_04_leave_one_transition_out.csv
+    estimability: CGIE3_ID_04_estimability.csv
+    summary: CGIE3_ID_04_summary.json
+    report: CGIE3_ID_04_report.md
+    manifest: CGIE3_ID_04_manifest.json
+    provenance: CGIE3_ID_04_workflow_provenance.json
+    execution_status: CGIE3_ID_04_execution_status.json
