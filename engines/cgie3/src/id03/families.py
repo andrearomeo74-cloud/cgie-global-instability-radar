@@ -2059,60 +2059,6 @@ def build_family_outputs(
             "family_id":
                 family_id,
 
-            "member_node_count":
-                2,
-
-            "member_relation_pair_count":
-                1,
-
-            "member_scale_relation_count":
-                1,
-
-            "member_components":
-                f"{row.source_id}|{row.target_id}",
-
-            "member_pair_ids":
-                str(row.pair_id),
-
-            "eligible_relation_count":
-                int(
-                    row.classification_status
-                    == "eligible"
-                ),
-
-            "candidate_relation_count":
-                int(
-                    row.classification_status
-                    == "candidate"
-                ),
-
-            "mean_graph_edge_weight":
-                float(row.edge_weight),
-
-            "maximum_supported_scale_count":
-                int(row.supported_scale_count),
-
-            "overlap_robust_relation_count":
-                int(
-                    row.overlap_class
-                    == "overlap_robust"
-                ),
-
-            "null_exceeds_relation_count":
-                int(
-                    row.null_outcome
-                    == "exceeds_null"
-                ),
-
-            "residual_information_relation_count":
-                int(
-                    bool(
-                        row.retains_residual_information
-                    )
-                ),
-
-            "dependency_statuses":
-            
 def build_family_outputs(
     context: ID03ExperimentContext,
     evidence: pd.DataFrame,
