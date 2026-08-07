@@ -1,0 +1,77 @@
+{
+  "experiment_id": "CGIE3_ID_03",
+  "output_paths": {
+    "conditional_redundancy": "outputs/CGIE3_ID_03_conditional_redundancy.csv",
+    "family_coassignment": "outputs/CGIE3_ID_03_family_coassignment.csv",
+    "family_graph": "outputs/CGIE3_ID_03_family_graph.graphml",
+    "family_membership": "outputs/CGIE3_ID_03_family_membership.csv",
+    "feature_dependencies": "outputs/CGIE3_ID_03_feature_dependencies.csv",
+    "id03_relation_states": "outputs/CGIE3_ID_03_relation_states.csv",
+    "manifest": "outputs/CGIE3_ID_03_manifest.json",
+    "multiscale_relations": "outputs/CGIE3_ID_03_multiscale_relations.csv",
+    "null_control_summaries": "outputs/CGIE3_ID_03_null_control_summaries.csv",
+    "null_controls": "outputs/CGIE3_ID_03_null_controls.csv",
+    "overlap_estimates_long": "outputs/CGIE3_ID_03_overlap_estimates_long.csv",
+    "overlap_sensitivity": "outputs/CGIE3_ID_03_overlap_sensitivity.csv",
+    "relation_dependencies": "outputs/CGIE3_ID_03_relation_dependencies.csv",
+    "relation_families": "outputs/CGIE3_ID_03_relation_families.csv",
+    "report": "outputs/CGIE3_ID_03_report.md",
+    "representative_candidates": "outputs/CGIE3_ID_03_representative_candidates.csv",
+    "summary": "outputs/CGIE3_ID_03_summary.json",
+    "workflow_provenance": "outputs/CGIE3_ID_03_workflow_provenance.json"
+  },
+  "scientific_claims": {
+    "causality_established": false,
+    "conditional_redundancy_audited": true,
+    "earthquake_prediction_established": false,
+    "family_representative_candidates_evaluated": true,
+    "feature_dependencies_audited": true,
+    "id02_statuses_modified": false,
+    "indispensable_relations_established": false,
+    "minimum_identity_core_established": false,
+    "multiscale_relations_audited": true,
+    "null_controls_applied": true,
+    "overlap_sensitivity_audited": true,
+    "predictive_capability_established": false,
+    "primary_relations_established": false,
+    "relational_families_evaluated": true,
+    "universal_transferability_established": false
+  },
+  "scientific_outcome": "no_reproducible_families",
+  "stage_duration_seconds": {
+    "dependencies": 0.009017473999989534,
+    "families": 1.5758773240000323,
+    "load": 0.3294776600000091,
+    "multiscale": 0.12936515999999187,
+    "null_controls": 81.86481460499999,
+    "overlap": 50.25124428699999,
+    "provenance": 0.2708000599999991,
+    "redundancy": 1.1247157889999926,
+    "reporting": 0.07457261000001836,
+    "representatives": 0.052691158000016
+  },
+  "stage_order": [
+    "load",
+    "dependencies",
+    "multiscale",
+    "overlap",
+    "null_controls",
+    "redundancy",
+    "families",
+    "representatives",
+    "reporting",
+    "provenance"
+  ],
+  "statistics": {
+    "id03_state_counts": {
+      "insufficient_evidence": 51,
+      "redundant_relation": 14,
+      "scale_inconsistent": 9
+    },
+    "primary_relation_count": 74,
+    "representative_candidate_count": 0,
+    "reproducible_family_count": 0
+  },
+  "technical_status": "COMPLETED",
+  "total_execution_seconds": 135.682915271
+}

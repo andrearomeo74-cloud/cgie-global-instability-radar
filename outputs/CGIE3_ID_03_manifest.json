@@ -1,0 +1,197 @@
+{
+  "configuration_status": "FROZEN",
+  "configuration_version": "1.0",
+  "experiment_id": "CGIE3_ID_03",
+  "experiment_name": "Relational Dependency and Family Audit",
+  "generated_at_utc": "2026-08-07T13:31:28.860868Z",
+  "identity": {
+    "component_ids": [
+      "event_count",
+      "maximum_magnitude",
+      "log10_cumulative_energy_joule",
+      "median_depth_km",
+      "depth_mad_km",
+      "spatial_dispersion_km",
+      "median_interevent_time_hours",
+      "interevent_time_mad_hours",
+      "temporal_burstiness"
+    ],
+    "domain": "geophysical_seismic_monitoring",
+    "protocol_version": "CGIE3_ID_01_v1.0",
+    "system_id": "campi_flegrei_seismic_system",
+    "system_name": "Campi Flegrei Seismic System",
+    "temporal_scales": [
+      "1d",
+      "3d",
+      "7d",
+      "30d"
+    ]
+  },
+  "input_provenance": {
+    "baseline_feature_row_count": 35040,
+    "block_relation_row_count": 1632,
+    "configuration_file": "engines/cgie3/config/cgie3_id_03_family_audit.yaml",
+    "configuration_sha256": "de82a9e46ff09c8792cb579a0905ddfa26ae881829e2199d3ba7f75bfb153acc",
+    "frozen_features_column_count": 19,
+    "frozen_features_file": "outputs/CF_RETRO_01_features.csv",
+    "frozen_features_row_count": 55372,
+    "frozen_features_sha256": "61d726ee920437e0798337e9a2d4c0f2f7d29b6f717fa37e871901f448cfb067",
+    "id02_configuration_file": "engines/cgie3/config/cgie3_id_02_relation_discovery.yaml",
+    "id02_configuration_sha256": "4a03d24d63720f413d0a262f0c3020953c84902e0ef97ad836bc7f1468833202",
+    "id02_outputs": {
+      "id02_block_relations": {
+        "column_count": 19,
+        "file": "outputs/CGIE3_ID_02_block_relations.csv",
+        "row_count": 1632,
+        "sha256": "6afca8c59a78bec8562db4996c18e44916ef6fd1c4c07141a24e9dce0c3063ca"
+      },
+      "id02_bootstrap_relations": {
+        "column_count": 12,
+        "file": "outputs/CGIE3_ID_02_bootstrap_relations.csv",
+        "row_count": 68000,
+        "sha256": "4b6c7771d255312ade28424552533fafc0c4e9cb356e181b301a83150ba43f63"
+      },
+      "id02_candidate_relations": {
+        "column_count": 18,
+        "file": "outputs/CGIE3_ID_02_candidate_relations.csv",
+        "row_count": 136,
+        "sha256": "ee6d8f7a486e9a50f4d1ba3571e64232de95cf2c8e7e161f8bb846fd64304da0"
+      },
+      "id02_equivalence_flags": {
+        "column_count": 16,
+        "file": "outputs/CGIE3_ID_02_equivalence_flags.csv",
+        "row_count": 136,
+        "sha256": "680b24ea4ccd2b76fa127c3f03865fb38d4528cee241c0182efb4e92141a082a"
+      },
+      "id02_relation_classification": {
+        "column_count": 60,
+        "file": "outputs/CGIE3_ID_02_relation_classification.csv",
+        "row_count": 136,
+        "sha256": "592e357d62ea9c53819042717c6d155923f14a9c8599a0dedea9846db1ce66fd"
+      },
+      "id02_summary": {
+        "file": "outputs/CGIE3_ID_02_summary.json",
+        "sha256": "89482fcdf635c243d1c4f0d112e6daef8cb805c177a784ee1566c5949b64e46e"
+      }
+    },
+    "id02_status_counts": {
+      "candidate": 29,
+      "eligible": 45,
+      "non_estimable": 0,
+      "rejected": 62
+    },
+    "identity_declaration_file": "engines/cgie3/config/campi_flegrei_identity.yaml",
+    "identity_declaration_sha256": "4c68d1d701238f3d96aaa9a3e1bc7a5a4556437a72390d9c0750eabc4ac7e180",
+    "loaded_at_utc": "2026-08-07T13:29:13.559292Z",
+    "observed_windows": [
+      "1d",
+      "30d",
+      "3d",
+      "7d"
+    ],
+    "primary_audit_population_count": 74,
+    "timestamp_column": "endpoint_utc",
+    "window_column": "window_id"
+  },
+  "metadata": {
+    "frozen_feature_row_count": 55372,
+    "id02_status_counts": {
+      "candidate": 29,
+      "eligible": 45,
+      "non_estimable": 0,
+      "rejected": 62
+    },
+    "primary_audit_population_count": 74,
+    "total_id02_relation_count": 136,
+    "windows": [
+      "1d",
+      "30d",
+      "3d",
+      "7d"
+    ]
+  },
+  "output_files": {
+    "conditional_redundancy": "outputs/CGIE3_ID_03_conditional_redundancy.csv",
+    "family_coassignment": "outputs/CGIE3_ID_03_family_coassignment.csv",
+    "family_graph": "outputs/CGIE3_ID_03_family_graph.graphml",
+    "family_membership": "outputs/CGIE3_ID_03_family_membership.csv",
+    "feature_dependencies": "outputs/CGIE3_ID_03_feature_dependencies.csv",
+    "id03_relation_states": "outputs/CGIE3_ID_03_relation_states.csv",
+    "manifest": "outputs/CGIE3_ID_03_manifest.json",
+    "multiscale_relations": "outputs/CGIE3_ID_03_multiscale_relations.csv",
+    "null_control_summaries": "outputs/CGIE3_ID_03_null_control_summaries.csv",
+    "null_controls": "outputs/CGIE3_ID_03_null_controls.csv",
+    "overlap_estimates_long": "outputs/CGIE3_ID_03_overlap_estimates_long.csv",
+    "overlap_sensitivity": "outputs/CGIE3_ID_03_overlap_sensitivity.csv",
+    "relation_dependencies": "outputs/CGIE3_ID_03_relation_dependencies.csv",
+    "relation_families": "outputs/CGIE3_ID_03_relation_families.csv",
+    "report": "outputs/CGIE3_ID_03_report.md",
+    "representative_candidates": "outputs/CGIE3_ID_03_representative_candidates.csv",
+    "summary": "outputs/CGIE3_ID_03_summary.json"
+  },
+  "output_sha256": {
+    "conditional_redundancy": "7a50b70ce3cce2d16bb24b8c83132939864d394b3a739af564c4e46e260061db",
+    "family_coassignment": "2623c4f9b125320e2abf40e633bc70d0c598731d322df134e7ea9474f2a9d2f1",
+    "family_graph": "5c2a179c8e3a295dfe1c1a9bdd1d7b9db4b4c27ec0c7c3a5062e50cbef7dad74",
+    "family_membership": "0b1b1ea86a6df442330455642fbc2e263db432a33f5970cd6c1987c55bab26c1",
+    "feature_dependencies": "f7217b8c99dc2522300a61cb7ec04a30cefe182074651aeda262933d31afd1df",
+    "id03_relation_states": "b9071b215067f51c32066cc17ae5a6fb5e2584266ab23860c06f830e07391d42",
+    "manifest": "e43d61b958a19ed39ee9739234f05fb8dbfdf74fa3fb647803d6749368f46624",
+    "multiscale_relations": "33f2e873a1b4c404bba4d03f7ea05ce58663b24a4271bfa25b66d0141b4a47a7",
+    "null_control_summaries": "2b683fcfbec9770338513f670d894694ccc7d326ef359248a75d25212f2c4395",
+    "null_controls": "062918d046f09d972afd9a35d025b7f3fe63d94a201a1dde86af775030944fa7",
+    "overlap_estimates_long": "c2e7701e97af7df25838c76c51b8b7b4d360d5cb216f4adb2068fa2f96525e8b",
+    "overlap_sensitivity": "6aea036a4ecf859bcd8b887636f992a53e315daf070c7ec9b9a4690748c1d693",
+    "relation_dependencies": "3f8d17530a600bfa8b9c01423a9c672198bd04c80d0078a26275a2dd8a423ec3",
+    "relation_families": "eb72fb19873ccddc9242ed4374b9b83674bf177dcc443aba332c93bcd7138f84",
+    "report": "5af85502f6c6ae208bfad8222c2a996fbfb7e9757f8813a8ba0fdac71635b789",
+    "representative_candidates": "43646c60d9b37a36c6f785c25ab3151c64b67e6c7c78870386fc4eb61260ff94",
+    "summary": "2266358a66d062a41cb218aa05e1401ad738b339ff6087eebff261f345c2c0e7"
+  },
+  "protocol_version": "CGIE3_ID_03_v1.0",
+  "runtime": {
+    "conditional_redundancy_status": "COMPLETED",
+    "dependency_audit_status": "COMPLETED",
+    "environment": {
+      "generated_at_utc": "2026-08-07T13:29:13.848834Z",
+      "git_commit": "222d81403728445c4a11751dd2fa0fcf8b98d213",
+      "numpy_version": "2.4.6",
+      "pandas_version": "3.0.5",
+      "platform": "Linux-6.17.0-1020-azure-x86_64-with-glibc2.39",
+      "python_version": "3.11.15"
+    },
+    "family_audit_status": "COMPLETED",
+    "loader_status": "COMPLETED",
+    "multiscale_audit_status": "COMPLETED",
+    "null_control_audit_status": "COMPLETED",
+    "overlap_audit_status": "COMPLETED",
+    "representative_selection_status": "COMPLETED"
+  },
+  "scientific_claims": {
+    "causality_established": false,
+    "conditional_redundancy_audited": true,
+    "earthquake_prediction_established": false,
+    "family_representative_candidates_evaluated": true,
+    "feature_dependencies_audited": true,
+    "id02_statuses_modified": false,
+    "indispensable_relations_established": false,
+    "minimum_identity_core_established": false,
+    "multiscale_relations_audited": true,
+    "null_controls_applied": true,
+    "overlap_sensitivity_audited": true,
+    "predictive_capability_established": false,
+    "primary_relations_established": false,
+    "relational_families_evaluated": true,
+    "universal_transferability_established": false
+  },
+  "scientific_outcome": "no_reproducible_families",
+  "software": {
+    "networkx_version": "3.6.1",
+    "numpy_version": "2.4.6",
+    "pandas_version": "3.0.5",
+    "platform": "Linux-6.17.0-1020-azure-x86_64-with-glibc2.39",
+    "python_executable": "/opt/hostedtoolcache/Python/3.11.15/x64/bin/python",
+    "python_implementation": "CPython",
+    "python_version": "3.11.15"
+  }
+}

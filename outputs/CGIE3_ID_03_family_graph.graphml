@@ -1,0 +1,142 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key id="d2" for="edge" attr.name="scale_relation_count" attr.type="long" />
+  <key id="d1" for="edge" attr.name="weight" attr.type="double" />
+  <key id="d0" for="edge" attr.name="pair_id" attr.type="string" />
+  <graph edgedefault="undirected">
+    <node id="depth_mad_km" />
+    <node id="event_count" />
+    <node id="interevent_time_mad_hours" />
+    <node id="log10_cumulative_energy_joule" />
+    <node id="maximum_magnitude" />
+    <node id="median_depth_km" />
+    <node id="median_interevent_time_hours" />
+    <node id="spatial_dispersion_km" />
+    <node id="temporal_burstiness" />
+    <edge source="depth_mad_km" target="median_depth_km">
+      <data key="d0">depth_mad_km--median_depth_km</data>
+      <data key="d1">0.7764597351866667</data>
+      <data key="d2">3</data>
+    </edge>
+    <edge source="depth_mad_km" target="spatial_dispersion_km">
+      <data key="d0">depth_mad_km--spatial_dispersion_km</data>
+      <data key="d1">0.67675035306</data>
+      <data key="d2">1</data>
+    </edge>
+    <edge source="event_count" target="interevent_time_mad_hours">
+      <data key="d0">event_count--interevent_time_mad_hours</data>
+      <data key="d1">0.8298673485000001</data>
+      <data key="d2">3</data>
+    </edge>
+    <edge source="event_count" target="log10_cumulative_energy_joule">
+      <data key="d0">event_count--log10_cumulative_energy_joule</data>
+      <data key="d1">0.8802204235900001</data>
+      <data key="d2">4</data>
+    </edge>
+    <edge source="event_count" target="maximum_magnitude">
+      <data key="d0">event_count--maximum_magnitude</data>
+      <data key="d1">0.8566166552650001</data>
+      <data key="d2">4</data>
+    </edge>
+    <edge source="event_count" target="median_depth_km">
+      <data key="d0">event_count--median_depth_km</data>
+      <data key="d1">0.57633149607</data>
+      <data key="d2">2</data>
+    </edge>
+    <edge source="event_count" target="median_interevent_time_hours">
+      <data key="d0">event_count--median_interevent_time_hours</data>
+      <data key="d1">0.91195614272</data>
+      <data key="d2">4</data>
+    </edge>
+    <edge source="event_count" target="spatial_dispersion_km">
+      <data key="d0">event_count--spatial_dispersion_km</data>
+      <data key="d1">0.46186912290000004</data>
+      <data key="d2">1</data>
+    </edge>
+    <edge source="event_count" target="temporal_burstiness">
+      <data key="d0">event_count--temporal_burstiness</data>
+      <data key="d1">0.8540057328466668</data>
+      <data key="d2">3</data>
+    </edge>
+    <edge source="interevent_time_mad_hours" target="log10_cumulative_energy_joule">
+      <data key="d0">interevent_time_mad_hours--log10_cumulative_energy_joule</data>
+      <data key="d1">0.6207325839066667</data>
+      <data key="d2">3</data>
+    </edge>
+    <edge source="interevent_time_mad_hours" target="maximum_magnitude">
+      <data key="d0">interevent_time_mad_hours--maximum_magnitude</data>
+      <data key="d1">0.6209102411199999</data>
+      <data key="d2">3</data>
+    </edge>
+    <edge source="interevent_time_mad_hours" target="median_depth_km">
+      <data key="d0">interevent_time_mad_hours--median_depth_km</data>
+      <data key="d1">0.67784932616</data>
+      <data key="d2">2</data>
+    </edge>
+    <edge source="interevent_time_mad_hours" target="median_interevent_time_hours">
+      <data key="d0">interevent_time_mad_hours--median_interevent_time_hours</data>
+      <data key="d1">0.8762045633733333</data>
+      <data key="d2">3</data>
+    </edge>
+    <edge source="interevent_time_mad_hours" target="spatial_dispersion_km">
+      <data key="d0">interevent_time_mad_hours--spatial_dispersion_km</data>
+      <data key="d1">0.65252311299</data>
+      <data key="d2">2</data>
+    </edge>
+    <edge source="interevent_time_mad_hours" target="temporal_burstiness">
+      <data key="d0">interevent_time_mad_hours--temporal_burstiness</data>
+      <data key="d1">0.8901379874</data>
+      <data key="d2">3</data>
+    </edge>
+    <edge source="log10_cumulative_energy_joule" target="maximum_magnitude">
+      <data key="d0">log10_cumulative_energy_joule--maximum_magnitude</data>
+      <data key="d1">0.9921280561000001</data>
+      <data key="d2">4</data>
+    </edge>
+    <edge source="log10_cumulative_energy_joule" target="median_interevent_time_hours">
+      <data key="d0">log10_cumulative_energy_joule--median_interevent_time_hours</data>
+      <data key="d1">0.713304043795</data>
+      <data key="d2">4</data>
+    </edge>
+    <edge source="log10_cumulative_energy_joule" target="temporal_burstiness">
+      <data key="d0">log10_cumulative_energy_joule--temporal_burstiness</data>
+      <data key="d1">0.7217527513933334</data>
+      <data key="d2">3</data>
+    </edge>
+    <edge source="maximum_magnitude" target="median_interevent_time_hours">
+      <data key="d0">maximum_magnitude--median_interevent_time_hours</data>
+      <data key="d1">0.7104575146650001</data>
+      <data key="d2">4</data>
+    </edge>
+    <edge source="maximum_magnitude" target="temporal_burstiness">
+      <data key="d0">maximum_magnitude--temporal_burstiness</data>
+      <data key="d1">0.6971090336733333</data>
+      <data key="d2">3</data>
+    </edge>
+    <edge source="median_depth_km" target="median_interevent_time_hours">
+      <data key="d0">median_depth_km--median_interevent_time_hours</data>
+      <data key="d1">0.65906750696</data>
+      <data key="d2">1</data>
+    </edge>
+    <edge source="median_depth_km" target="spatial_dispersion_km">
+      <data key="d0">median_depth_km--spatial_dispersion_km</data>
+      <data key="d1">0.83192866152</data>
+      <data key="d2">4</data>
+    </edge>
+    <edge source="median_interevent_time_hours" target="spatial_dispersion_km">
+      <data key="d0">median_interevent_time_hours--spatial_dispersion_km</data>
+      <data key="d1">0.825958038395</data>
+      <data key="d2">4</data>
+    </edge>
+    <edge source="median_interevent_time_hours" target="temporal_burstiness">
+      <data key="d0">median_interevent_time_hours--temporal_burstiness</data>
+      <data key="d1">0.9111555669800001</data>
+      <data key="d2">3</data>
+    </edge>
+    <edge source="spatial_dispersion_km" target="temporal_burstiness">
+      <data key="d0">spatial_dispersion_km--temporal_burstiness</data>
+      <data key="d1">0.7331589504666667</data>
+      <data key="d2">3</data>
+    </edge>
+  </graph>
+</graphml>

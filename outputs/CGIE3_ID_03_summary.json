@@ -1,0 +1,458 @@
+{
+  "claim_boundary": "CGIE3-ID-03 may identify reproducible relational families and family-representative candidates. These outcomes do not establish primary identity relations, indispensability, causality, predictive capability, earthquake prediction or universal transferability.",
+  "conditional_redundancy": {
+    "by_window": {
+      "1d": {
+        "deterministic_affine_equivalent_count": 0,
+        "fully_redundant_count": 4,
+        "relation_count": 12,
+        "retains_residual_information_count": 8,
+        "status_counts": {
+          "fully_redundant": 4,
+          "retains_residual_information": 8
+        }
+      },
+      "30d": {
+        "deterministic_affine_equivalent_count": 0,
+        "fully_redundant_count": 6,
+        "relation_count": 24,
+        "retains_residual_information_count": 18,
+        "status_counts": {
+          "fully_redundant": 6,
+          "retains_residual_information": 18
+        }
+      },
+      "3d": {
+        "deterministic_affine_equivalent_count": 0,
+        "fully_redundant_count": 4,
+        "relation_count": 17,
+        "retains_residual_information_count": 13,
+        "status_counts": {
+          "fully_redundant": 4,
+          "retains_residual_information": 13
+        }
+      },
+      "7d": {
+        "deterministic_affine_equivalent_count": 0,
+        "fully_redundant_count": 6,
+        "relation_count": 21,
+        "retains_residual_information_count": 15,
+        "status_counts": {
+          "fully_redundant": 6,
+          "retains_residual_information": 15
+        }
+      }
+    },
+    "deterministic_affine_equivalent_count": 0,
+    "fully_redundant_count": 20,
+    "id02_statuses_modified": false,
+    "primary_relation_count": 74,
+    "redundancy_status_counts": {
+      "fully_redundant": 20,
+      "retains_residual_information": 54
+    },
+    "retains_residual_information_count": 54,
+    "status": "COMPLETED"
+  },
+  "dependency_audit": {
+    "definitionally_constrained_relation_count": 18,
+    "dependency_counts_all_relations": {
+      "independent_source": 118,
+      "partially_derived": 4,
+      "shared_event_source": 4,
+      "shared_temporal_source": 10
+    },
+    "dependency_counts_primary_population": {
+      "independent_source": 58,
+      "partially_derived": 4,
+      "shared_event_source": 3,
+      "shared_temporal_source": 9
+    },
+    "directly_derived_relation_count": 0,
+    "feature_count": 9,
+    "id02_statuses_modified": false,
+    "primary_audit_relation_count": 74,
+    "relation_count": 136,
+    "status": "COMPLETED"
+  },
+  "engine": "CGIE-3",
+  "experiment_id": "CGIE3_ID_03",
+  "experiment_name": "Relational Dependency and Family Audit",
+  "family_audit": {
+    "all_primary_relations_assigned": true,
+    "graph_edge_count": 25,
+    "graph_node_count": 9,
+    "id02_statuses_modified": false,
+    "preliminary_labels_used_for_detection": false,
+    "primary_family_count": 2,
+    "primary_relation_membership_count": 74,
+    "reproducible_family_count": 0,
+    "secondary_family_count": 1,
+    "status": "COMPLETED"
+  },
+  "framework": "Congruity Framework",
+  "generated_at_utc": "2026-08-07T13:31:28.860868Z",
+  "id02_population": {
+    "candidate": 29,
+    "eligible": 45,
+    "non_estimable": 0,
+    "primary_audit_population": 74,
+    "rejected": 62,
+    "total_relations": 136
+  },
+  "id03_state_counts": {
+    "insufficient_evidence": 51,
+    "redundant_relation": 14,
+    "scale_inconsistent": 9
+  },
+  "multiscale_audit": {
+    "definitionally_constrained_pair_count": 5,
+    "id02_statuses_modified": false,
+    "minimum_two_scale_support_count": 22,
+    "multiscale_class_counts": {
+      "multi_scale_2": 3,
+      "multi_scale_3": 8,
+      "multi_scale_4": 8,
+      "scale_inconsistent": 14,
+      "single_scale": 3
+    },
+    "preserved_id02_relation_count": 136,
+    "primary_id02_relation_count": 74,
+    "scale_inconsistent_pair_count": 3,
+    "sign_consistent_pair_count": 22,
+    "status": "COMPLETED",
+    "supported_scale_count_distribution": {
+      "0": 11,
+      "1": 3,
+      "2": 3,
+      "3": 11,
+      "4": 8
+    },
+    "unique_pair_count": 36
+  },
+  "null_control_audit": {
+    "by_window": {
+      "1d": {
+        "exceeds_at_least_one_primary_null_count": 12,
+        "outcome_counts": {
+          "exceeds_null": 12
+        },
+        "relation_count": 12
+      },
+      "30d": {
+        "exceeds_at_least_one_primary_null_count": 24,
+        "outcome_counts": {
+          "exceeds_null": 15,
+          "partially_exceeds_null": 9
+        },
+        "relation_count": 24
+      },
+      "3d": {
+        "exceeds_at_least_one_primary_null_count": 17,
+        "outcome_counts": {
+          "exceeds_null": 17
+        },
+        "relation_count": 17
+      },
+      "7d": {
+        "exceeds_at_least_one_primary_null_count": 21,
+        "outcome_counts": {
+          "exceeds_null": 21
+        },
+        "relation_count": 21
+      }
+    },
+    "id02_statuses_modified": false,
+    "minimum_one_primary_null_exceeded_count": 74,
+    "null_outcome_counts": {
+      "exceeds_null": 65,
+      "partially_exceeds_null": 9
+    },
+    "null_replication_row_count": 66600,
+    "null_summary_row_count": 222,
+    "primary_relation_count": 74,
+    "status": "COMPLETED"
+  },
+  "overlap_audit": {
+    "by_window": {
+      "1d": {
+        "median_nonoverlap_sample_count": 170.0,
+        "overlap_class_counts": {
+          "overlap_robust": 12
+        },
+        "relation_count": 12,
+        "strongly_overlap_sensitive_count": 0
+      },
+      "30d": {
+        "median_nonoverlap_sample_count": 12.0,
+        "overlap_class_counts": {
+          "moderately_overlap_sensitive": 10,
+          "overlap_robust": 14
+        },
+        "relation_count": 24,
+        "strongly_overlap_sensitive_count": 0
+      },
+      "3d": {
+        "median_nonoverlap_sample_count": 104.0,
+        "overlap_class_counts": {
+          "overlap_robust": 17
+        },
+        "relation_count": 17,
+        "strongly_overlap_sensitive_count": 0
+      },
+      "7d": {
+        "median_nonoverlap_sample_count": 52.0,
+        "overlap_class_counts": {
+          "moderately_overlap_sensitive": 1,
+          "overlap_robust": 20
+        },
+        "relation_count": 21,
+        "strongly_overlap_sensitive_count": 0
+      }
+    },
+    "id02_statuses_modified": false,
+    "nonoverlap_non_estimable_count": 0,
+    "overlap_class_counts": {
+      "moderately_overlap_sensitive": 11,
+      "overlap_robust": 63
+    },
+    "primary_relation_count": 74,
+    "rank_diagnostics": [
+      {
+        "comparison_scheme": "half_window_stride",
+        "experiment_id": "CGIE3_ID_03",
+        "paired_relation_count": 12,
+        "rank_correlation": 0.9720279720279721,
+        "reference_scheme": "rolling_full",
+        "window_id": "1d"
+      },
+      {
+        "comparison_scheme": "non_overlapping",
+        "experiment_id": "CGIE3_ID_03",
+        "paired_relation_count": 12,
+        "rank_correlation": 0.9510489510489512,
+        "reference_scheme": "rolling_full",
+        "window_id": "1d"
+      },
+      {
+        "comparison_scheme": "half_window_stride",
+        "experiment_id": "CGIE3_ID_03",
+        "paired_relation_count": 24,
+        "rank_correlation": 0.9847635738914003,
+        "reference_scheme": "rolling_full",
+        "window_id": "30d"
+      },
+      {
+        "comparison_scheme": "non_overlapping",
+        "experiment_id": "CGIE3_ID_03",
+        "paired_relation_count": 24,
+        "rank_correlation": 0.9490432520790167,
+        "reference_scheme": "rolling_full",
+        "window_id": "30d"
+      },
+      {
+        "comparison_scheme": "half_window_stride",
+        "experiment_id": "CGIE3_ID_03",
+        "paired_relation_count": 17,
+        "rank_correlation": 0.9877450980392157,
+        "reference_scheme": "rolling_full",
+        "window_id": "3d"
+      },
+      {
+        "comparison_scheme": "non_overlapping",
+        "experiment_id": "CGIE3_ID_03",
+        "paired_relation_count": 17,
+        "rank_correlation": 0.9607843137254902,
+        "reference_scheme": "rolling_full",
+        "window_id": "3d"
+      },
+      {
+        "comparison_scheme": "half_window_stride",
+        "experiment_id": "CGIE3_ID_03",
+        "paired_relation_count": 21,
+        "rank_correlation": 0.9909090909090909,
+        "reference_scheme": "rolling_full",
+        "window_id": "7d"
+      },
+      {
+        "comparison_scheme": "non_overlapping",
+        "experiment_id": "CGIE3_ID_03",
+        "paired_relation_count": 21,
+        "rank_correlation": 0.9701298701298702,
+        "reference_scheme": "rolling_full",
+        "window_id": "7d"
+      }
+    ],
+    "status": "COMPLETED",
+    "strongly_overlap_sensitive_count": 0
+  },
+  "representative_candidate_count": 0,
+  "representative_selection": {
+    "by_family": {
+      "CGIE3_ID_03_FAMILY_01": {
+        "relation_count": 8,
+        "representative_candidate_count": 0,
+        "state_counts": {
+          "insufficient_evidence": 8
+        }
+      },
+      "CGIE3_ID_03_FAMILY_02": {
+        "relation_count": 51,
+        "representative_candidate_count": 0,
+        "state_counts": {
+          "insufficient_evidence": 28,
+          "redundant_relation": 14,
+          "scale_inconsistent": 9
+        }
+      },
+      "CGIE3_ID_03_FAMILY_03": {
+        "relation_count": 1,
+        "representative_candidate_count": 0,
+        "state_counts": {
+          "insufficient_evidence": 1
+        }
+      },
+      "CGIE3_ID_03_FAMILY_04": {
+        "relation_count": 1,
+        "representative_candidate_count": 0,
+        "state_counts": {
+          "insufficient_evidence": 1
+        }
+      },
+      "CGIE3_ID_03_FAMILY_05": {
+        "relation_count": 1,
+        "representative_candidate_count": 0,
+        "state_counts": {
+          "insufficient_evidence": 1
+        }
+      },
+      "CGIE3_ID_03_FAMILY_06": {
+        "relation_count": 1,
+        "representative_candidate_count": 0,
+        "state_counts": {
+          "insufficient_evidence": 1
+        }
+      },
+      "CGIE3_ID_03_FAMILY_07": {
+        "relation_count": 1,
+        "representative_candidate_count": 0,
+        "state_counts": {
+          "insufficient_evidence": 1
+        }
+      },
+      "CGIE3_ID_03_FAMILY_08": {
+        "relation_count": 1,
+        "representative_candidate_count": 0,
+        "state_counts": {
+          "insufficient_evidence": 1
+        }
+      },
+      "CGIE3_ID_03_FAMILY_09": {
+        "relation_count": 1,
+        "representative_candidate_count": 0,
+        "state_counts": {
+          "insufficient_evidence": 1
+        }
+      },
+      "CGIE3_ID_03_FAMILY_10": {
+        "relation_count": 1,
+        "representative_candidate_count": 0,
+        "state_counts": {
+          "insufficient_evidence": 1
+        }
+      },
+      "CGIE3_ID_03_FAMILY_11": {
+        "relation_count": 1,
+        "representative_candidate_count": 0,
+        "state_counts": {
+          "insufficient_evidence": 1
+        }
+      },
+      "CGIE3_ID_03_FAMILY_12": {
+        "relation_count": 1,
+        "representative_candidate_count": 0,
+        "state_counts": {
+          "insufficient_evidence": 1
+        }
+      },
+      "CGIE3_ID_03_FAMILY_13": {
+        "relation_count": 1,
+        "representative_candidate_count": 0,
+        "state_counts": {
+          "insufficient_evidence": 1
+        }
+      },
+      "CGIE3_ID_03_FAMILY_14": {
+        "relation_count": 1,
+        "representative_candidate_count": 0,
+        "state_counts": {
+          "insufficient_evidence": 1
+        }
+      },
+      "CGIE3_ID_03_FAMILY_15": {
+        "relation_count": 1,
+        "representative_candidate_count": 0,
+        "state_counts": {
+          "insufficient_evidence": 1
+        }
+      },
+      "CGIE3_ID_03_FAMILY_16": {
+        "relation_count": 1,
+        "representative_candidate_count": 0,
+        "state_counts": {
+          "insufficient_evidence": 1
+        }
+      },
+      "CGIE3_ID_03_FAMILY_17": {
+        "relation_count": 1,
+        "representative_candidate_count": 0,
+        "state_counts": {
+          "insufficient_evidence": 1
+        }
+      }
+    },
+    "causality_established": false,
+    "earthquake_prediction_established": false,
+    "id02_statuses_modified": false,
+    "id03_state_counts": {
+      "insufficient_evidence": 51,
+      "redundant_relation": 14,
+      "scale_inconsistent": 9
+    },
+    "indispensable_relations_established": false,
+    "minimum_identity_core_established": false,
+    "predictive_capability_established": false,
+    "primary_relation_count": 74,
+    "primary_relations_established": false,
+    "representative_candidate_count": 0,
+    "reproducible_family_count": 0,
+    "scientific_outcome": "no_reproducible_families",
+    "scientific_positive_result": false,
+    "status": "COMPLETED",
+    "technical_success": true,
+    "universal_transferability_established": false
+  },
+  "reproducible_family_count": 0,
+  "scientific_claims": {
+    "causality_established": false,
+    "conditional_redundancy_audited": true,
+    "earthquake_prediction_established": false,
+    "family_representative_candidates_evaluated": true,
+    "feature_dependencies_audited": true,
+    "id02_statuses_modified": false,
+    "indispensable_relations_established": false,
+    "minimum_identity_core_established": false,
+    "multiscale_relations_audited": true,
+    "null_controls_applied": true,
+    "overlap_sensitivity_audited": true,
+    "predictive_capability_established": false,
+    "primary_relations_established": false,
+    "relational_families_evaluated": true,
+    "universal_transferability_established": false
+  },
+  "scientific_outcome": "no_reproducible_families",
+  "scientific_positive_result": false,
+  "technical_status": "COMPLETED",
+  "technical_success": true,
+  "valid_negative_result": true
+}

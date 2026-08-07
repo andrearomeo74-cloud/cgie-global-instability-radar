@@ -1,0 +1,963 @@
+{
+  "configuration_boundary": {
+    "advancement_to_id04": {
+      "allowed_only_if": [
+        "minimum_reproducible_families_is_1",
+        "minimum_representative_candidates_is_1",
+        "no_unresolved_workflow_failure",
+        "no_unresolved_provenance_failure",
+        "negative_and_inconclusive_outcomes_reported"
+      ],
+      "id04_may_assume_indispensability": false,
+      "id04_may_test_structural_importance": true
+    },
+    "analysis_period": {
+      "baseline": {
+        "end_utc": "2025-12-31T23:59:59Z",
+        "start_utc": "2025-01-01T00:00:00Z"
+      },
+      "future_observations_allowed": false,
+      "use_evaluation_interval": false,
+      "use_target_event_labels": false
+    },
+    "decision_boundary": {
+      "permitted_claim": "CGIE3-ID-03 identified one or more relational families and representative candidates that survived the frozen dependency, multiscale, overlap, null and redundancy audits.\n",
+      "prohibited_claim": "The identified relations are primary, indispensable, causal, predictive of a specific earthquake or universally transferable.\n",
+      "scientific_positive_result": "At least one reproducible relational family and at least one family-representative candidate satisfy the frozen protocol.\n",
+      "technical_success": "Every ID-02 eligible and candidate relation is processed by all admissible ID-03 audits, receives one final ID-03 state and is preserved with complete provenance.\n"
+    },
+    "interpretation_boundary": {
+      "audits_conditional_redundancy": true,
+      "audits_feature_dependencies": true,
+      "audits_multiscale_consistency": true,
+      "audits_null_controls": true,
+      "audits_overlap_sensitivity": true,
+      "establishes_causality": false,
+      "establishes_earthquake_prediction": false,
+      "establishes_indispensability": false,
+      "establishes_minimum_identity_core": false,
+      "establishes_predictive_capability": false,
+      "establishes_primary_relations": false,
+      "establishes_universal_transferability": false,
+      "identifies_relational_families": true,
+      "modifies_id02_statuses": false,
+      "selects_family_representative_candidates": true
+    },
+    "safety_rules": {
+      "call_representative_essential": false,
+      "call_representative_indispensable": false,
+      "call_representative_primary": false,
+      "change_thresholds_after_results": false,
+      "infer_causality": false,
+      "infer_earthquake_prediction": false,
+      "modify_cgie2_files": false,
+      "modify_frozen_features": false,
+      "modify_id01_outputs": false,
+      "modify_id02_classifications": false,
+      "modify_id02_outputs": false,
+      "modify_id02_thresholds": false,
+      "remove_inconclusive_results": false,
+      "remove_rejected_relations": false,
+      "use_evaluation_interval": false,
+      "use_target_events": false
+    }
+  },
+  "execution_environment": {
+    "github_actions": {
+      "actor": "andrearomeo74-cloud",
+      "ref_name": "main",
+      "repository": "andrearomeo74-cloud/cgie-global-instability-radar",
+      "run_attempt": "1",
+      "run_id": "31182800413",
+      "run_number": "24",
+      "runner_os": "Linux",
+      "sha": "222d81403728445c4a11751dd2fa0fcf8b98d213",
+      "workflow": "CGIE3-ID-03 Relational Family Audit"
+    },
+    "machine": "x86_64",
+    "networkx_version": "3.6.1",
+    "numpy_version": "2.4.6",
+    "operating_system": "Linux",
+    "pandas_version": "3.0.5",
+    "platform": "Linux-6.17.0-1020-azure-x86_64-with-glibc2.39",
+    "processor": "x86_64",
+    "python_executable": "/opt/hostedtoolcache/Python/3.11.15/x64/bin/python",
+    "python_implementation": "CPython",
+    "python_version": "3.11.15"
+  },
+  "experiment_id": "CGIE3_ID_03",
+  "experiment_metadata": {
+    "frozen_feature_row_count": 55372,
+    "id02_status_counts": {
+      "candidate": 29,
+      "eligible": 45,
+      "non_estimable": 0,
+      "rejected": 62
+    },
+    "primary_audit_population_count": 74,
+    "total_id02_relation_count": 136,
+    "windows": [
+      "1d",
+      "30d",
+      "3d",
+      "7d"
+    ]
+  },
+  "generated_at_utc": "2026-08-07T13:31:28.954896Z",
+  "git": {
+    "branch": "main",
+    "commit": "222d81403728445c4a11751dd2fa0fcf8b98d213",
+    "repository_root": "/home/runner/work/cgie-global-instability-radar/cgie-global-instability-radar",
+    "working_tree_clean": false
+  },
+  "identity": {
+    "component_ids": [
+      "event_count",
+      "maximum_magnitude",
+      "log10_cumulative_energy_joule",
+      "median_depth_km",
+      "depth_mad_km",
+      "spatial_dispersion_km",
+      "median_interevent_time_hours",
+      "interevent_time_mad_hours",
+      "temporal_burstiness"
+    ],
+    "domain": "geophysical_seismic_monitoring",
+    "excluded_interpretations": [
+      "deterministic_earthquake_prediction",
+      "exact_event_time_prediction",
+      "exact_event_magnitude_prediction",
+      "exact_event_location_prediction",
+      "causal_precursor_claim",
+      "operational_public_warning",
+      "evacuation_advice",
+      "replacement_of_official_authorities",
+      "retrospective_result_presented_as_prospective",
+      "non_estimable_state_interpreted_as_normal"
+    ],
+    "protocol_version": "CGIE3_ID_01_v1.0",
+    "system_id": "campi_flegrei_seismic_system",
+    "system_name": "Campi Flegrei Seismic System",
+    "temporal_scales": [
+      "1d",
+      "3d",
+      "7d",
+      "30d"
+    ]
+  },
+  "input_files": {
+    "frozen_features": {
+      "exists": true,
+      "path": "outputs/CF_RETRO_01_features.csv",
+      "sha256": "61d726ee920437e0798337e9a2d4c0f2f7d29b6f717fa37e871901f448cfb067",
+      "size_bytes": 9979120
+    },
+    "id02_block_relations": {
+      "exists": true,
+      "path": "outputs/CGIE3_ID_02_block_relations.csv",
+      "sha256": "6afca8c59a78bec8562db4996c18e44916ef6fd1c4c07141a24e9dce0c3063ca",
+      "size_bytes": 382268
+    },
+    "id02_bootstrap_relations": {
+      "exists": true,
+      "path": "outputs/CGIE3_ID_02_bootstrap_relations.csv",
+      "sha256": "4b6c7771d255312ade28424552533fafc0c4e9cb356e181b301a83150ba43f63",
+      "size_bytes": 10578189
+    },
+    "id02_candidate_relations": {
+      "exists": true,
+      "path": "outputs/CGIE3_ID_02_candidate_relations.csv",
+      "sha256": "ee6d8f7a486e9a50f4d1ba3571e64232de95cf2c8e7e161f8bb846fd64304da0",
+      "size_bytes": 30573
+    },
+    "id02_configuration": {
+      "exists": true,
+      "path": "engines/cgie3/config/cgie3_id_02_relation_discovery.yaml",
+      "sha256": "4a03d24d63720f413d0a262f0c3020953c84902e0ef97ad836bc7f1468833202",
+      "size_bytes": 9707
+    },
+    "id02_equivalence_flags": {
+      "exists": true,
+      "path": "outputs/CGIE3_ID_02_equivalence_flags.csv",
+      "sha256": "680b24ea4ccd2b76fa127c3f03865fb38d4528cee241c0182efb4e92141a082a",
+      "size_bytes": 28203
+    },
+    "id02_relation_classification": {
+      "exists": true,
+      "path": "outputs/CGIE3_ID_02_relation_classification.csv",
+      "sha256": "592e357d62ea9c53819042717c6d155923f14a9c8599a0dedea9846db1ce66fd",
+      "size_bytes": 75093
+    },
+    "id02_summary": {
+      "exists": true,
+      "path": "outputs/CGIE3_ID_02_summary.json",
+      "sha256": "89482fcdf635c243d1c4f0d112e6daef8cb805c177a784ee1566c5949b64e46e",
+      "size_bytes": 11208
+    },
+    "id03_configuration": {
+      "exists": true,
+      "path": "engines/cgie3/config/cgie3_id_03_family_audit.yaml",
+      "sha256": "de82a9e46ff09c8792cb579a0905ddfa26ae881829e2199d3ba7f75bfb153acc",
+      "size_bytes": 20948
+    },
+    "id03_protocol": {
+      "exists": true,
+      "path": "docs/experiments/CGIE3_ID_03_PROTOCOL.md",
+      "sha256": "aee2950153920749f03b5d9066fd022cca1d30f20112ed90fa0ab5315887f181",
+      "size_bytes": 16580
+    },
+    "identity_declaration": {
+      "exists": true,
+      "path": "engines/cgie3/config/campi_flegrei_identity.yaml",
+      "sha256": "4c68d1d701238f3d96aaa9a3e1bc7a5a4556437a72390d9c0750eabc4ac7e180",
+      "size_bytes": 1633
+    }
+  },
+  "non_exported_intermediate_outputs": {
+    "null_control_replications": {
+      "expected_row_count": 66600,
+      "exported_as_official_csv": false,
+      "reason": "Preserved in execution context but not exported in the principal scientific package because it contains 66,600 replication rows.",
+      "row_count": 66600
+    }
+  },
+  "official_output_files": {
+    "conditional_redundancy": {
+      "exists": true,
+      "path": "outputs/CGIE3_ID_03_conditional_redundancy.csv",
+      "sha256": "7a50b70ce3cce2d16bb24b8c83132939864d394b3a739af564c4e46e260061db",
+      "size_bytes": 30986
+    },
+    "family_coassignment": {
+      "exists": true,
+      "path": "outputs/CGIE3_ID_03_family_coassignment.csv",
+      "sha256": "2623c4f9b125320e2abf40e633bc70d0c598731d322df134e7ea9474f2a9d2f1",
+      "size_bytes": 2649
+    },
+    "family_graph": {
+      "exists": true,
+      "path": "outputs/CGIE3_ID_03_family_graph.graphml",
+      "sha256": "5c2a179c8e3a295dfe1c1a9bdd1d7b9db4b4c27ec0c7c3a5062e50cbef7dad74",
+      "size_bytes": 6642
+    },
+    "family_membership": {
+      "exists": true,
+      "path": "outputs/CGIE3_ID_03_family_membership.csv",
+      "sha256": "0b1b1ea86a6df442330455642fbc2e263db432a33f5970cd6c1987c55bab26c1",
+      "size_bytes": 21833
+    },
+    "feature_dependencies": {
+      "exists": true,
+      "path": "outputs/CGIE3_ID_03_feature_dependencies.csv",
+      "sha256": "f7217b8c99dc2522300a61cb7ec04a30cefe182074651aeda262933d31afd1df",
+      "size_bytes": 1430
+    },
+    "manifest": {
+      "exists": true,
+      "path": "outputs/CGIE3_ID_03_manifest.json",
+      "sha256": "6ad27eb4a7cab439530f1c7aa9af6c9a906206f20c25c0a0bd4e7f3ed353ad7a",
+      "size_bytes": 8490
+    },
+    "multiscale_relations": {
+      "exists": true,
+      "path": "outputs/CGIE3_ID_03_multiscale_relations.csv",
+      "sha256": "33f2e873a1b4c404bba4d03f7ea05ce58663b24a4271bfa25b66d0141b4a47a7",
+      "size_bytes": 37131
+    },
+    "null_control_summaries": {
+      "exists": true,
+      "path": "outputs/CGIE3_ID_03_null_control_summaries.csv",
+      "sha256": "2b683fcfbec9770338513f670d894694ccc7d326ef359248a75d25212f2c4395",
+      "size_bytes": 63285
+    },
+    "null_controls": {
+      "exists": true,
+      "path": "outputs/CGIE3_ID_03_null_controls.csv",
+      "sha256": "062918d046f09d972afd9a35d025b7f3fe63d94a201a1dde86af775030944fa7",
+      "size_bytes": 31392
+    },
+    "overlap_estimates_long": {
+      "exists": true,
+      "path": "outputs/CGIE3_ID_03_overlap_estimates_long.csv",
+      "sha256": "c2e7701e97af7df25838c76c51b8b7b4d360d5cb216f4adb2068fa2f96525e8b",
+      "size_bytes": 61944
+    },
+    "overlap_sensitivity": {
+      "exists": true,
+      "path": "outputs/CGIE3_ID_03_overlap_sensitivity.csv",
+      "sha256": "6aea036a4ecf859bcd8b887636f992a53e315daf070c7ec9b9a4690748c1d693",
+      "size_bytes": 24034
+    },
+    "relation_dependencies": {
+      "exists": true,
+      "path": "outputs/CGIE3_ID_03_relation_dependencies.csv",
+      "sha256": "3f8d17530a600bfa8b9c01423a9c672198bd04c80d0078a26275a2dd8a423ec3",
+      "size_bytes": 36357
+    },
+    "relation_families": {
+      "exists": true,
+      "path": "outputs/CGIE3_ID_03_relation_families.csv",
+      "sha256": "eb72fb19873ccddc9242ed4374b9b83674bf177dcc443aba332c93bcd7138f84",
+      "size_bytes": 4728
+    },
+    "relation_states": {
+      "exists": true,
+      "path": "outputs/CGIE3_ID_03_relation_states.csv",
+      "sha256": "b9071b215067f51c32066cc17ae5a6fb5e2584266ab23860c06f830e07391d42",
+      "size_bytes": 81325
+    },
+    "report": {
+      "exists": true,
+      "path": "outputs/CGIE3_ID_03_report.md",
+      "sha256": "5af85502f6c6ae208bfad8222c2a996fbfb7e9757f8813a8ba0fdac71635b789",
+      "size_bytes": 9437
+    },
+    "representative_candidates": {
+      "exists": true,
+      "path": "outputs/CGIE3_ID_03_representative_candidates.csv",
+      "sha256": "43646c60d9b37a36c6f785c25ab3151c64b67e6c7c78870386fc4eb61260ff94",
+      "size_bytes": 654
+    },
+    "summary": {
+      "exists": true,
+      "path": "outputs/CGIE3_ID_03_summary.json",
+      "sha256": "2266358a66d062a41cb218aa05e1401ad738b339ff6087eebff261f345c2c0e7",
+      "size_bytes": 13722
+    }
+  },
+  "official_output_hashes_from_reporting": {
+    "conditional_redundancy": "7a50b70ce3cce2d16bb24b8c83132939864d394b3a739af564c4e46e260061db",
+    "family_coassignment": "2623c4f9b125320e2abf40e633bc70d0c598731d322df134e7ea9474f2a9d2f1",
+    "family_graph": "5c2a179c8e3a295dfe1c1a9bdd1d7b9db4b4c27ec0c7c3a5062e50cbef7dad74",
+    "family_membership": "0b1b1ea86a6df442330455642fbc2e263db432a33f5970cd6c1987c55bab26c1",
+    "feature_dependencies": "f7217b8c99dc2522300a61cb7ec04a30cefe182074651aeda262933d31afd1df",
+    "id03_relation_states": "b9071b215067f51c32066cc17ae5a6fb5e2584266ab23860c06f830e07391d42",
+    "manifest": "6ad27eb4a7cab439530f1c7aa9af6c9a906206f20c25c0a0bd4e7f3ed353ad7a",
+    "multiscale_relations": "33f2e873a1b4c404bba4d03f7ea05ce58663b24a4271bfa25b66d0141b4a47a7",
+    "null_control_summaries": "2b683fcfbec9770338513f670d894694ccc7d326ef359248a75d25212f2c4395",
+    "null_controls": "062918d046f09d972afd9a35d025b7f3fe63d94a201a1dde86af775030944fa7",
+    "overlap_estimates_long": "c2e7701e97af7df25838c76c51b8b7b4d360d5cb216f4adb2068fa2f96525e8b",
+    "overlap_sensitivity": "6aea036a4ecf859bcd8b887636f992a53e315daf070c7ec9b9a4690748c1d693",
+    "relation_dependencies": "3f8d17530a600bfa8b9c01423a9c672198bd04c80d0078a26275a2dd8a423ec3",
+    "relation_families": "eb72fb19873ccddc9242ed4374b9b83674bf177dcc443aba332c93bcd7138f84",
+    "report": "5af85502f6c6ae208bfad8222c2a996fbfb7e9757f8813a8ba0fdac71635b789",
+    "representative_candidates": "43646c60d9b37a36c6f785c25ab3151c64b67e6c7c78870386fc4eb61260ff94",
+    "summary": "2266358a66d062a41cb218aa05e1401ad738b339ff6087eebff261f345c2c0e7"
+  },
+  "protocol": {
+    "configuration_status": "FROZEN",
+    "configuration_version": "1.0",
+    "framework_version": "1.0-draft",
+    "name": "Relational Dependency and Family Audit",
+    "protocol_version": "CGIE3_ID_03_v1.0"
+  },
+  "provenance_id": "CGIE3_ID_03_WORKFLOW_PROVENANCE",
+  "result": {
+    "scientific_claims": {
+      "causality_established": false,
+      "conditional_redundancy_audited": true,
+      "earthquake_prediction_established": false,
+      "family_representative_candidates_evaluated": true,
+      "feature_dependencies_audited": true,
+      "id02_statuses_modified": false,
+      "indispensable_relations_established": false,
+      "minimum_identity_core_established": false,
+      "multiscale_relations_audited": true,
+      "null_controls_applied": true,
+      "overlap_sensitivity_audited": true,
+      "predictive_capability_established": false,
+      "primary_relations_established": false,
+      "relational_families_evaluated": true,
+      "universal_transferability_established": false
+    },
+    "statistics": {
+      "id03_state_counts": {
+        "insufficient_evidence": 51,
+        "redundant_relation": 14,
+        "scale_inconsistent": 9
+      },
+      "primary_relation_count": 74,
+      "representative_candidate_count": 0,
+      "reproducible_family_count": 0
+    },
+    "status": "no_reproducible_families",
+    "summary": {
+      "claim_boundary": "CGIE3-ID-03 may identify reproducible relational families and family-representative candidates. These outcomes do not establish primary identity relations, indispensability, causality, predictive capability, earthquake prediction or universal transferability.",
+      "conditional_redundancy": {
+        "by_window": {
+          "1d": {
+            "deterministic_affine_equivalent_count": 0,
+            "fully_redundant_count": 4,
+            "relation_count": 12,
+            "retains_residual_information_count": 8,
+            "status_counts": {
+              "fully_redundant": 4,
+              "retains_residual_information": 8
+            }
+          },
+          "30d": {
+            "deterministic_affine_equivalent_count": 0,
+            "fully_redundant_count": 6,
+            "relation_count": 24,
+            "retains_residual_information_count": 18,
+            "status_counts": {
+              "fully_redundant": 6,
+              "retains_residual_information": 18
+            }
+          },
+          "3d": {
+            "deterministic_affine_equivalent_count": 0,
+            "fully_redundant_count": 4,
+            "relation_count": 17,
+            "retains_residual_information_count": 13,
+            "status_counts": {
+              "fully_redundant": 4,
+              "retains_residual_information": 13
+            }
+          },
+          "7d": {
+            "deterministic_affine_equivalent_count": 0,
+            "fully_redundant_count": 6,
+            "relation_count": 21,
+            "retains_residual_information_count": 15,
+            "status_counts": {
+              "fully_redundant": 6,
+              "retains_residual_information": 15
+            }
+          }
+        },
+        "deterministic_affine_equivalent_count": 0,
+        "fully_redundant_count": 20,
+        "id02_statuses_modified": false,
+        "primary_relation_count": 74,
+        "redundancy_status_counts": {
+          "fully_redundant": 20,
+          "retains_residual_information": 54
+        },
+        "retains_residual_information_count": 54,
+        "status": "COMPLETED"
+      },
+      "dependency_audit": {
+        "definitionally_constrained_relation_count": 18,
+        "dependency_counts_all_relations": {
+          "independent_source": 118,
+          "partially_derived": 4,
+          "shared_event_source": 4,
+          "shared_temporal_source": 10
+        },
+        "dependency_counts_primary_population": {
+          "independent_source": 58,
+          "partially_derived": 4,
+          "shared_event_source": 3,
+          "shared_temporal_source": 9
+        },
+        "directly_derived_relation_count": 0,
+        "feature_count": 9,
+        "id02_statuses_modified": false,
+        "primary_audit_relation_count": 74,
+        "relation_count": 136,
+        "status": "COMPLETED"
+      },
+      "engine": "CGIE-3",
+      "experiment_id": "CGIE3_ID_03",
+      "experiment_name": "Relational Dependency and Family Audit",
+      "family_audit": {
+        "all_primary_relations_assigned": true,
+        "graph_edge_count": 25,
+        "graph_node_count": 9,
+        "id02_statuses_modified": false,
+        "preliminary_labels_used_for_detection": false,
+        "primary_family_count": 2,
+        "primary_relation_membership_count": 74,
+        "reproducible_family_count": 0,
+        "secondary_family_count": 1,
+        "status": "COMPLETED"
+      },
+      "framework": "Congruity Framework",
+      "generated_at_utc": "2026-08-07T13:31:28.860868Z",
+      "id02_population": {
+        "candidate": 29,
+        "eligible": 45,
+        "non_estimable": 0,
+        "primary_audit_population": 74,
+        "rejected": 62,
+        "total_relations": 136
+      },
+      "id03_state_counts": {
+        "insufficient_evidence": 51,
+        "redundant_relation": 14,
+        "scale_inconsistent": 9
+      },
+      "multiscale_audit": {
+        "definitionally_constrained_pair_count": 5,
+        "id02_statuses_modified": false,
+        "minimum_two_scale_support_count": 22,
+        "multiscale_class_counts": {
+          "multi_scale_2": 3,
+          "multi_scale_3": 8,
+          "multi_scale_4": 8,
+          "scale_inconsistent": 14,
+          "single_scale": 3
+        },
+        "preserved_id02_relation_count": 136,
+        "primary_id02_relation_count": 74,
+        "scale_inconsistent_pair_count": 3,
+        "sign_consistent_pair_count": 22,
+        "status": "COMPLETED",
+        "supported_scale_count_distribution": {
+          "0": 11,
+          "1": 3,
+          "2": 3,
+          "3": 11,
+          "4": 8
+        },
+        "unique_pair_count": 36
+      },
+      "null_control_audit": {
+        "by_window": {
+          "1d": {
+            "exceeds_at_least_one_primary_null_count": 12,
+            "outcome_counts": {
+              "exceeds_null": 12
+            },
+            "relation_count": 12
+          },
+          "30d": {
+            "exceeds_at_least_one_primary_null_count": 24,
+            "outcome_counts": {
+              "exceeds_null": 15,
+              "partially_exceeds_null": 9
+            },
+            "relation_count": 24
+          },
+          "3d": {
+            "exceeds_at_least_one_primary_null_count": 17,
+            "outcome_counts": {
+              "exceeds_null": 17
+            },
+            "relation_count": 17
+          },
+          "7d": {
+            "exceeds_at_least_one_primary_null_count": 21,
+            "outcome_counts": {
+              "exceeds_null": 21
+            },
+            "relation_count": 21
+          }
+        },
+        "id02_statuses_modified": false,
+        "minimum_one_primary_null_exceeded_count": 74,
+        "null_outcome_counts": {
+          "exceeds_null": 65,
+          "partially_exceeds_null": 9
+        },
+        "null_replication_row_count": 66600,
+        "null_summary_row_count": 222,
+        "primary_relation_count": 74,
+        "status": "COMPLETED"
+      },
+      "overlap_audit": {
+        "by_window": {
+          "1d": {
+            "median_nonoverlap_sample_count": 170.0,
+            "overlap_class_counts": {
+              "overlap_robust": 12
+            },
+            "relation_count": 12,
+            "strongly_overlap_sensitive_count": 0
+          },
+          "30d": {
+            "median_nonoverlap_sample_count": 12.0,
+            "overlap_class_counts": {
+              "moderately_overlap_sensitive": 10,
+              "overlap_robust": 14
+            },
+            "relation_count": 24,
+            "strongly_overlap_sensitive_count": 0
+          },
+          "3d": {
+            "median_nonoverlap_sample_count": 104.0,
+            "overlap_class_counts": {
+              "overlap_robust": 17
+            },
+            "relation_count": 17,
+            "strongly_overlap_sensitive_count": 0
+          },
+          "7d": {
+            "median_nonoverlap_sample_count": 52.0,
+            "overlap_class_counts": {
+              "moderately_overlap_sensitive": 1,
+              "overlap_robust": 20
+            },
+            "relation_count": 21,
+            "strongly_overlap_sensitive_count": 0
+          }
+        },
+        "id02_statuses_modified": false,
+        "nonoverlap_non_estimable_count": 0,
+        "overlap_class_counts": {
+          "moderately_overlap_sensitive": 11,
+          "overlap_robust": 63
+        },
+        "primary_relation_count": 74,
+        "rank_diagnostics": [
+          {
+            "comparison_scheme": "half_window_stride",
+            "experiment_id": "CGIE3_ID_03",
+            "paired_relation_count": 12,
+            "rank_correlation": 0.9720279720279721,
+            "reference_scheme": "rolling_full",
+            "window_id": "1d"
+          },
+          {
+            "comparison_scheme": "non_overlapping",
+            "experiment_id": "CGIE3_ID_03",
+            "paired_relation_count": 12,
+            "rank_correlation": 0.9510489510489512,
+            "reference_scheme": "rolling_full",
+            "window_id": "1d"
+          },
+          {
+            "comparison_scheme": "half_window_stride",
+            "experiment_id": "CGIE3_ID_03",
+            "paired_relation_count": 24,
+            "rank_correlation": 0.9847635738914003,
+            "reference_scheme": "rolling_full",
+            "window_id": "30d"
+          },
+          {
+            "comparison_scheme": "non_overlapping",
+            "experiment_id": "CGIE3_ID_03",
+            "paired_relation_count": 24,
+            "rank_correlation": 0.9490432520790167,
+            "reference_scheme": "rolling_full",
+            "window_id": "30d"
+          },
+          {
+            "comparison_scheme": "half_window_stride",
+            "experiment_id": "CGIE3_ID_03",
+            "paired_relation_count": 17,
+            "rank_correlation": 0.9877450980392157,
+            "reference_scheme": "rolling_full",
+            "window_id": "3d"
+          },
+          {
+            "comparison_scheme": "non_overlapping",
+            "experiment_id": "CGIE3_ID_03",
+            "paired_relation_count": 17,
+            "rank_correlation": 0.9607843137254902,
+            "reference_scheme": "rolling_full",
+            "window_id": "3d"
+          },
+          {
+            "comparison_scheme": "half_window_stride",
+            "experiment_id": "CGIE3_ID_03",
+            "paired_relation_count": 21,
+            "rank_correlation": 0.9909090909090909,
+            "reference_scheme": "rolling_full",
+            "window_id": "7d"
+          },
+          {
+            "comparison_scheme": "non_overlapping",
+            "experiment_id": "CGIE3_ID_03",
+            "paired_relation_count": 21,
+            "rank_correlation": 0.9701298701298702,
+            "reference_scheme": "rolling_full",
+            "window_id": "7d"
+          }
+        ],
+        "status": "COMPLETED",
+        "strongly_overlap_sensitive_count": 0
+      },
+      "representative_candidate_count": 0,
+      "representative_selection": {
+        "by_family": {
+          "CGIE3_ID_03_FAMILY_01": {
+            "relation_count": 8,
+            "representative_candidate_count": 0,
+            "state_counts": {
+              "insufficient_evidence": 8
+            }
+          },
+          "CGIE3_ID_03_FAMILY_02": {
+            "relation_count": 51,
+            "representative_candidate_count": 0,
+            "state_counts": {
+              "insufficient_evidence": 28,
+              "redundant_relation": 14,
+              "scale_inconsistent": 9
+            }
+          },
+          "CGIE3_ID_03_FAMILY_03": {
+            "relation_count": 1,
+            "representative_candidate_count": 0,
+            "state_counts": {
+              "insufficient_evidence": 1
+            }
+          },
+          "CGIE3_ID_03_FAMILY_04": {
+            "relation_count": 1,
+            "representative_candidate_count": 0,
+            "state_counts": {
+              "insufficient_evidence": 1
+            }
+          },
+          "CGIE3_ID_03_FAMILY_05": {
+            "relation_count": 1,
+            "representative_candidate_count": 0,
+            "state_counts": {
+              "insufficient_evidence": 1
+            }
+          },
+          "CGIE3_ID_03_FAMILY_06": {
+            "relation_count": 1,
+            "representative_candidate_count": 0,
+            "state_counts": {
+              "insufficient_evidence": 1
+            }
+          },
+          "CGIE3_ID_03_FAMILY_07": {
+            "relation_count": 1,
+            "representative_candidate_count": 0,
+            "state_counts": {
+              "insufficient_evidence": 1
+            }
+          },
+          "CGIE3_ID_03_FAMILY_08": {
+            "relation_count": 1,
+            "representative_candidate_count": 0,
+            "state_counts": {
+              "insufficient_evidence": 1
+            }
+          },
+          "CGIE3_ID_03_FAMILY_09": {
+            "relation_count": 1,
+            "representative_candidate_count": 0,
+            "state_counts": {
+              "insufficient_evidence": 1
+            }
+          },
+          "CGIE3_ID_03_FAMILY_10": {
+            "relation_count": 1,
+            "representative_candidate_count": 0,
+            "state_counts": {
+              "insufficient_evidence": 1
+            }
+          },
+          "CGIE3_ID_03_FAMILY_11": {
+            "relation_count": 1,
+            "representative_candidate_count": 0,
+            "state_counts": {
+              "insufficient_evidence": 1
+            }
+          },
+          "CGIE3_ID_03_FAMILY_12": {
+            "relation_count": 1,
+            "representative_candidate_count": 0,
+            "state_counts": {
+              "insufficient_evidence": 1
+            }
+          },
+          "CGIE3_ID_03_FAMILY_13": {
+            "relation_count": 1,
+            "representative_candidate_count": 0,
+            "state_counts": {
+              "insufficient_evidence": 1
+            }
+          },
+          "CGIE3_ID_03_FAMILY_14": {
+            "relation_count": 1,
+            "representative_candidate_count": 0,
+            "state_counts": {
+              "insufficient_evidence": 1
+            }
+          },
+          "CGIE3_ID_03_FAMILY_15": {
+            "relation_count": 1,
+            "representative_candidate_count": 0,
+            "state_counts": {
+              "insufficient_evidence": 1
+            }
+          },
+          "CGIE3_ID_03_FAMILY_16": {
+            "relation_count": 1,
+            "representative_candidate_count": 0,
+            "state_counts": {
+              "insufficient_evidence": 1
+            }
+          },
+          "CGIE3_ID_03_FAMILY_17": {
+            "relation_count": 1,
+            "representative_candidate_count": 0,
+            "state_counts": {
+              "insufficient_evidence": 1
+            }
+          }
+        },
+        "causality_established": false,
+        "earthquake_prediction_established": false,
+        "id02_statuses_modified": false,
+        "id03_state_counts": {
+          "insufficient_evidence": 51,
+          "redundant_relation": 14,
+          "scale_inconsistent": 9
+        },
+        "indispensable_relations_established": false,
+        "minimum_identity_core_established": false,
+        "predictive_capability_established": false,
+        "primary_relation_count": 74,
+        "primary_relations_established": false,
+        "representative_candidate_count": 0,
+        "reproducible_family_count": 0,
+        "scientific_outcome": "no_reproducible_families",
+        "scientific_positive_result": false,
+        "status": "COMPLETED",
+        "technical_success": true,
+        "universal_transferability_established": false
+      },
+      "reproducible_family_count": 0,
+      "scientific_claims": {
+        "causality_established": false,
+        "conditional_redundancy_audited": true,
+        "earthquake_prediction_established": false,
+        "family_representative_candidates_evaluated": true,
+        "feature_dependencies_audited": true,
+        "id02_statuses_modified": false,
+        "indispensable_relations_established": false,
+        "minimum_identity_core_established": false,
+        "multiscale_relations_audited": true,
+        "null_controls_applied": true,
+        "overlap_sensitivity_audited": true,
+        "predictive_capability_established": false,
+        "primary_relations_established": false,
+        "relational_families_evaluated": true,
+        "universal_transferability_established": false
+      },
+      "scientific_outcome": "no_reproducible_families",
+      "scientific_positive_result": false,
+      "technical_status": "COMPLETED",
+      "technical_success": true,
+      "valid_negative_result": true
+    },
+    "technical_status": "COMPLETED",
+    "warnings": [
+      "Family-representative candidacy does not establish primary identity status or indispensability.",
+      "CGIE3-ID-03 does not establish causality, predictive capability or earthquake prediction."
+    ]
+  },
+  "runtime_stages": {
+    "conditional_redundancy_status": "COMPLETED",
+    "dependency_audit_status": "COMPLETED",
+    "environment": {
+      "generated_at_utc": "2026-08-07T13:29:13.848834Z",
+      "git_commit": "222d81403728445c4a11751dd2fa0fcf8b98d213",
+      "numpy_version": "2.4.6",
+      "pandas_version": "3.0.5",
+      "platform": "Linux-6.17.0-1020-azure-x86_64-with-glibc2.39",
+      "python_version": "3.11.15"
+    },
+    "family_audit_status": "COMPLETED",
+    "loader_status": "COMPLETED",
+    "multiscale_audit_status": "COMPLETED",
+    "null_control_audit_status": "COMPLETED",
+    "overlap_audit_status": "COMPLETED",
+    "reporting_status": "COMPLETED",
+    "representative_selection_status": "COMPLETED"
+  },
+  "scientific_claim_boundary": {
+    "causality_established": false,
+    "earthquake_prediction_established": false,
+    "id02_statuses_modified": false,
+    "indispensable_relations_established": false,
+    "minimum_identity_core_established": false,
+    "predictive_capability_established": false,
+    "primary_relations_established": false,
+    "universal_transferability_established": false
+  },
+  "source_files": {
+    "id03_dependencies": {
+      "exists": true,
+      "path": "engines/cgie3/src/id03/dependencies.py",
+      "sha256": "02c95f18c4463cc37e2eca45a1ce8d0e6dc40c5430c1f378bcd6171b163ce4b1",
+      "size_bytes": 22459
+    },
+    "id03_families": {
+      "exists": true,
+      "path": "engines/cgie3/src/id03/families.py",
+      "sha256": "4c2ad7638add7c6414f3dc14ac20fcdba8f0e13774e189ba04ec426162da1f80",
+      "size_bytes": 66871
+    },
+    "id03_loader": {
+      "exists": true,
+      "path": "engines/cgie3/src/id03/loader.py",
+      "sha256": "2d4d78b855d2a718ca337197171360aacec93095006a5f98e3cb7413452bef85",
+      "size_bytes": 41162
+    },
+    "id03_main": {
+      "exists": true,
+      "path": "engines/cgie3/src/id03/main.py",
+      "sha256": "52f3dc49aeb29faa29b30aa2a406d5d85b0f6660b02b3903201e60e37b4fab3d",
+      "size_bytes": 18374
+    },
+    "id03_multiscale": {
+      "exists": true,
+      "path": "engines/cgie3/src/id03/multiscale.py",
+      "sha256": "a6f12142c166859091b160dce38f32064cc9571e179abd37e1790f6c735ab6fd",
+      "size_bytes": 33792
+    },
+    "id03_null_controls": {
+      "exists": true,
+      "path": "engines/cgie3/src/id03/null_controls.py",
+      "sha256": "7ba88fb29895b52e9f16892c7a3ade07743809eae2b0a30a4158308e7e56ed54",
+      "size_bytes": 53093
+    },
+    "id03_overlap": {
+      "exists": true,
+      "path": "engines/cgie3/src/id03/overlap.py",
+      "sha256": "e76fd74357ea37b6669245d3cce51ad06fd8298c522e47da8a12954f5626aa67",
+      "size_bytes": 46870
+    },
+    "id03_package": {
+      "exists": true,
+      "path": "engines/cgie3/src/id03/__init__.py",
+      "sha256": "33e8660ffb74605e5d25ed250ed2420394d1b3a7676896b5d96776fa7cd4b2a7",
+      "size_bytes": 1317
+    },
+    "id03_provenance": {
+      "exists": true,
+      "path": "engines/cgie3/src/id03/provenance.py",
+      "sha256": "1dd4aff9ceffa32d8350d6869054139592dc04e07b9936448a2db62043951a59",
+      "size_bytes": 21376
+    },
+    "id03_redundancy": {
+      "exists": true,
+      "path": "engines/cgie3/src/id03/redundancy.py",
+      "sha256": "809da3217099f996eb5c1516104407d75cacb9380e8870b102599ef6c83c1369",
+      "size_bytes": 34923
+    },
+    "id03_reporting": {
+      "exists": true,
+      "path": "engines/cgie3/src/id03/reporting.py",
+      "sha256": "0bc0c162a7c388e3224b8cd035ec89bf066d11ec19376e816f3f0f52fac6d77c",
+      "size_bytes": 32512
+    },
+    "id03_representatives": {
+      "exists": true,
+      "path": "engines/cgie3/src/id03/representatives.py",
+      "sha256": "4d9ea32ce699eab359f6a330e117462d5f974b34c20e3fa89432d124e074f437",
+      "size_bytes": 38633
+    },
+    "identity_loader": {
+      "exists": true,
+      "path": "congruity/identity/declaration.py",
+      "sha256": "40ed991b5cb2f70d4afbf91efbf98c7e63087ca5166c566f38d67f7fd7cea3ed",
+      "size_bytes": 7820
+    },
+    "identity_models": {
+      "exists": true,
+      "path": "congruity/identity/models.py",
+      "sha256": "b0f919cbe54736cefbc8fe7632138262ba8d67a98e3dba827713e2790d225d04",
+      "size_bytes": 14471
+    }
+  }
+}
