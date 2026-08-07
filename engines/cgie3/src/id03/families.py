@@ -2039,26 +2039,6 @@ def build_family_outputs(
 
     next_index = len(families) + 1
 
-    for row in missing.itertuples(
-        index=False
-    ):
-        family_id = contract[
-            "family_id_format"
-        ].format(
-            index=next_index
-        )
-
-        next_index += 1
-
-        families.loc[
-            len(families)
-        ] = {
-            "experiment_id":
-                "CGIE3_ID_03",
-
-            "family_id":
-                family_id,
-
 def build_family_outputs(
     context: ID03ExperimentContext,
     evidence: pd.DataFrame,
