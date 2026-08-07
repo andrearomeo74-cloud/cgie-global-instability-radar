@@ -12,8 +12,15 @@ from .loader import (
     load_experiment,
 )
 
+from .snapshots import (
+    ID04SnapshotError,
+    build_snapshots,
+)
+
 __all__ = [
     "ID04ExperimentContext",
     "ID04LoaderError",
     "load_experiment",
+    "ID04SnapshotError",
+    "build_snapshots",
 ]
