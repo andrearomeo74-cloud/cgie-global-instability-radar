@@ -17,10 +17,17 @@ from .snapshots import (
     build_snapshots,
 )
 
+from .continuity import (
+    ID04ContinuityError,
+    compute_continuity,
+)
+
 __all__ = [
     "ID04ExperimentContext",
     "ID04LoaderError",
     "load_experiment",
     "ID04SnapshotError",
     "build_snapshots",
+    "ID04ContinuityError",
+    "compute_continuity",
 ]
