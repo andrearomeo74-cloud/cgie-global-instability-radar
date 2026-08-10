@@ -27,6 +27,11 @@ from .null_controls import (
     run_null_controls,
 )
 
+from .robustness import (
+    ID04RobustnessError,
+    run_robustness,
+)
+
 __all__ = [
     "ID04ExperimentContext",
     "ID04LoaderError",
@@ -37,4 +42,6 @@ __all__ = [
     "compute_continuity",
     "ID04NullControlError",
     "run_null_controls",
+    "ID04RobustnessError",
+    "run_robustness",
 ]
