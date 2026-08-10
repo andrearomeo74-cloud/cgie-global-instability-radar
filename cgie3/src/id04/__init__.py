@@ -22,6 +22,11 @@ from .continuity import (
     compute_continuity,
 )
 
+from .null_controls import (
+    ID04NullControlError,
+    run_null_controls,
+)
+
 __all__ = [
     "ID04ExperimentContext",
     "ID04LoaderError",
@@ -30,4 +35,6 @@ __all__ = [
     "build_snapshots",
     "ID04ContinuityError",
     "compute_continuity",
+    "ID04NullControlError",
+    "run_null_controls",
 ]
