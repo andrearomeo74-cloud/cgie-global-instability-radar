@@ -37,6 +37,11 @@ from .reporting import (
     generate_reports,
 )
 
+from .provenance import (
+    ID04ProvenanceError,
+    generate_provenance,
+)
+
 __all__ = [
     "ID04ExperimentContext",
     "ID04LoaderError",
@@ -51,4 +56,6 @@ __all__ = [
     "run_robustness",
     "ID04ReportingError",
     "generate_reports",
+    "ID04ProvenanceError",
+    "generate_provenance", 
 ]
