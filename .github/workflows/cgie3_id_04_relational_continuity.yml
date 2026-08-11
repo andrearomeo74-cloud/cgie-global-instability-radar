@@ -34,45 +34,45 @@ jobs:
 
       - name: Verify ID-04 source files
         run: |
-          test -f engines/cgie3/src/id04/__init__.py
-          test -f engines/cgie3/src/id04/loader.py
-          test -f engines/cgie3/src/id04/snapshots.py
-          test -f engines/cgie3/src/id04/continuity.py
-          test -f engines/cgie3/src/id04/null_controls.py
-          test -f engines/cgie3/src/id04/robustness.py
-          test -f engines/cgie3/src/id04/reporting.py
-          test -f engines/cgie3/src/id04/provenance.py
-          test -f engines/cgie3/src/id04/main.py
+          test -f cgie3/src/id04/__init__.py
+          test -f cgie3/src/id04/loader.py
+          test -f cgie3/src/id04/snapshots.py
+          test -f cgie3/src/id04/continuity.py
+          test -f cgie3/src/id04/null_controls.py
+          test -f cgie3/src/id04/robustness.py
+          test -f cgie3/src/id04/reporting.py
+          test -f cgie3/src/id04/provenance.py
+          test -f cgie3/src/id04/main.py
 
       - name: Check Python syntax
         run: |
-          python -m py_compile engines/cgie3/src/id04/__init__.py
-          python -m py_compile engines/cgie3/src/id04/loader.py
-          python -m py_compile engines/cgie3/src/id04/snapshots.py
-          python -m py_compile engines/cgie3/src/id04/continuity.py
-          python -m py_compile engines/cgie3/src/id04/null_controls.py
-          python -m py_compile engines/cgie3/src/id04/robustness.py
-          python -m py_compile engines/cgie3/src/id04/reporting.py
-          python -m py_compile engines/cgie3/src/id04/provenance.py
-          python -m py_compile engines/cgie3/src/id04/main.py
+          python -m py_compile cgie3/src/id04/__init__.py
+          python -m py_compile cgie3/src/id04/loader.py
+          python -m py_compile cgie3/src/id04/snapshots.py
+          python -m py_compile cgie3/src/id04/continuity.py
+          python -m py_compile cgie3/src/id04/null_controls.py
+          python -m py_compile cgie3/src/id04/robustness.py
+          python -m py_compile cgie3/src/id04/reporting.py
+          python -m py_compile cgie3/src/id04/provenance.py
+          python -m py_compile cgie3/src/id04/main.py
 
       - name: Test ID-04 package imports
         run: |
           python - <<'PY'
-          from engines.cgie3.src.id04.loader import load_experiment
-          from engines.cgie3.src.id04.snapshots import build_snapshots
-          from engines.cgie3.src.id04.continuity import compute_continuity
-          from engines.cgie3.src.id04.null_controls import run_null_controls
-          from engines.cgie3.src.id04.robustness import run_robustness
-          from engines.cgie3.src.id04.reporting import generate_reports
-          from engines.cgie3.src.id04.provenance import generate_provenance
-          from engines.cgie3.src.id04.main import run_pipeline
+          from cgie3.src.id04.loader import load_experiment
+          from cgie3.src.id04.snapshots import build_snapshots
+          from cgie3.src.id04.continuity import compute_continuity
+          from cgie3.src.id04.null_controls import run_null_controls
+          from cgie3.src.id04.robustness import run_robustness
+          from cgie3.src.id04.reporting import generate_reports
+          from cgie3.src.id04.provenance import generate_provenance
+          from cgie3.src.id04.main import run_pipeline
           print("CGIE3-ID-04 imports: OK")
           PY
 
       - name: Run frozen CGIE3-ID-04 pipeline
         run: |
-          python -m engines.cgie3.src.id04.main
+          python -m cgie3.src.id04.main
 
       - name: Verify execution status
         run: |
