@@ -32,6 +32,11 @@ from .robustness import (
     run_robustness,
 )
 
+from .reporting import (
+    ID04ReportingError,
+    generate_reports,
+)
+
 __all__ = [
     "ID04ExperimentContext",
     "ID04LoaderError",
@@ -44,4 +49,6 @@ __all__ = [
     "run_null_controls",
     "ID04RobustnessError",
     "run_robustness",
+    "ID04ReportingError",
+    "generate_reports",
 ]
