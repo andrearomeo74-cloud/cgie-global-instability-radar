@@ -1,0 +1,177 @@
+name: CGIE3-ID-04 Relational Identity Continuity Audit
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  run-cgie3-id04:
+    name: Run frozen CGIE3-ID-04 experiment
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Display execution context
+        run: |
+          python --version
+          pwd
+          git rev-parse HEAD
+          echo "CGIE3-ID-04 frozen relational identity continuity audit"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-cgie2.txt
+
+      - name: Verify ID-04 source files
+        run: |
+          test -f engines/cgie3/src/id04/__init__.py
+          test -f engines/cgie3/src/id04/loader.py
+          test -f engines/cgie3/src/id04/snapshots.py
+          test -f engines/cgie3/src/id04/continuity.py
+          test -f engines/cgie3/src/id04/null_controls.py
+          test -f engines/cgie3/src/id04/robustness.py
+          test -f engines/cgie3/src/id04/reporting.py
+          test -f engines/cgie3/src/id04/provenance.py
+          test -f engines/cgie3/src/id04/main.py
+
+      - name: Check Python syntax
+        run: |
+          python -m py_compile engines/cgie3/src/id04/__init__.py
+          python -m py_compile engines/cgie3/src/id04/loader.py
+          python -m py_compile engines/cgie3/src/id04/snapshots.py
+          python -m py_compile engines/cgie3/src/id04/continuity.py
+          python -m py_compile engines/cgie3/src/id04/null_controls.py
+          python -m py_compile engines/cgie3/src/id04/robustness.py
+          python -m py_compile engines/cgie3/src/id04/reporting.py
+          python -m py_compile engines/cgie3/src/id04/provenance.py
+          python -m py_compile engines/cgie3/src/id04/main.py
+
+      - name: Test ID-04 package imports
+        run: |
+          python - <<'PY'
+          from engines.cgie3.src.id04.loader import load_experiment
+          from engines.cgie3.src.id04.snapshots import build_snapshots
+          from engines.cgie3.src.id04.continuity import compute_continuity
+          from engines.cgie3.src.id04.null_controls import run_null_controls
+          from engines.cgie3.src.id04.robustness import run_robustness
+          from engines.cgie3.src.id04.reporting import generate_reports
+          from engines.cgie3.src.id04.provenance import generate_provenance
+          from engines.cgie3.src.id04.main import run_pipeline
+          print("CGIE3-ID-04 imports: OK")
+          PY
+
+      - name: Run frozen CGIE3-ID-04 pipeline
+        run: |
+          python -m engines.cgie3.src.id04.main
+
+      - name: Verify execution status
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path("outputs/CGIE3_ID_04_execution_status.json")
+
+          if not path.is_file():
+              raise SystemExit(
+                  "Missing outputs/CGIE3_ID_04_execution_status.json"
+              )
+
+          data = json.loads(path.read_text(encoding="utf-8"))
+
+          if data.get("experiment_id") != "CGIE3_ID_04":
+              raise SystemExit(
+                  f"Unexpected experiment_id: {data.get('experiment_id')}"
+              )
+
+          if data.get("technical_status") != "COMPLETED":
+              raise SystemExit(
+                  f"Technical status is not COMPLETED: "
+                  f"{data.get('technical_status')}"
+              )
+
+          allowed = {
+              "CONTINUITY_SUPPORTED",
+              "PARTIAL_OR_SCALE_SPECIFIC_EVIDENCE",
+              "CONTINUITY_NOT_SUPPORTED",
+              "NON_IDENTIFIABLE",
+          }
+
+          outcome = data.get("scientific_outcome")
+
+          if outcome not in allowed:
+              raise SystemExit(
+                  f"Unexpected scientific outcome: {outcome}"
+              )
+
+          print("CGIE3-ID-04 technical status: COMPLETED")
+          print(f"Scientific outcome: {outcome}")
+          PY
+
+      - name: Validate scientific claim boundary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          data = json.loads(
+              Path(
+                  "outputs/CGIE3_ID_04_execution_status.json"
+              ).read_text(encoding="utf-8")
+          )
+
+          claims = data.get("scientific_claims") or {}
+
+          prohibited = {
+              "id02_statuses_modified",
+              "id03_states_modified",
+              "minimum_identity_core_established",
+              "indispensable_relations_established",
+              "causality_established",
+              "predictive_capability_established",
+              "earthquake_prediction_established",
+              "universal_transferability_established",
+          }
+
+          violations = sorted(
+              claim
+              for claim in prohibited
+              if claims.get(claim) is True
+          )
+
+          if violations:
+              raise SystemExit(
+                  "Scientific boundary violated: "
+                  + ", ".join(violations)
+              )
+
+          print("Scientific claim boundary: OK")
+          PY
+
+      - name: Upload CGIE3-ID-04 outputs
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: CGIE3-ID-04-results
+          path: |
+            outputs/CGIE3_ID_04*
+          if-no-files-found: error
+
+      - name: Upload execution status on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: CGIE3-ID-04-failure-status
+          path: |
+            outputs/CGIE3_ID_04_execution_status.json
+          if-no-files-found: warn
