@@ -78,6 +78,9 @@ SOURCE_FILES = {
 
     "identity_declaration":
         "congruity/identity/declaration.py",
+
+    "id04_main":
+    "engines/cgie3/src/id04/main.py",
 }
 
 
