@@ -58,7 +58,7 @@ from cgie3.src.id04.snapshots import (
 
 
 SCRIPT_PATH = Path(__file__).resolve()
-REPOSITORY_ROOT = SCRIPT_PATH.parents[4]
+REPOSITORY_ROOT = SCRIPT_PATH.parents[3]
 
 EXECUTION_STATUS_PATH = (
     REPOSITORY_ROOT
