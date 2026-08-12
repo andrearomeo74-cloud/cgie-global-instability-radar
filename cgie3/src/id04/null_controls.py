@@ -27,7 +27,7 @@ from typing import Any, Mapping
 import numpy as np
 import pandas as pd
 
-from engines.cgie3.src.id04.continuity import (
+from cgie3.src.id04.continuity import (
     edge_continuity,
     common_relation_table,
     weight_continuity,
@@ -36,7 +36,7 @@ from engines.cgie3.src.id04.continuity import (
     relational_continuity_score,
 )
 
-from engines.cgie3.src.id04.loader import (
+from cgie3.src.id04.loader import (
     ID04ExperimentContext,
 )
 
