@@ -33,7 +33,7 @@ import numpy as np
 import pandas as pd
 from scipy.stats import spearmanr
 
-from engines.cgie3.src.id04.loader import (
+from cgie3.src.id04.loader import (
     ID04ExperimentContext,
 )
 
