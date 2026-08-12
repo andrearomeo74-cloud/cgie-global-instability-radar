@@ -1310,12 +1310,3 @@ def build_snapshots(
     )
 
     return context
-
-                "frozen_relation_count":
-                    int(
-                        len(
-                            relations
-                        )
-                    ),
-
-               
