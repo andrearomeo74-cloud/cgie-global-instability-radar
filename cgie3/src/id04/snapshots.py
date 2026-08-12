@@ -285,18 +285,29 @@ def prepare_features(
             "Frozen feature table contains invalid timestamps."
         )
 
-    if features[
-        timestamp_column
-    ].duplicated().any():
-        fail(
-            "Frozen feature table contains duplicate timestamps."
-        )
+    if "window_id" not in features.columns:
+    fail(
+        "Frozen feature table is missing required window_id column."
+    )
+
+    if features.duplicated(
+    subset=[
+        timestamp_column,
+        "window_id",
+    ]
+).any():
+    fail(
+        "Frozen feature table contains duplicate timestamp-window pairs."
+    )
 
     return features.sort_values(
-        by=timestamp_column,
-        kind="stable",
-    ).reset_index(
-        drop=True
+    by=[
+        timestamp_column,
+        "window_id",
+    ],
+    kind="stable",
+).reset_index(
+    drop=True
     )
 
 
