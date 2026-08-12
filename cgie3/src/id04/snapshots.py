@@ -295,7 +295,7 @@ def prepare_features(
         timestamp_column,
         "window_id",
     ]
-).any():
+    ).any():
     fail(
         "Frozen feature table contains duplicate timestamp-window pairs."
     )
@@ -306,7 +306,7 @@ def prepare_features(
         "window_id",
     ],
     kind="stable",
-).reset_index(
+    ).reset_index(
     drop=True
     )
 
