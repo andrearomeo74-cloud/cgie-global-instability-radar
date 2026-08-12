@@ -53,6 +53,7 @@ REPOSITORY_ROOT = SCRIPT_PATH.parents[4]
 
 CONFIGURATION_PATH = (
     REPOSITORY_ROOT
+    / "engines"
     / "cgie3"
     / "config"
     / "cgie3_id_04_relational_continuity.yaml"
