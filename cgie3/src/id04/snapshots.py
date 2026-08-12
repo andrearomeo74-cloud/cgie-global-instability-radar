@@ -286,7 +286,7 @@ def prepare_features(
         )
 
     if "window_id" not in features.columns:
-    fail(
+        fail(
         "Frozen feature table is missing required window_id column."
     )
 
@@ -296,7 +296,7 @@ def prepare_features(
         "window_id",
     ]
     ).any():
-    fail(
+        fail(
         "Frozen feature table contains duplicate timestamp-window pairs."
     )
 
