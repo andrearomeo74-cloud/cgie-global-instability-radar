@@ -29,7 +29,7 @@ import numpy as np
 import pandas as pd
 import scipy
 
-from engines.cgie3.src.id04.loader import (
+from cgie3.src.id04.loader import (
     ID04ExperimentContext,
 )
 
@@ -50,28 +50,28 @@ OUTPUT_PATH = (
 
 SOURCE_FILES = {
     "id04_package":
-        "engines/cgie3/src/id04/__init__.py",
+        "cgie3/src/id04/__init__.py",
 
     "id04_loader":
-        "engines/cgie3/src/id04/loader.py",
+        "cgie3/src/id04/loader.py",
 
     "id04_snapshots":
-        "engines/cgie3/src/id04/snapshots.py",
+        "cgie3/src/id04/snapshots.py",
 
     "id04_continuity":
-        "engines/cgie3/src/id04/continuity.py",
+        "cgie3/src/id04/continuity.py",
 
     "id04_null_controls":
-        "engines/cgie3/src/id04/null_controls.py",
+        "cgie3/src/id04/null_controls.py",
 
     "id04_robustness":
-        "engines/cgie3/src/id04/robustness.py",
+        "cgie3/src/id04/robustness.py",
 
     "id04_reporting":
-        "engines/cgie3/src/id04/reporting.py",
+        "cgie3/src/id04/reporting.py",
 
     "id04_provenance":
-        "engines/cgie3/src/id04/provenance.py",
+        "cgie3/src/id04/provenance.py",
 
     "identity_models":
         "congruity/identity/models.py",
@@ -80,7 +80,7 @@ SOURCE_FILES = {
         "congruity/identity/declaration.py",
 
     "id04_main":
-    "engines/cgie3/src/id04/main.py",
+    "cgie3/src/id04/main.py",
 }
 
 
