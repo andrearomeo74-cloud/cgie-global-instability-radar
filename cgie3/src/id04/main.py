@@ -26,32 +26,32 @@ import traceback
 from pathlib import Path
 from typing import Any, Callable, Mapping
 
-from engines.cgie3.src.id04.continuity import (
+from cgie3.src.id04.continuity import (
     ID04ContinuityError,
     compute_continuity,
 )
-from engines.cgie3.src.id04.loader import (
+from cgie3.src.id04.loader import (
     ID04ExperimentContext,
     ID04LoaderError,
     load_experiment,
 )
-from engines.cgie3.src.id04.null_controls import (
+from cgie3.src.id04.null_controls import (
     ID04NullControlError,
     run_null_controls,
 )
-from engines.cgie3.src.id04.provenance import (
+from cgie3.src.id04.provenance import (
     ID04ProvenanceError,
     generate_provenance,
 )
-from engines.cgie3.src.id04.reporting import (
+from cgie3.src.id04.reporting import (
     ID04ReportingError,
     generate_reports,
 )
-from engines.cgie3.src.id04.robustness import (
+from cgie3.src.id04.robustness import (
     ID04RobustnessError,
     run_robustness,
 )
-from engines.cgie3.src.id04.snapshots import (
+from cgie3.src.id04.snapshots import (
     ID04SnapshotError,
     build_snapshots,
 )
