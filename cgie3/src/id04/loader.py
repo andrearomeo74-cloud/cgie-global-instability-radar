@@ -389,6 +389,7 @@ def normalize_timestamp_column(
 ) -> pd.DataFrame:
     """Find and normalize the frozen feature timestamp column."""
     timestamp_candidates = (
+        "endpoint_utc",
         "timestamp_utc",
         "timestamp",
         "date",
