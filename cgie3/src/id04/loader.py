@@ -49,7 +49,7 @@ class ID04LoaderError(ValueError):
 
 
 SCRIPT_PATH = Path(__file__).resolve()
-REPOSITORY_ROOT = SCRIPT_PATH.parents[3]
+REPOSITORY_ROOT = SCRIPT_PATH.parents[4]
 
 CONFIGURATION_PATH = (
     REPOSITORY_ROOT
