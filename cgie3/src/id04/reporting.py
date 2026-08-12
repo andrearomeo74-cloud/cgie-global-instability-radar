@@ -26,7 +26,7 @@ from typing import Any, Mapping
 import numpy as np
 import pandas as pd
 
-from engines.cgie3.src.id04.loader import (
+from cgie3.src.id04.loader import (
     ID04ExperimentContext,
 )
 
