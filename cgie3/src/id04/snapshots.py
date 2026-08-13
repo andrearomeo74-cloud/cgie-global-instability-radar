@@ -736,8 +736,29 @@ def build_scale_snapshots(
         scale_id
     )
 
+    if "window_id" not in features.columns:
+        fail(
+            "Frozen feature table is missing required window_id column."
+        )
+
+    scale_features = features.loc[
+        features["window_id"].astype(str).str.strip()
+        == str(scale_id).strip()
+    ].copy()
+
+    if scale_features.empty:
+        fail(
+            f"No frozen feature rows found for temporal scale {scale_id}."
+        )
+
+    if scale_features[timestamp_column].duplicated().any():
+        fail(
+            f"Frozen feature table contains duplicate timestamps "
+            f"within temporal scale {scale_id}."
+        )
+
     endpoints = build_snapshot_positions(
-        features,
+        scale_features,
         timestamp_column=timestamp_column,
         window_days=window_days,
     )
@@ -760,7 +781,7 @@ def build_scale_snapshots(
         )
 
         snapshot_frame = select_snapshot_window(
-            features,
+            scale_features,
             timestamp_column=timestamp_column,
             endpoint=endpoint,
             window_days=window_days,
