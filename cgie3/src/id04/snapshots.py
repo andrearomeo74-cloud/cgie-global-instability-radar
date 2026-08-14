@@ -771,10 +771,30 @@ def build_scale_snapshots(
         dict[str, Any]
     ] = []
 
+    print(
+        f"[ID04] START scale={scale_id} "
+        f"endpoints={len(endpoints)} "
+        f"relations={len(relations)}",
+        flush=True,
+    )
+
     for snapshot_index, endpoint in enumerate(
         endpoints,
         start=1,
     ):
+        if snapshot_index == 1 or snapshot_index % 100 == 0:
+            print(
+                f"[ID04] scale={scale_id} "
+                f"snapshot={snapshot_index}/{len(endpoints)} "
+                f"endpoint={endpoint.isoformat()}",
+                flush=True,
+            )
+
+        snapshot_id = (
+            f"CGIE3_ID_04::{scale_id}::"
+            f"{endpoint.strftime('%Y%m%dT%H%M%SZ')}"
+        )
+        
         snapshot_id = (
             f"CGIE3_ID_04::{scale_id}::"
             f"{endpoint.strftime('%Y%m%dT%H%M%SZ')}"
