@@ -778,10 +778,25 @@ def build_scale_snapshots(
         flush=True,
     )
 
+    print(
+    f"[ID04] START scale={scale_id} "
+    f"endpoints={len(endpoints)} "
+    f"relations={len(relations)}",
+    flush=True,
+    )
+
     for snapshot_index, endpoint in enumerate(
         endpoints,
         start=1,
     ):
+        if snapshot_index == 1 or snapshot_index % 100 == 0:
+            print(
+                f"[ID04] scale={scale_id} "
+                f"snapshot={snapshot_index}/{len(endpoints)} "
+                f"endpoint={endpoint.isoformat()}",
+                flush=True,
+            )
+
         if snapshot_index == 1 or snapshot_index % 100 == 0:
             print(
                 f"[ID04] scale={scale_id} "
