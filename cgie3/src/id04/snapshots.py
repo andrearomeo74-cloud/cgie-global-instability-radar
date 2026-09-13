@@ -977,25 +977,25 @@ def build_scale_snapshots(
     ] = {}
 
     for column in required_feature_columns:
-    values = pd.to_numeric(
-        scale_features[
-            column
-        ],
-        errors="coerce",
-    ).to_numpy(
-        dtype=float,
-        copy=True,
-    )
-
-    values[
-        ~np.isfinite(
-            values
+        values = pd.to_numeric(
+            scale_features[
+                column
+            ],
+            errors="coerce",
+        ).to_numpy(
+            dtype=float,
+            copy=True,
         )
-    ] = np.nan
 
-    feature_arrays[
-        column
-    ] = values
+        values[
+            ~np.isfinite(
+                values
+            )
+        ] = np.nan
+
+        feature_arrays[
+            column
+        ] = values
 
     relation_specs: list[
         tuple[
