@@ -1006,12 +1006,6 @@ def build_scale_snapshots(
         ]
     ] = []
 
-    for row in relations.itertuples(
-        index=False
-    ):
-        relation_specs.append(
-            (
-
 def build_scale_snapshots(
     features: pd.DataFrame,
     relations: pd.DataFrame,
