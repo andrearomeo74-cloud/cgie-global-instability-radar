@@ -1216,6 +1216,424 @@ def build_scale_snapshots(
                             snapshot_index
                         ),
 
+def build_scale_snapshots(
+    features: pd.DataFrame,
+    relations: pd.DataFrame,
+    *,
+    scale_id: str,
+    timestamp_column: str,
+    minimum_observations: int,
+) -> tuple[
+    pd.DataFrame,
+    pd.DataFrame,
+]:
+    """
+    Re-estimate every frozen scale-specific relation at every endpoint.
+
+    Optimized implementation:
+    - preserves the frozen relation population;
+    - preserves every admissible endpoint;
+    - preserves Spearman estimation;
+    - preserves explicit non-estimability;
+    - avoids repeated DataFrame filtering inside every relation/snapshot pair;
+    - avoids post-hoc relation selection.
+
+    Returns:
+    - long relation-estimate table;
+    - one-row-per-snapshot metadata table.
+    """
+    window_days = parse_window_days(
+        scale_id
+    )
+
+    if "window_id" not in features.columns:
+        fail(
+            "Frozen feature table is missing required window_id column."
+        )
+
+    scale_features = features.loc[
+        features[
+            "window_id"
+        ].astype(str).str.strip()
+        == str(
+            scale_id
+        ).strip()
+    ].copy()
+
+    if scale_features.empty:
+        fail(
+            f"No frozen feature rows found for temporal scale {scale_id}."
+        )
+
+    scale_features = scale_features.sort_values(
+        by=timestamp_column,
+        kind="stable",
+    ).reset_index(
+        drop=True
+    )
+
+    if scale_features[
+        timestamp_column
+    ].duplicated().any():
+        fail(
+            "Frozen feature table contains duplicate timestamps "
+            f"within temporal scale {scale_id}."
+        )
+
+    required_feature_columns = (
+        set(
+            relations[
+                "source_id"
+            ].astype(str)
+        )
+        |
+        set(
+            relations[
+                "target_id"
+            ].astype(str)
+        )
+    )
+
+    missing_feature_columns = sorted(
+        required_feature_columns
+        - set(
+            scale_features.columns
+        )
+    )
+
+    if missing_feature_columns:
+        fail(
+            "Frozen feature table is missing relation features: "
+            + ", ".join(
+                missing_feature_columns
+            )
+        )
+
+    timestamps = pd.DatetimeIndex(
+        scale_features[
+            timestamp_column
+        ]
+    )
+
+    if len(
+        timestamps
+    ) == 0:
+        fail(
+            "Frozen feature table contains no timestamps."
+        )
+
+    minimum_endpoint = (
+        timestamps[
+            0
+        ]
+        + pd.Timedelta(
+            days=window_days
+        )
+    )
+
+    first_endpoint_index = int(
+        timestamps.searchsorted(
+            minimum_endpoint,
+            side="left",
+        )
+    )
+
+    if first_endpoint_index >= len(
+        timestamps
+    ):
+        fail(
+            "No admissible snapshot endpoints exist for "
+            f"{window_days}d scale."
+        )
+
+    endpoint_indices = np.arange(
+        first_endpoint_index,
+        len(
+            timestamps
+        ),
+        dtype=np.int64,
+    )
+
+    feature_arrays: dict[
+        str,
+        np.ndarray,
+    ] = {}
+
+    for column in required_feature_columns:
+        values = pd.to_numeric(
+            scale_features[
+                column
+            ],
+            errors="coerce",
+        ).to_numpy(
+            dtype=float,
+            copy=True,
+        )
+
+        values[
+            ~np.isfinite(
+                values
+            )
+        ] = np.nan
+
+        feature_arrays[
+            column
+        ] = values
+
+    relation_specs: list[
+        tuple[
+            str,
+            str,
+            str,
+            str,
+        ]
+    ] = []
+
+    for row in relations.itertuples(
+        index=False
+    ):
+        relation_specs.append(
+            (
+                str(
+                    row.relation_id
+                ),
+                str(
+                    row.source_id
+                ),
+                str(
+                    row.target_id
+                ),
+                str(
+                    row.classification_status
+                ),
+            )
+        )
+
+    relation_records: list[
+        dict[str, Any]
+    ] = []
+
+    snapshot_records: list[
+        dict[str, Any]
+    ] = []
+
+    total_endpoints = int(
+        len(
+            endpoint_indices
+        )
+    )
+
+    relation_count = int(
+        len(
+            relation_specs
+        )
+    )
+
+    print(
+        f"[ID04] START scale={scale_id} "
+        f"endpoints={total_endpoints} "
+        f"relations={relation_count}",
+        flush=True,
+    )
+
+    window_delta = pd.Timedelta(
+        days=window_days
+    )
+
+    for snapshot_index, endpoint_position in enumerate(
+        endpoint_indices,
+        start=1,
+    ):
+        endpoint = timestamps[
+            endpoint_position
+        ]
+
+        start_time = (
+            endpoint
+            - window_delta
+        )
+
+        start_position = int(
+            timestamps.searchsorted(
+                start_time,
+                side="right",
+            )
+        )
+
+        stop_position = int(
+            endpoint_position
+            + 1
+        )
+
+        feature_row_count = int(
+            stop_position
+            - start_position
+        )
+
+        if (
+            snapshot_index == 1
+            or snapshot_index % 500 == 0
+            or snapshot_index == total_endpoints
+        ):
+            print(
+                f"[ID04] scale={scale_id} "
+                f"snapshot={snapshot_index}/{total_endpoints} "
+                f"endpoint={endpoint.isoformat()}",
+                flush=True,
+            )
+
+        snapshot_id = (
+            f"CGIE3_ID_04::{scale_id}::"
+            f"{endpoint.strftime('%Y%m%dT%H%M%SZ')}"
+        )
+
+        estimable_count = 0
+        non_estimable_count = 0
+
+        for (
+            relation_id,
+            source_id,
+            target_id,
+            classification_status,
+        ) in relation_specs:
+
+            source = feature_arrays[
+                source_id
+            ][
+                start_position:
+                stop_position
+            ]
+
+            target = feature_arrays[
+                target_id
+            ][
+                start_position:
+                stop_position
+            ]
+
+            finite_mask = (
+                np.isfinite(
+                    source
+                )
+                &
+                np.isfinite(
+                    target
+                )
+            )
+
+            pair_source = source[
+                finite_mask
+            ]
+
+            pair_target = target[
+                finite_mask
+            ]
+
+            sample_count = int(
+                pair_source.size
+            )
+
+            estimability: str
+            strength: float | None
+            sign: int | None
+            p_value: float | None
+            non_estimable_reason: str | None
+
+            if sample_count < minimum_observations:
+                estimability = "insufficient_observations"
+                strength = None
+                sign = None
+                p_value = None
+                non_estimable_reason = (
+                    "insufficient_complete_observations"
+                )
+
+            elif np.unique(
+                pair_source
+            ).size < 2:
+                estimability = "non_identifiable"
+                strength = None
+                sign = None
+                p_value = None
+                non_estimable_reason = (
+                    "constant_source_feature"
+                )
+
+            elif np.unique(
+                pair_target
+            ).size < 2:
+                estimability = "non_identifiable"
+                strength = None
+                sign = None
+                p_value = None
+                non_estimable_reason = (
+                    "constant_target_feature"
+                )
+
+            else:
+                result = spearmanr(
+                    pair_source,
+                    pair_target,
+                )
+
+                candidate_strength = float(
+                    result.statistic
+                )
+
+                candidate_p_value = float(
+                    result.pvalue
+                )
+
+                if not np.isfinite(
+                    candidate_strength
+                ):
+                    estimability = "numerical_failure"
+                    strength = None
+                    sign = None
+                    p_value = None
+                    non_estimable_reason = (
+                        "non_finite_spearman_strength"
+                    )
+
+                else:
+                    estimability = "estimable"
+                    strength = candidate_strength
+
+                    if strength > 0.0:
+                        sign = 1
+                    elif strength < 0.0:
+                        sign = -1
+                    else:
+                        sign = 0
+
+                    p_value = (
+                        candidate_p_value
+                        if np.isfinite(
+                            candidate_p_value
+                        )
+                        else None
+                    )
+
+                    non_estimable_reason = None
+
+            if estimability == "estimable":
+                estimable_count += 1
+            else:
+                non_estimable_count += 1
+
+            relation_records.append(
+                {
+                    "experiment_id":
+                        "CGIE3_ID_04",
+
+                    "snapshot_id":
+                        snapshot_id,
+
+                    "snapshot_index":
+                        int(
+                            snapshot_index
+                        ),
+
                     "scale_id":
                         scale_id,
 
@@ -1225,7 +1643,7 @@ def build_scale_snapshots(
                         ),
 
                     "snapshot_start_utc":
-                        snapshot_start.isoformat(),
+                        start_time.isoformat(),
 
                     "snapshot_end_utc":
                         endpoint.isoformat(),
@@ -1246,9 +1664,7 @@ def build_scale_snapshots(
                         "spearman",
 
                     "estimability":
-                        estimate[
-                            "estimability"
-                        ],
+                        estimability,
 
                     "strength":
                         strength,
@@ -1265,26 +1681,16 @@ def build_scale_snapshots(
                         ),
 
                     "sign":
-                        estimate[
-                            "sign"
-                        ],
+                        sign,
 
                     "p_value":
-                        estimate[
-                            "p_value"
-                        ],
+                        p_value,
 
                     "sample_count":
-                        int(
-                            estimate[
-                                "sample_count"
-                            ]
-                        ),
+                        sample_count,
 
                     "non_estimable_reason":
-                        estimate[
-                            "non_estimable_reason"
-                        ],
+                        non_estimable_reason,
 
                     "relation_selected_post_hoc":
                         False,
@@ -1319,22 +1725,16 @@ def build_scale_snapshots(
                     ),
 
                 "snapshot_start_utc":
-                    snapshot_start.isoformat(),
+                    start_time.isoformat(),
 
                 "snapshot_end_utc":
                     endpoint.isoformat(),
 
                 "feature_row_count":
-                    int(
-                        feature_row_count
-                    ),
+                    feature_row_count,
 
                 "frozen_relation_count":
-                    int(
-                        len(
-                            relations
-                        )
-                    ),
+                    relation_count,
 
                 "estimable_relation_count":
                     int(
@@ -1349,12 +1749,17 @@ def build_scale_snapshots(
                 "estimable_relation_fraction":
                     float(
                         estimable_count
-                        / len(
-                            relations
-                        )
+                        / relation_count
                     ),
             }
         )
+
+    print(
+        f"[ID04] DONE scale={scale_id} "
+        f"snapshots={total_endpoints} "
+        f"relations_per_snapshot={relation_count}",
+        flush=True,
+    )
 
     return (
         pd.DataFrame.from_records(
@@ -1363,8 +1768,7 @@ def build_scale_snapshots(
         pd.DataFrame.from_records(
             snapshot_records
         ),
-    )
-
+        )
 
 def validate_snapshot_outputs(
     relations: pd.DataFrame,
